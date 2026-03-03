@@ -12,7 +12,7 @@ import generateUID from "./UIDGenerator.js";
  * - address: string representing the event address
  * - color: string representing the event color (e.g. "#FF0000")
  */
-export default class Event {
+export default class CalendarEvent {
   // Private fields
   #UID;
   #date;

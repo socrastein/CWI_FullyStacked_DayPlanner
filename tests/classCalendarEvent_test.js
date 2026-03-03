@@ -1,4 +1,4 @@
-import Event from "../modules/classEvent.js";
+import CalendarEvent from "../modules/classCalendarEvent.js";
 
 function eventTests() {
   let passed = 0;
@@ -7,7 +7,7 @@ function eventTests() {
   // Helper: expects the constructor to THROW
   function expectFailure(label, options) {
     try {
-      new Event(options);
+      new CalendarEvent(options);
       console.error(
         `❌ FAIL — "${label}": Expected an error but Event was created successfully.`,
       );
@@ -21,7 +21,7 @@ function eventTests() {
   // Helper: expects the constructor to SUCCEED
   function expectSuccess(label, options) {
     try {
-      const event = new Event(options);
+      const event = new CalendarEvent(options);
       console.log(`✅ PASS — "${label}": Event created successfully.`, event);
       passed++;
     } catch (e) {
@@ -33,7 +33,7 @@ function eventTests() {
   // Helper for length checks since we're asserting a value, not pass/fail
   function expectLength(label, options, expectedLength) {
     try {
-      const event = new Event(options);
+      const event = new CalendarEvent(options);
       if (event.length === expectedLength) {
         console.log(
           `✅ PASS — "${label}": length is ${expectedLength} minutes.`,
