@@ -1,3 +1,5 @@
+import CalendarEvent from "./classCalendarEvent.js";
+
 // TODO: replace confirm() dialogs in deletion methods with Bootstrap modal
 
 // Used to identify which localStorage items are events
@@ -41,7 +43,7 @@ const StorageManager = {
         if (jsonString) {
           const eventData = JSON.parse(jsonString);
           const UID = key.replace(savedEventPrefix, ""); // Extract UID from the key
-          events.push({ UID, ...eventData }); // Combine UID with the rest of the event data
+          events.push(new CalendarEvent({ UID, ...eventData })); // Combine UID with the rest of the event data
         }
       }
     }
