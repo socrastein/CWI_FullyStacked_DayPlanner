@@ -51,15 +51,15 @@
       <!-- Event Form -->
       <form id="eventForm">
         <h2 id="eventFormTitle">Add Event</h2>
-        <label for="eventTitle">Event Name</label>
+        <label for="eventTitle">Event Name <span>*</span></label>
         <input type="text" id="eventTitle" name="title" required />
-        <label for="eventDate">Date</label>
+        <label for="eventDate">Date <span>*</span></label>
         <input type="date" id="eventDate" name="date" required/>
         <div id="timeContainer">
-          <label for="eventStartTime">Start Time</label>
-          <input type="time" id="eventStartTime" name="timeStart" required/>
-          <label for="eventEndTime">End Time</label>
-          <input type="time" id="eventEndTime" name="timeEnd" required/>
+          <label for="eventStartTime">Start Time <span>*</span></label>
+          <input type="time" id="eventStartTime" name="timeStart" step="900" required/>
+          <label for="eventEndTime">End Time <span>*</span></label>
+          <input type="time" id="eventEndTime" name="timeEnd" step="900" required/>
           <label for="eventColor">Color</label>
           <input type="color" id="eventColor" name="color" value="#ffffff" list="colorOptions"/>
           <datalist id="colorOptions">
