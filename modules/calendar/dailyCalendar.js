@@ -1,72 +1,25 @@
 "use strict";
 
-// ----------------------Constants----------------------
-const CalendarView = { // Valid views for the calendar
-    DAY: 'day',
-    WEEK: 'week',
-    MONTH: 'month',
-}
-const MINUTES_PER_DAY = 24 * 60;
-const PIXELS_PER_MINUTE = 1; // 1 pixel per minute
-const DAY_TOTAL_HEIGHT = MINUTES_PER_DAY * PIXELS_PER_MINUTE; // Give the day 24 hours of height
-
-// ----------------------Main Functions----------------------
-// Render the calendar view based on the calendar view type
-export function renderCalendarView(events, calendarView = CalendarView.DAY) {
-    const calendarViewArea = document.getElementById('calendarViewArea');
-    if (!calendarViewArea) return;
-    switch (calendarView) {
-        case CalendarView.DAY:
-            renderSingleDay(filterEventsForTheCurrentDay(events));
-            break;
-        case CalendarView.WEEK:
-            renderSingleWeek(events, calendarViewArea);
-            break;
-        case CalendarView.MONTH:
-            renderSingleMonth(events, calendarViewArea);
-            break;
-        default:
-            renderSingleDay(filterEventsForTheCurrentDay(events));
-    }
-
-    // Scroll to the active row if it exists (this is to scroll to the current time line)
-    const activeRow = calendarViewArea.querySelector('.calendarTimeSlotRow[data-active="true"]');
-    if (activeRow) {
-        activeRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-}
+import { formatSlotTime, MINUTES_PER_DAY, PIXELS_PER_MINUTE, DAY_TOTAL_HEIGHT, isToday, calculateTheCurrentMinutesFromMidnight, timeStringToMinutes, formatTime } from "./calendar.js";
 
 // Render the single day view of the calendar
-function renderSingleDay(events) {
+export function renderSingleDay(events, viewDate) {
     const slotDuration = getSlotDuration();
-    const currentMinutesFromMidnight = calculateTheCurrentMinutesFromMidnight();
+    const currentMinutesFromMidnight = isToday(viewDate) ? calculateTheCurrentMinutesFromMidnight() : null;
     const slotHeight = slotDuration * PIXELS_PER_MINUTE;
     const slots = createAllSlotsForDay(slotDuration);
     const dayContentWrapper = document.getElementById('calendarDayContentWrapper');
     if (!dayContentWrapper) return;
     createTimeSlotColumn(slots, currentMinutesFromMidnight, slotDuration, slotHeight);
     createDayGridColumn(events, slots, currentMinutesFromMidnight, slotHeight);
-}
 
-// Render the single week view of the calendar
-function renderSingleWeek(events) {
-
-}
-
-// Render the single month view of the calendar
-function renderSingleMonth(events) {
-
-}
-
-// ----------------------Helper Functions----------------------
-
-// Filters the events to only include events for the current day.
-function filterEventsForTheCurrentDay(events) {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const day = String(now.getDate()).padStart(2, '0');
-    return events.filter((event) => event.date === `${year}-${month}-${day}`);
+    // Scroll to the active row only when viewing today
+    const calendarViewArea = document.getElementById('calendarViewArea');
+    if (!calendarViewArea) return;
+    const activeRow = calendarViewArea.querySelector('.calendarTimeSlotRow[data-active="true"]');
+    if (activeRow && isToday(viewDate)) {
+        activeRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
 }
 
 // Creates the time slot column for the calendar (the left column with the time labels)
@@ -80,7 +33,8 @@ function createTimeSlotColumn(slots, currentMinutesFromMidnight, slotDuration, s
     // Loop through the slots (24 hours) and create a time slot row for each slot
     slots.forEach((slotStart) => {
         const slotEnd = slotStart + slotDuration;
-        const isActiveSlot = currentMinutesFromMidnight >= slotStart && currentMinutesFromMidnight < slotEnd;
+        const isActiveSlot = currentMinutesFromMidnight != null &&
+            currentMinutesFromMidnight >= slotStart && currentMinutesFromMidnight < slotEnd;
 
         const timeSlotRow = document.createElement('div');
         timeSlotRow.id = 'calendarTimeSlotRow';
@@ -98,21 +52,11 @@ function createTimeSlotColumn(slots, currentMinutesFromMidnight, slotDuration, s
     });
 }
 
-// Formats the time slot time (e.g. 10:00 AM). Not using the event times!
-function formatSlotTime(minutes) {
-    const hours = Math.floor(minutes / 60);
-    const remainingMinutes = minutes % 60;
-    const ampm = hours >= 12 ? 'PM' : 'AM';
-    const formattedHours = hours % 12 || 12;
-    return `${formattedHours}:${remainingMinutes.toString().padStart(2, '0')} ${ampm}`;
-}
-
 // Creates the day grid column for the calendar (the right column with the hour grid lines and the events)
 function createDayGridColumn(events, slots, currentMinutesFromMidnight, slotHeight) {
     createHourGridLines(slots, slotHeight);
     createCurrentTimeLine(currentMinutesFromMidnight);
     createEventsLayer(events);
-
 }
 
 // Creates the hour grid lines for the calendar (the vertical lines)
@@ -131,11 +75,16 @@ function createHourGridLines(slots, slotHeight) {
     });
 }
 
-// Creates the current time line for the calendar (the horizontal line)
+// Creates the current time line for the calendar (the horizontal line). Hidden when viewing another day.
 function createCurrentTimeLine(currentMinutesFromMidnight) {
     const currentTimeLine = document.getElementById('calendarCurrentTimeLineContainer');
     if (!currentTimeLine) return;
-    currentTimeLine.style.top = `${currentMinutesFromMidnight * PIXELS_PER_MINUTE}px`;
+    if (currentMinutesFromMidnight == null) {
+        currentTimeLine.style.visibility = 'hidden';
+    } else {
+        currentTimeLine.style.visibility = 'visible';
+        currentTimeLine.style.top = `${currentMinutesFromMidnight * PIXELS_PER_MINUTE}px`;
+    }
 }
 
 // Creates the events layer for the calendar
@@ -277,20 +226,6 @@ function calculateTotalConcurrentEvents(event, events) {
     return Math.max(1, maxCount);
 }
 
-// Converts a time string (e.g. "10:00") to the number of minutes since midnight. Use this for event times!
-function timeStringToMinutes(timeString) {
-    const [hours, minutes] = timeString.split(':');
-    return parseInt(hours, 10) * 60 + parseInt(minutes, 10);
-}
-
-// Formats a time string (e.g. "10:00") to a human-readable time string (e.g. "10:00 AM"). Use this when formatting event times!
-function formatTime(time) {
-    const [hours, minutes] = time.split(':');
-    const date = new Date();
-    date.setHours(hours, minutes, 0, 0);
-    return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
-}
-
 // Creates the full 24 hour slots
 function createAllSlotsForDay(slotDuration) {
     const slots = [];
@@ -300,19 +235,11 @@ function createAllSlotsForDay(slotDuration) {
     return slots;
 }
 
-// Calculates the current time in minutes from midnight.
-function calculateTheCurrentMinutesFromMidnight() {
-    const now = new Date();
-    return now.getHours() * 60 + now.getMinutes();
-}
-
-// ----------------------Getters----------------------
-
 /**
  * Gets the duration of the time slots in the calendar (in minutes). 60 minutes is default.
  * @returns {number} The duration of the time slots in the calendar (in minutes).
  */
-export function getSlotDuration() {
+function getSlotDuration() {
     const value = document.getElementById('slotDurationSelect')?.value;
     const parsedValue = parseInt(value, 10);
     return Number.isNaN(parsedValue) ? 60 : parsedValue;
