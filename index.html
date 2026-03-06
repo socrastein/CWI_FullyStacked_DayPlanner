@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="baseStyling.css" />
     <link rel="stylesheet" href="eventForm.css" />
     <script src="./modules/main.js" type="module"></script>
+    <!-- <script src="./modules/weatherDisplay.js" type="module" defer></script> -->
   </head>
   <body>
     <!--  -->
@@ -17,7 +18,12 @@
       <h3 id="appTitle">Day Planner</h3>
       <div id="headerInfoContainer">
         <div id="headerDateContainer">Tuesday, Feb 10</div>
-        <div id="headerWeatherContainer">🌞 72&deg;</div>
+        <div id="headerWeatherContainer">
+          <span class="weatherChild"><strong>Boise</strong></span>
+          <img id="weather-icon" class="weatherChild"/>
+          <span id="temperature" class="weatherChild"></span>
+          <span id="weather-description" class="weatherChild"></span>
+        </div>
       </div>
       <!-- Holds the buttons that swap calendar view between Day, Week, Month -->
       <div id="displayButtonsContainer">
