@@ -50,6 +50,8 @@ function createTimeSlotColumn(slots, currentMinutesFromMidnight, slotDuration, s
 
         slotLabelsColumn.appendChild(timeSlotRow);
     });
+
+    return slotLabelsColumn;
 }
 
 // Creates the day grid column for the calendar (the right column with the hour grid lines and the events)

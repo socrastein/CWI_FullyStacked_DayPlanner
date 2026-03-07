@@ -38,6 +38,13 @@ div {
   width: 100%;
 }
 
+#headerDateContainer {
+  border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 #headerWeatherContainer {
 }
 
@@ -70,6 +77,15 @@ div {
   justify-content: center;
   gap: 1rem;
   padding: 0.25rem;
+  border: none;
+}
+
+.calendarNavButton {
+  width: fit-content;
+  padding-inline: 0.325rem;
+  padding-block: 0.125rem;
+  justify-content: center;
+  align-items: center;
 }
 
 #addEventButton {
