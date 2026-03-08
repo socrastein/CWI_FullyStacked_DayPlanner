@@ -13,7 +13,7 @@ export function initializeCalendarDisplayButtons(state, onRender) {
     displayButtons.forEach((btn, i) => {
         btn.addEventListener("click", () => {
             state.calendarView = views[i];
-            displayButtons.forEach((b) => b.classList.remove("highlightDisplayButton"));
+            displayButtons.forEach((displayButton) => displayButton.classList.remove("highlightDisplayButton"));
             btn.classList.add("highlightDisplayButton");
             onRender();
         });

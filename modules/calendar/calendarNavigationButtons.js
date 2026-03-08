@@ -4,9 +4,9 @@ import { CalendarView } from "./calendar.js";
 
 // Adds a single day to the view date
 function addDays(date, delta) {
-    const d = new Date(date.getTime());
-    d.setDate(d.getDate() + delta);
-    return d;
+    const newDay = new Date(date.getTime());
+    newDay.setDate(newDay.getDate() + delta);
+    return newDay;
 }
 
 // Adds a single week to the view date
@@ -17,9 +17,9 @@ function addWeeks(date, delta) {
 
 // Adds a single month to the view date
 function addMonths(date, delta) {
-    const d = new Date(date.getTime());
-    d.setMonth(d.getMonth() + delta);
-    return d;
+    const newMonth = new Date(date.getTime());
+    newMonth.setMonth(newMonth.getMonth() + delta);
+    return newMonth;
 }
 
 
