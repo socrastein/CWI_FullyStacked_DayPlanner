@@ -1,3 +1,4 @@
+import { renderCalendarView } from "./calendar/calendar.js";
 import StorageManager from "./dataStorage.js";
 import { initializeEventManager } from "./eventManager.js";
 import { loadWeatherDisplay } from "./weatherDisplay.js";
@@ -11,6 +12,3 @@ const allEvents = StorageManager.loadAllEvents();
 
 // Initialize listeners for the event manager
 initializeEventManager();
-
-// load weather display
-loadWeatherDisplay();
