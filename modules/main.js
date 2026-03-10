@@ -1,28 +1,27 @@
-import runTests from "../tests/runTests.js";
 import StorageManager from "./dataStorage.js";
 import appSettings from "./settings.js";
-import { renderCalendarView } from "./calendar/calendar.js";
-import { initializeEventManager } from "./eventManager.js";
 import createSettingsMenu from "./settingsMenu.js";
 
-// Load user settings from localStorage when the application starts
-appSettings.loadSettings();
-createSettingsMenu();
-import { renderCalendarView, CalendarView } from "./calendar/calendar.js";
 import { updateHeaderDate } from "./calendar/headerDate.js";
+import { renderCalendarView, CalendarView } from "./calendar/calendar.js";
 import { initializeCalendarNavigation } from "./calendar/calendarNavigationButtons.js";
 import { initializeCalendarDisplayButtons } from "./calendar/calendarDisplayButtons.js";
-import { initializeEventManager } from "./eventManager.js";
 import initTodayButton from "./todayButton.js";
+
+import { initializeEventManager } from "./eventManager.js";
 
 import { loadWeatherDisplay } from "./weatherDisplay.js";
 
-appSettings.loadSettings();
+import runTests from "../tests/runTests.js";
+
+// Load events and user settings from localStorage when the application starts
 const allEvents = StorageManager.loadAllEvents();
+appSettings.loadSettings();
+console.log(appSettings.lightMode);
+
+createSettingsMenu();
 
 initializeEventManager();
-
-// Initialize todayButton listeners
 initTodayButton();
 
 {
@@ -37,8 +36,6 @@ initTodayButton();
     });
   }
 }
-
-loadWeatherDisplay();
 
 {
   const viewDate = new Date();
@@ -62,5 +59,7 @@ loadWeatherDisplay();
   initializeCalendarNavigation(calendarState, render); // Initializes the calendar navigation buttons
   initializeCalendarDisplayButtons(calendarState, render); // Initializes the calendar display buttons
 }
+
+loadWeatherDisplay();
 
 // runTests();
