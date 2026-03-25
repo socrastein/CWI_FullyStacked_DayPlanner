@@ -5,7 +5,7 @@ const CopyWebpackPlugin = require("copy-webpack-plugin");
 module.exports = {
   entry: "./modules/main.js",
   resolve: {
-    extensions: [".tsx", ".ts", ".js"],
+    extensions: [".tsx", ".ts", ".js",".jsx"],
   },
   output: {
     filename: "main.js",
@@ -35,7 +35,7 @@ module.exports = {
         exclude: /node_modules/,
       },
       {
-        test: /\.js$/,
+        test: /\.(js|jsx)$/,
         use: "babel-loader",
         exclude: /node_modules/,
       },
