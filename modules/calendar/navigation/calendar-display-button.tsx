@@ -4,7 +4,8 @@ type CalendarDisplayButtonProps = {
   onClick: () => void; // Function to re-render the calendar
 };
 
-export default function CalendarDisplayButton({
+// Renders the calendar display button
+function CalendarDisplayButton({
   calendarView,
   isActive,
   onClick,
@@ -22,3 +23,5 @@ export default function CalendarDisplayButton({
     </button>
   );
 }
+
+export default CalendarDisplayButton;

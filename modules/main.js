@@ -26,7 +26,6 @@ appSettings.loadSettings();
 createSettingsMenu();
 
 initializeEventManager();
-initTodayButton();
 
 const viewDate = new Date();
 viewDate.setHours(0, 0, 0, 0);
@@ -35,6 +34,7 @@ const calendarState = { viewDate, calendarView: CalendarView.DAY, allEvents};
 // Initialize and render all of the calendar UI components (e.g. display (view) buttons, navigation buttons, and the full calendar)
 initializeCalendarUI(calendarState);
 
+initTodayButton();
 loadWeatherDisplay();
 
 // runTests();

@@ -6,20 +6,21 @@ type CalendarNavButtonProps = {
     viewDate: Date;
     calendarView: string;
   };
-  direction?: "subtract" | "add";
+  direction?: "subtract" | "add"; // "add" means go to next day/week/month; "subtract" means go to previous day/week/month
   onRender: () => void;
   children: React.ReactNode;
 };
 
-export default function CalendarNavButton({
-  children,
+// Renders a calendar navigation button component
+function CalendarNavButton({
+  children, // This allows the parent component to pass in the icon to be displayed on the button
   state,
-  direction = "add",
+  direction = "add", // Default to going to next day/week/month
   onRender,
 }: CalendarNavButtonProps) {
   // Handle click event to navigate the calendar by one day, week, or month
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
+    e.preventDefault(); // Prevent the default behavior of the button
 
     const delta = direction === "add" ? 1 : -1;
 
@@ -66,3 +67,5 @@ function navigateMonth(date: Date, delta: number) {
   newDate.setMonth(newDate.getMonth() + delta);
   return newDate;
 }
+
+export default CalendarNavButton;

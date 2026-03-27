@@ -8,18 +8,23 @@ type CalendarNavButtonsGroupProps = {
   onRender: () => void;
 };
 
-export default function CalendarNavButtonsGroup({
+// Renders the calendar navigation buttons
+function CalendarNavButtonsGroup({
   state,
   onRender,
 }: CalendarNavButtonsGroupProps) {
   return (
     <>
+      {/* Go to previous day/week/month */}
       <CalendarNavButton state={state} direction="subtract" onRender={onRender}>
         <img src="./assets/icons/chevron-left.svg" />
       </CalendarNavButton>
+      {/* Go to next day/week/month */}
       <CalendarNavButton state={state} onRender={onRender}>
-        <img src="./assets/icons/chevron-right.svg" />
+        <img src="./assets/icons/chevron-right.svg"/>
       </CalendarNavButton>
     </>
   );
 }
+
+export default CalendarNavButtonsGroup;

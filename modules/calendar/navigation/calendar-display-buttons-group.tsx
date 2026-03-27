@@ -6,22 +6,26 @@ type CalendarDisplayButtonsGroupProps = {
   onSelectView: (view: string) => void;
 };
 
-export default function CalendarDisplayButtonsGroup({
+// Renders the calendar display buttons
+function CalendarDisplayButtonsGroup({
   activeView,
   onSelectView,
 }: CalendarDisplayButtonsGroupProps) {
   return (
     <>
+      {/* Day view button */}
       <CalendarDisplayButton
         calendarView={CalendarView.DAY}
         isActive={activeView === CalendarView.DAY}
         onClick={() => onSelectView(CalendarView.DAY)}
       />
+      {/* Week view button */}
       <CalendarDisplayButton
         calendarView={CalendarView.WEEK}
         isActive={activeView === CalendarView.WEEK}
         onClick={() => onSelectView(CalendarView.WEEK)}
       />
+      {/* Month view button */}
       <CalendarDisplayButton
         calendarView={CalendarView.MONTH}
         isActive={activeView === CalendarView.MONTH}
@@ -30,3 +34,5 @@ export default function CalendarDisplayButtonsGroup({
     </>
   );
 }
+
+export default CalendarDisplayButtonsGroup;
