@@ -46,6 +46,7 @@ function initializeEventManager() {
 
   //additional listener for 'edit event' option.  Reads clicks on event targets and stores eventUID then runs openEventEditor() based on eventUID.
 
+  if (!calendarEventsLayer) return; // prevents crash
   calendarEventsLayer.addEventListener("click", (event) => {
     const clickedEventButton = event.target.closest("[data-event-id]");
 
@@ -230,7 +231,7 @@ function calenderEventRefresh() {
   const headerDateText = headerDateContainer.textContent;
   const headerDateRender = new Date(headerDateText);
   const allEvents = StorageManager.loadAllEvents();
-  renderCalendarView(allEvents, headerDateRender, "day");
+  // renderCalendarView(allEvents, headerDateRender, "day");
 }
 
 export { initializeEventManager, openEventEditor };

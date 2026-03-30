@@ -1,4 +1,7 @@
 // import "bootstrap/dist/css/bootstrap.min.css";
+import React from "react";
+import { createRoot } from "react-dom/client";
+import CalendarWrapper from "./components/CalendarWrapper";
 import "../styling/baseStyling.css";
 import "../styling/calendar.css";
 import "../styling/dayCalendar.css";
@@ -28,42 +31,64 @@ appSettings.loadSettings();
 createSettingsMenu();
 
 initializeEventManager();
-initTodayButton();
+// initTodayButton();
 
-{
-  const viewDate = new Date();
-  viewDate.setHours(0, 0, 0, 0);
+const reactRootElement = document.getElementById('react-root');
 
-  renderCalendarView(allEvents, viewDate);
-  const slotDurationSelect = document.getElementById("slotDurationSelect");
-  if (slotDurationSelect) {
-    slotDurationSelect.addEventListener("change", () => {
-      renderCalendarView(allEvents, viewDate);
-    });
-  }
+if (reactRootElement) {
+  const root = createRoot(reactRootElement);
+
+  const plainEvents = allEvents.map((event) => ({
+    UID: event.UID,
+    title: event.title,
+    timeStart: event.timeStart,
+    timeEnd: event.timeEnd,
+    description: event.description,
+    color: event.color,
+    address: event.address,
+  }));
+
+  root.render(
+    React.createElement(CalendarWrapper, {
+      initialEvents: plainEvents,
+    })
+  );
 }
 
-{
-  const viewDate = new Date();
-  viewDate.setHours(0, 0, 0, 0);
-  const calendarState = { viewDate, calendarView: CalendarView.DAY };
+// {
+//   const viewDate = new Date();
+//   viewDate.setHours(0, 0, 0, 0);
 
-  // Renders the calendar
-  function render() {
-    renderCalendarView(
-      allEvents,
-      calendarState.viewDate,
-      calendarState.calendarView,
-    );
-    updateHeaderDate(calendarState); // Updates the header date
-  }
+//   renderCalendarView(allEvents, viewDate);
+//   const slotDurationSelect = document.getElementById("slotDurationSelect");
+//   if (slotDurationSelect) {
+//     slotDurationSelect.addEventListener("change", () => {
+//       renderCalendarView(allEvents, viewDate);
+//     });
+//   }
+// }
+
+{
+//   const viewDate = new Date();
+//   viewDate.setHours(0, 0, 0, 0);
+//   const calendarState = { viewDate, calendarView: CalendarView.DAY };
+
+//   // Renders the calendar
+//   function render() {
+//     renderCalendarView(
+//       allEvents,
+//       calendarState.viewDate,
+//       calendarState.calendarView,
+//     );
+//     updateHeaderDate(calendarState); // Updates the header date
+//   }
 
   render();
   document
     .getElementById("slotDurationSelect")
     ?.addEventListener("change", render); // Event listener for the slot duration select
-  initializeCalendarNavigation(calendarState, render); // Initializes the calendar navigation buttons
-  initializeCalendarDisplayButtons(calendarState, render); // Initializes the calendar display buttons
+  // initializeCalendarNavigation(calendarState, render); // Initializes the calendar navigation buttons
+  // initializeCalendarDisplayButtons(calendarState, render); // Initializes the calendar display buttons
 }
 
 loadWeatherDisplay();

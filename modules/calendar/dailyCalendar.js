@@ -35,160 +35,160 @@ export function renderSingleDay(events, viewDate) {
 }
 
 // Creates the time slot column for the calendar (the left column with the time labels)
-function createTimeSlotColumn(
-  slots,
-  currentMinutesFromMidnight,
-  slotDuration,
-  slotHeight,
-) {
-  const slotLabelsColumn = document.getElementById("calendarTimeLabelsColumn");
-  if (!slotLabelsColumn) return;
+// function createTimeSlotColumn(
+//   slots,
+//   currentMinutesFromMidnight,
+//   slotDuration,
+//   slotHeight,
+// ) {
+//   const slotLabelsColumn = document.getElementById("calendarTimeLabelsColumn");
+//   if (!slotLabelsColumn) return;
 
-  // Clear any existing rows before re-rendering
-  slotLabelsColumn.innerHTML = "";
+//   // Clear any existing rows before re-rendering
+//   slotLabelsColumn.innerHTML = "";
 
-  // Loop through the slots (24 hours) and create a time slot row for each slot
-  slots.forEach((slotStart) => {
-    const slotEnd = slotStart + slotDuration;
-    const isActiveSlot =
-      currentMinutesFromMidnight != null &&
-      currentMinutesFromMidnight >= slotStart &&
-      currentMinutesFromMidnight < slotEnd;
+//   // Loop through the slots (24 hours) and create a time slot row for each slot
+//   slots.forEach((slotStart) => {
+//     const slotEnd = slotStart + slotDuration;
+//     const isActiveSlot =
+//       currentMinutesFromMidnight != null &&
+//       currentMinutesFromMidnight >= slotStart &&
+//       currentMinutesFromMidnight < slotEnd;
 
-    const timeSlotRow = document.createElement("div");
-    timeSlotRow.id = "calendarTimeSlotRow";
-    timeSlotRow.className = "calendarTimeSlotRow";
-    timeSlotRow.style.height = `${slotHeight}px`; // Set the height of the time slot row to the height of the slot
-    timeSlotRow.dataset.active = isActiveSlot ? "true" : "false";
+//     const timeSlotRow = document.createElement("div");
+//     timeSlotRow.id = "calendarTimeSlotRow";
+//     timeSlotRow.className = "calendarTimeSlotRow";
+//     timeSlotRow.style.height = `${slotHeight}px`; // Set the height of the time slot row to the height of the slot
+//     timeSlotRow.dataset.active = isActiveSlot ? "true" : "false";
 
-    const timeLabel = document.createElement("span");
-    timeLabel.id = "calendarTimeLabel";
-    timeLabel.className = "calendarTimeLabel";
-    timeLabel.textContent = `${Calendar.formatSlotTime(slotStart)}`;
-    timeSlotRow.appendChild(timeLabel);
+//     const timeLabel = document.createElement("span");
+//     timeLabel.id = "calendarTimeLabel";
+//     timeLabel.className = "calendarTimeLabel";
+//     timeLabel.textContent = `${Calendar.formatSlotTime(slotStart)}`;
+//     timeSlotRow.appendChild(timeLabel);
 
-    slotLabelsColumn.appendChild(timeSlotRow);
-  });
+//     slotLabelsColumn.appendChild(timeSlotRow);
+//   });
 
-  return slotLabelsColumn;
-}
+//   return slotLabelsColumn;
+// }
 
 // Creates the day grid column for the calendar (the right column with the hour grid lines and the events)
-function createDayGridColumn(
-  events,
-  slots,
-  currentMinutesFromMidnight,
-  slotHeight,
-) {
-  createHourGridLines(slots, slotHeight);
-  createCurrentTimeLine(currentMinutesFromMidnight);
-  createEventsLayer(events);
-}
+// function createDayGridColumn(
+//   events,
+//   slots,
+//   currentMinutesFromMidnight,
+//   slotHeight,
+// ) {
+//   createHourGridLines(slots, slotHeight);
+//   createCurrentTimeLine(currentMinutesFromMidnight);
+//   createEventsLayer(events);
+// }
 
-// Creates the hour grid lines for the calendar (the vertical lines)
-function createHourGridLines(slots, slotHeight) {
-  const hourGridLines = document.getElementById(
-    "calendarHourGridLinesContainer",
-  );
-  if (!hourGridLines) return;
-  // Reset and size the container for the full day height
-  hourGridLines.innerHTML = "";
-  hourGridLines.style.height = `${Calendar.DAY_TOTAL_HEIGHT}px`;
-  slots.forEach(() => {
-    const line = document.createElement("div");
-    line.className = "calendarHourGridLine";
-    line.style.height = `${slotHeight}px`;
-    line.setAttribute("aria-hidden", "true");
-    hourGridLines.appendChild(line);
-  });
-}
+// // Creates the hour grid lines for the calendar (the vertical lines)
+// function createHourGridLines(slots, slotHeight) {
+//   const hourGridLines = document.getElementById(
+//     "calendarHourGridLinesContainer",
+//   );
+//   if (!hourGridLines) return;
+//   // Reset and size the container for the full day height
+//   hourGridLines.innerHTML = "";
+//   hourGridLines.style.height = `${Calendar.DAY_TOTAL_HEIGHT}px`;
+//   slots.forEach(() => {
+//     const line = document.createElement("div");
+//     line.className = "calendarHourGridLine";
+//     line.style.height = `${slotHeight}px`;
+//     line.setAttribute("aria-hidden", "true");
+//     hourGridLines.appendChild(line);
+//   });
+// }
 
 // Creates the current time line for the calendar (the horizontal line). Hidden when viewing another day.
-function createCurrentTimeLine(currentMinutesFromMidnight) {
-  const currentTimeLine = document.getElementById(
-    "calendarCurrentTimeLineContainer",
-  );
-  if (!currentTimeLine) return;
-  if (currentMinutesFromMidnight == null) {
-    currentTimeLine.style.visibility = "hidden";
-  } else {
-    currentTimeLine.style.visibility = "visible";
-    currentTimeLine.style.top = `${currentMinutesFromMidnight * Calendar.PIXELS_PER_MINUTE}px`;
-  }
-}
+// function createCurrentTimeLine(currentMinutesFromMidnight) {
+//   const currentTimeLine = document.getElementById(
+//     "calendarCurrentTimeLineContainer",
+//   );
+//   if (!currentTimeLine) return;
+//   if (currentMinutesFromMidnight == null) {
+//     currentTimeLine.style.visibility = "hidden";
+//   } else {
+//     currentTimeLine.style.visibility = "visible";
+//     currentTimeLine.style.top = `${currentMinutesFromMidnight * Calendar.PIXELS_PER_MINUTE}px`;
+//   }
+// }
 
 // Creates the events layer for the calendar
-function createEventsLayer(events) {
-  const eventsLayer = document.getElementById("calendarEventsLayer");
-  if (!eventsLayer) return;
+// function createEventsLayer(events) {
+//   const eventsLayer = document.getElementById("calendarEventsLayer");
+//   if (!eventsLayer) return;
 
-  // Clear previous events before re-rendering
-  eventsLayer.innerHTML = "";
-  eventsLayer.style.height = `${Calendar.DAY_TOTAL_HEIGHT}px`;
+//   // Clear previous events before re-rendering
+//   eventsLayer.innerHTML = "";
+//   eventsLayer.style.height = `${Calendar.DAY_TOTAL_HEIGHT}px`;
 
-  // We want to assign the lanes before looping through the events so that we can use the assigned lanes in the button creation.
-  const assignedLanes = assignLanesForEvents(events);
+//   // We want to assign the lanes before looping through the events so that we can use the assigned lanes in the button creation.
+//   const assignedLanes = assignLanesForEvents(events);
 
-  // Loop through the events and create an event button for each event
-  events.forEach((event, index) => {
-    createEventButton(eventsLayer, events, event, index, assignedLanes);
-  });
-}
+//   // Loop through the events and create an event button for each event
+//   events.forEach((event, index) => {
+//     createEventButton(eventsLayer, events, event, index, assignedLanes);
+//   });
+// }
 
 // Creates an event button for the calendar that displays the basic event information.
-function createEventButton(eventsLayer, events, event, index, assignedLanes) {
-  // Button calculations
-  const startTimeMinutes = Calendar.timeStringToMinutes(event.timeStart);
-  const endTimeMinutes = Calendar.timeStringToMinutes(event.timeEnd);
-  const duration = endTimeMinutes - startTimeMinutes;
-  const topPosition = startTimeMinutes * Calendar.PIXELS_PER_MINUTE;
-  const durationHeight = duration * Calendar.PIXELS_PER_MINUTE;
-  const maxHeight = Math.max(18, durationHeight);
-  const isShort = durationHeight <= 44;
+// function createEventButton(eventsLayer, events, event, index, assignedLanes) {
+//   // Button calculations
+//   const startTimeMinutes = Calendar.timeStringToMinutes(event.timeStart);
+//   const endTimeMinutes = Calendar.timeStringToMinutes(event.timeEnd);
+//   const duration = endTimeMinutes - startTimeMinutes;
+//   const topPosition = startTimeMinutes * Calendar.PIXELS_PER_MINUTE;
+//   const durationHeight = duration * Calendar.PIXELS_PER_MINUTE;
+//   const maxHeight = Math.max(18, durationHeight);
+//   const isShort = durationHeight <= 44;
 
-  // Lane calculations
-  const laneIndex = assignedLanes.get(event.UID) ?? 0;
-  const totalLanes = calculateTotalConcurrentEvents(event, events);
-  const width = 100 / totalLanes;
-  const leftPosition = width * laneIndex;
+//   // Lane calculations
+//   const laneIndex = assignedLanes.get(event.UID) ?? 0;
+//   const totalLanes = calculateTotalConcurrentEvents(event, events);
+//   const width = 100 / totalLanes;
+//   const leftPosition = width * laneIndex;
 
-  const formattedTimeString = `${Calendar.formatTime(event.timeStart)} - ${Calendar.formatTime(event.timeEnd)}`;
+//   const formattedTimeString = `${Calendar.formatTime(event.timeStart)} - ${Calendar.formatTime(event.timeEnd)}`;
 
-  const eventButton = document.createElement("button");
-  eventButton.className = isShort
-    ? "calendarEventContainer calendarEventContainer--compact"
-    : "calendarEventContainer";
-  eventButton.type = "button";
-  eventButton.dataset.eventId = event.UID;
-  eventButton.style.setProperty("--event-color", event.color ?? "#1a73e8");
-  eventButton.style.top = `${topPosition}px`;
-  eventButton.style.height = `${maxHeight}px`;
-  eventButton.style.zIndex = String(index);
-  eventButton.style.left =
-    totalLanes <= 1 ? "0" : `calc(${leftPosition}% + ${laneIndex * 2}px)`;
-  eventButton.style.width = totalLanes <= 1 ? "100%" : `calc(${width}% - 2px)`;
+//   const eventButton = document.createElement("button");
+//   eventButton.className = isShort
+//     ? "calendarEventContainer calendarEventContainer--compact"
+//     : "calendarEventContainer";
+//   eventButton.type = "button";
+//   eventButton.dataset.eventId = event.UID;
+//   eventButton.style.setProperty("--event-color", event.color ?? "#1a73e8");
+//   eventButton.style.top = `${topPosition}px`;
+//   eventButton.style.height = `${maxHeight}px`;
+//   eventButton.style.zIndex = String(index);
+//   eventButton.style.left =
+//     totalLanes <= 1 ? "0" : `calc(${leftPosition}% + ${laneIndex * 2}px)`;
+//   eventButton.style.width = totalLanes <= 1 ? "100%" : `calc(${width}% - 2px)`;
 
-  if (isShort) {
-    eventButton.innerHTML = `
-        <span class="calendarEventHeader">
-            <span class="calendarEventTime">${formattedTimeString}</span>
-            <span class="calendarEventTitle">${event.title}</span>
-        </span>
-        `;
-  } else {
-    eventButton.innerHTML = `
-        <span class="calendarEventTime">${formattedTimeString}</span>
-        <span class="calendarEventTitle">${event.title}</span>
-        <span class="calendarEventDescription">${event.description}</span>
-        `;
-  }
-  // Attaches event listener to event
-  eventButton.addEventListener("click", (clickEvent) => {
-      clickEvent.stopPropagation(); // Stops popup from instantly closing
-      showClickedEventPopup(event, clickEvent);
-  });
-  eventsLayer.appendChild(eventButton);
-}
+//   if (isShort) {
+//     eventButton.innerHTML = `
+//         <span class="calendarEventHeader">
+//             <span class="calendarEventTime">${formattedTimeString}</span>
+//             <span class="calendarEventTitle">${event.title}</span>
+//         </span>
+//         `;
+//   } else {
+//     eventButton.innerHTML = `
+//         <span class="calendarEventTime">${formattedTimeString}</span>
+//         <span class="calendarEventTitle">${event.title}</span>
+//         <span class="calendarEventDescription">${event.description}</span>
+//         `;
+//   }
+//   // Attaches event listener to event
+//   eventButton.addEventListener("click", (clickEvent) => {
+//       clickEvent.stopPropagation(); // Stops popup from instantly closing
+//       showClickedEventPopup(event, clickEvent);
+//   });
+//   eventsLayer.appendChild(eventButton);
+// }
 
 // Assigns a lane to each event based on the duration of the event and the other events that are happening at the same time.
 function assignLanesForEvents(events) {
@@ -278,7 +278,7 @@ function calculateTotalConcurrentEvents(event, events) {
 }
 
 // Creates the full 24 hour slots
-function createAllSlotsForDay(slotDuration) {
+export default function createAllSlotsForDay(slotDuration) {
   const slots = [];
   for (let i = 0; i < Calendar.MINUTES_PER_DAY; i += slotDuration) {
     slots.push(i);
@@ -333,3 +333,5 @@ function editClickedEventPopup(event) {
   openEventEditor(event.UID);
   closeClickedEventPopup();
 }
+
+export { assignLanesForEvents, calculateTotalConcurrentEvents }
