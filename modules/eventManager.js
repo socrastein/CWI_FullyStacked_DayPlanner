@@ -83,8 +83,9 @@ function submitEvent(eventForm) {
     eventForm.reportValidity();
     return;
   }
-  // Generate and assign UID, save event, and hide the event creation form
-  //*Caleb edit.*  adjusted the id const to check if editingEventUID has a value to keep that value, otherwise run generateUID() function.
+  /** Generate and assign UID, save event, and hide the event creation form
+   * Caleb edit.  adjusted the id const to check if editingEventUID has a value to keep that value, otherwise run generateUID() function.
+   * */
   const id = editingEventUID ?? generateUID();
   eventProps.UID = id;
   const newEvent = new CalendarEvent(eventProps);
@@ -103,7 +104,7 @@ function submitEvent(eventForm) {
  * @returns {boolean} - True if the event is valid, false otherwise
  */
 function validateEventSubmission(event) {
-  // Title validation
+  //Title validation
   if (event.title.trim() === "" || event.title.length > 100) {
     eventTitleInput.setCustomValidity(
       "Event title cannot be empty or exceed 100 characters.",
@@ -117,7 +118,7 @@ function validateEventSubmission(event) {
     );
     return false;
   }
-  // Date validation
+  //Date validation
   const pastDateLimit = new Date("2000-01-02");
   const futureDateLimit = new Date("2100-01-01");
   const eventDate = new Date(event.date);
@@ -138,7 +139,7 @@ function validateEventSubmission(event) {
     );
     return false;
   }
-  // Time validation
+  //Time validation
   const startTimeInt = event.timeStart.replace(":", "");
   const endTimeMinInt = event.timeEnd.replace(":", "");
   if (startTimeInt >= endTimeMinInt) {
@@ -178,23 +179,25 @@ function hideEventCreator() {
   }
 }
 
+//Event Editor code
 /**
- * functions for editing events for C-3
- */
-//This function is used to reset back to a blank slate for switching from edit mode back to add mode.  function added to initializeEventManager() in addEventButton.addEventListener to reset on click.
+ * This function is used to reset back to a blank slate for switching from edit mode back to add mode.  function added to initializeEventManager() in addEventButton.addEventListener to reset on click.
+ * */
 function prepareAddEventMode() {
   editingEventUID = null;
   if (eventFormTitle) {
     eventFormTitle.textContent = "Add Event";
   }
-  //reset function is a cool prebuilt brower function that resets to default.  This clears data for when we switch back to 'Add Event' mode. just thought it was cool.
+  /*reset function is a cool prebuilt brower function that resets to default.  This clears data for when we switch back to 'Add Event' mode. just thought it was cool.*/
   eventForm.reset();
 }
 
-//Function to open 'edit event' mode and, and display contents of event in correct fields
+/**
+ * Function to open 'edit event' mode and, and display contents of event in correct fields
+ * */
 function openEventEditor(eventUID) {
   const allEvents = StorageManager.loadAllEvents();
-  // checks through event array and returns on a matching value to what's clicked.  If anyone nows an easier way then combing all events let me know.
+  /*checks through event array and returns on a matching value to what's clicked.  If anyone nows an easier way then combing all events let me know.*/
   const eventToEdit = allEvents.find((event) => event.UID === eventUID);
 
   //failure guardrail
@@ -205,7 +208,7 @@ function openEventEditor(eventUID) {
 
   editingEventUID = eventUID;
 
-  //sets popup title to Edit instead of Add
+  //ets popup title to Edit instead of Add
   if (eventFormTitle) {
     eventFormTitle.textContent = "Edit Event";
   }

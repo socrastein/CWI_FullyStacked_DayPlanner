@@ -1,55 +1,29 @@
-// C-7-Today: Button resets the date view to current date and updates header. passes events loaded from main.js via StorageManager.loadAllEvents().
-import { renderCalendarView } from "./calendar/calendar.js";
-import StorageManager from "./dataStorage.js";
+// C-7-Today: Button switches the shared calendar state to today's date in day view and triggers the normal dayView rendering.
+import { CalendarView } from "./calendar/calendar.js";
 
-export default function initTodayButton() {
-  //appState sets default: day view centered on 'today' (per D-1-Current)
-  const appState = {
-    currentView: "day",
-    anchorDate: new Date(),
-  };
-
-  //change header text to match anchorDate data.
-  function changeHeaderDate() {
-    const headerDateContainer = document.getElementById("headerDateContainer");
-    //error guardrail
-    if (!headerDateContainer) {
-      console.error('Could not find div with id="headerDateContainer".');
-      return;
-    }
-    //update headerDateContainer with toDateString of anchorDate.
-    headerDateContainer.textContent = appState.anchorDate.toDateString();
-  }
-
-  //pull events and redraw day view using the prebuilt pipeline. (removed my own map and redraw system.)
-  function renderTodayView() {
-    const allEvents = StorageManager.loadAllEvents();
-    renderCalendarView(allEvents, appState.anchorDate, "day");
-  }
-
-  //initial header setup.
-  appState.anchorDate.setHours(0, 0, 0, 0);
-  changeHeaderDate();
-
-  //listener for 'goToToday' button in index
+export default function initTodayButton(calendarState, render) {
+  //button name tag call
   const goToTodayButton = document.getElementById("goToTodayButton");
+
   //error guardrail
   if (!goToTodayButton) {
     console.error('could not find button with id="goToTodayButton".');
     return;
   }
 
-  //listener for onclick, resets anchorDate to current date and reprints the header.
+  /**listener for onclick, switch the shared calendar state to today's date in day view and re-render. */
   goToTodayButton.addEventListener("click", () => {
-    appState.anchorDate = new Date();
-    appState.anchorDate.setHours(0, 0, 0, 0);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
 
-    changeHeaderDate();
-    renderTodayView();
-    console.log("today clicked. New anchorDate:", appState.anchorDate);
+    calendarState.viewDate = today;
+    calendarState.calendarView = CalendarView.DAY;
+
+    render();
+
+    console.log("today clicked. New viewDate:", today);
   });
 
   //testers
   console.log("viewController Init");
-  console.log("Start state", appState);
 }
