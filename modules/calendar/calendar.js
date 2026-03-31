@@ -3,6 +3,7 @@
 import { renderSingleDay } from "./dailyCalendar";
 import { renderSingleWeek } from "./weeklyCalendar";
 import { renderSingleMonth } from "./monthlyCalendar";
+import appState from "../appState";
 
 /*
    !!! This is the entry point for the calendar module. It is used to render the calendar view based on the calendar view type.
@@ -33,7 +34,7 @@ export function renderCalendarView(
     calendarViewArea.setAttribute("data-calendar-view", calendarView); // Sets the 'data-calendar-view' attribute so we can show/hide the correct content.
   switch (calendarView) {
     case CalendarView.DAY:
-      renderSingleDay(filterEventsForDate(events, viewDate), viewDate);
+      renderSingleDay(filterEventsForDate(viewDate), viewDate);
       break;
     case CalendarView.WEEK:
       renderSingleWeek(events, viewDate);
@@ -42,8 +43,16 @@ export function renderCalendarView(
       renderSingleMonth(events, viewDate);
       break;
     default:
-      renderSingleDay(filterEventsForDate(events, viewDate), viewDate);
+      renderSingleDay(filterEventsForDate(viewDate), viewDate);
   }
+}
+
+// Filters the events to only include events for the given date.
+function filterEventsForDate(viewDate) {
+  const year = viewDate.getFullYear();
+  const month = String(viewDate.getMonth() + 1).padStart(2, "0");
+  const day = String(viewDate.getDate()).padStart(2, "0");
+  return appState.getEventsByDate(`${year}-${month}-${day}`);
 }
 
 // Formats the time slot time (e.g. 10:00 AM). Not using the event times!
@@ -53,14 +62,6 @@ export function formatSlotTime(minutes) {
   const ampm = hours >= 12 ? "PM" : "AM";
   const formattedHours = hours % 12 || 12;
   return `${formattedHours}:${remainingMinutes.toString().padStart(2, "0")} ${ampm}`;
-}
-
-// Filters the events to only include events for the given date.
-export function filterEventsForDate(events, viewDate) {
-  const year = viewDate.getFullYear();
-  const month = String(viewDate.getMonth() + 1).padStart(2, "0");
-  const day = String(viewDate.getDate()).padStart(2, "0");
-  return events.filter((event) => event.date === `${year}-${month}-${day}`);
 }
 
 // Returns true if the given date is today (same calendar day).

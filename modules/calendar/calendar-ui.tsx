@@ -2,13 +2,10 @@ import { createRoot, type Root } from "react-dom/client";
 import CalendarDisplayButtonsGroup from "./navigation/calendar-display-buttons-group";
 import CalendarNavButtonsGroup from "./navigation/calendar-nav-buttons-group";
 import { renderCalendarView } from "./calendar";
-import CalendarEvent from "../classCalendarEvent";
 import { CalendarHeaderDisplay } from "./calendar-header-display";
 import appState from "../appState";
 import { CalendarViews } from "../enumCalendarViews";
 
-
-const allEvents: CalendarEvent[] = Array.from(appState.allEventsByUID.values());
 
 /**
  * Initializes the calendar UI and renders the components. This function should only call the render functions for the calendar UI components.
@@ -23,17 +20,17 @@ function initializeCalendarUI(): void {
   renderCalendarViewButtons(); // Render the 'Day', 'Week', 'Month' buttons.
   renderCalendarNavigationButtons(); // Render the previous and next buttons.
 
-  renderCalendar(allEvents); // Render the whole calendar view that includes the events per slot.
+  renderCalendar(); // Render the whole calendar view that includes the events per slot.
 
   document
     .getElementById("slotDurationSelect")
-    ?.addEventListener("change", () => renderCalendar(allEvents)); // Event listener for the slot duration select
+    ?.addEventListener("change", () => renderCalendar()); // Event listener for the slot duration select
 }
 
 // Render the calendar view for the given calendar state. This function should be called when the calendar state changes (e.g. when the user clicks a button to change the view).
-function renderCalendar(allEvents: CalendarEvent[]): void {
+function renderCalendar(): void {
   renderCalendarView(
-    allEvents,
+    appState.allEventsByDate,
     appState.dateViewObject,
     appState.calendarView,
   );
@@ -58,7 +55,7 @@ function renderCalendarViewButtons(): void {
           activeView={appState.calendarView}
           onSelectView={(view: CalendarViews) => {
             appState.calendarView = view;
-            renderCalendar(allEvents);
+            renderCalendar();
             renderDisplayButtons(); // Re-render the calendar view buttons to reflect the new active view.
           }}
         />,
@@ -86,7 +83,7 @@ function renderCalendarNavigationButtons(): void {
     const renderCalendarNavButtons = () => {
       calendarNavigationButtonsRoot.render(
         <CalendarNavButtonsGroup
-          onRender={() => renderCalendar(allEvents)}
+          onRender={() => renderCalendar()}
         />,
       );
     };
