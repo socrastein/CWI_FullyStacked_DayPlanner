@@ -1,3 +1,5 @@
+import "../styling/settingsMenu.css";
+
 import appSettings from "./settings";
 
 // Icons for menuItems
@@ -76,11 +78,15 @@ function createMenuContainer() {
   menuContainer.classList.add("settingsMenuContainer");
   menuContainer.classList.add("hidden"); // not showing initially
 
+  const itemsContainer = document.createElement("div");
+  itemsContainer.classList.add("settingsMenuItemsContainer", "bg-body");
+  menuContainer.append(itemsContainer);
+
   // Iterate through menuItems creating a display element for each one
   // based on the object properties
   menuItems.forEach((item) => {
     const element = createMenuItem(item);
-    menuContainer.append(element);
+    itemsContainer.append(element);
   });
 
   return menuContainer;
@@ -119,18 +125,29 @@ function createMenuItem(props) {
 function openMenu() {
   menuButton.classList.toggle("settingsMenuClose");
   menuContainer.classList.toggle("hidden");
-  console.log("Menu Open");
   menuIsOpen = true;
   document.addEventListener("click", outsideClickListener);
 }
 
 function closeMenu() {
-  menuButton.classList.toggle("settingsMenuClose");
-  menuContainer.classList.toggle("hidden");
-  console.log("Menu Closed");
-  menuIsOpen = false;
-  appSettings.saveSettings();
-  document.removeEventListener("click", outsideClickListener);
+  const menuItemsContainer = document.getElementsByClassName(
+    "settingsMenuItemsContainer",
+  )[0];
+  menuItemsContainer.classList.add("closing");
+
+  // Wait for the closing animation to finish before hiding the menu and toggling the menu button
+  menuItemsContainer.addEventListener(
+    "animationend",
+    () => {
+      menuItemsContainer.classList.remove("closing");
+      menuButton.classList.toggle("settingsMenuClose");
+      menuContainer.classList.toggle("hidden");
+      menuIsOpen = false;
+      appSettings.saveSettings();
+      document.removeEventListener("click", outsideClickListener);
+    },
+    { once: true },
+  ); // 'once' ensures the event listener is removed after it runs
 }
 
 function outsideClickListener(event) {

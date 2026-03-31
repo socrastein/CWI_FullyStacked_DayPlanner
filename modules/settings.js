@@ -39,6 +39,10 @@ const appSettings = {
   set lightMode(value) {
     if (lightModeOptions.includes(value)) {
       lightMode = value;
+      document.documentElement.setAttribute("data-bs-theme", value);
+      if (value === "dark") {
+        document.body.classList.add("dark-mode");
+      }
     } else {
       logInvalidValue(value, "lightMode", lightModeOptions);
     }
@@ -46,8 +50,12 @@ const appSettings = {
   toggleLightMode() {
     if (lightMode === "light") {
       lightMode = "dark";
+      document.documentElement.setAttribute("data-bs-theme", "dark");
+      document.body.classList.add("dark-mode");
     } else {
       lightMode = "light";
+      document.documentElement.setAttribute("data-bs-theme", "light");
+      document.body.classList.remove("dark-mode");
     }
   },
   //

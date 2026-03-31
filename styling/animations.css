@@ -1,0 +1,17 @@
+@keyframes expandWidth {
+  from {
+    max-width: 0;
+  }
+  to {
+    max-width: 300px;
+  }
+}
+
+@keyframes closeWidth {
+  from {
+    max-width: 300px;
+  }
+  to {
+    max-width: 0;
+  }
+}
