@@ -1,55 +1,29 @@
-// C-7-Today: Button resets the date view to current date and updates header. passes events loaded from main.js via StorageManager.loadAllEvents().
-import { renderCalendarView } from "./calendar/calendar";
-import StorageManager from "./dataStorage";
-
-export default function initTodayButton() {
-  //appState sets default: day view centered on 'today' (per D-1-Current)
-  const appState = {
-    currentView: "day",
-    anchorDate: new Date(),
-  };
-
-  //change header text to match anchorDate data.
-  function changeHeaderDate() {
-    const headerDateContainer = document.getElementById("headerDateContainer");
-    //error guardrail
-    if (!headerDateContainer) {
-      console.error('Could not find div with id="headerDateContainer".');
-      return;
-    }
-    //update headerDateContainer with toDateString of anchorDate.
-    headerDateContainer.textContent = appState.anchorDate.toDateString();
-  }
-
-  //pull events and redraw day view using the prebuilt pipeline. (removed my own map and redraw system.)
-  function renderTodayView() {
-    const allEvents = StorageManager.loadAllEvents();
-    renderCalendarView(allEvents, appState.anchorDate, "day");
-  }
-
-  //initial header setup.
-  appState.anchorDate.setHours(0, 0, 0, 0);
-  changeHeaderDate();
-
-  //listener for 'goToToday' button in index
+import appState from "./appState";
+/**
+ * initializes the Today Button, which sets the shared appState dateView to todays date, then runs onRender();
+ * @param { Function } onRender - Re-renders the calender UI after updating the state
+ */
+export default function initTodayButton(onRender) {
   const goToTodayButton = document.getElementById("goToTodayButton");
-  //error guardrail
+
   if (!goToTodayButton) {
-    console.error('could not find button with id="goToTodayButton".');
+    console.error('Could not find button with ID="goToTodayButton".');
     return;
   }
 
-  //listener for onclick, resets anchorDate to current date and reprints the header.
+  //listener for onclick, sets time to midnight on today's date.
   goToTodayButton.addEventListener("click", () => {
-    appState.anchorDate = new Date();
-    appState.anchorDate.setHours(0, 0, 0, 0);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
 
-    changeHeaderDate();
-    renderTodayView();
-    console.log("today clicked. New anchorDate:", appState.anchorDate);
+    // store in appState for YYYY-MM-DD
+    appState.dateView = today.toLocaleDateString("en-CA"); //england CAMAROON!
+
+    //forces to date view
+    appState.calendarView = "day";
+
+    //render and note
+    onRender();
+    console.log("Today clicked. New apstate.dateView", appState.dateView);
   });
-
-  //testers
-  console.log("viewController Init");
-  console.log("Start state", appState);
 }

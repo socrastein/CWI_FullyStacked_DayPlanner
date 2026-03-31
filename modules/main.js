@@ -28,7 +28,6 @@ appSettings.loadSettings();
 createSettingsMenu();
 
 initializeEventManager();
-initTodayButton();
 
 {
   const viewDate = new Date();
@@ -64,6 +63,7 @@ initTodayButton();
     ?.addEventListener("change", render); // Event listener for the slot duration select
   initializeCalendarNavigation(calendarState, render); // Initializes the calendar navigation buttons
   initializeCalendarDisplayButtons(calendarState, render); // Initializes the calendar display buttons
+  initTodayButton(render); //initializes the todayButton with shared render function
 }
 
 loadWeatherDisplay();
