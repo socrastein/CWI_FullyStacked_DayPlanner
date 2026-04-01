@@ -6,7 +6,6 @@ import { CalendarHeaderDisplay } from "./calendar-header-display";
 import appState from "../appState";
 import { CalendarViews } from "../enumCalendarViews";
 
-
 /**
  * Initializes the calendar UI and renders the components. This function should only call the render functions for the calendar UI components.
  * @returns void
@@ -23,7 +22,7 @@ function initializeCalendarUI(): void {
 }
 
 // Render the calendar view for the given calendar state. This function should be called when the calendar state changes (e.g. when the user clicks a button to change the view).
-function renderCalendar(): void {
+export function renderCalendar(): void {
   renderCalendarView(
     appState.allEventsByDate,
     appState.dateViewObject,
@@ -77,9 +76,7 @@ function renderCalendarNavigationButtons(): void {
     // Function to render the calendar navigation buttons using the react components.
     const renderCalendarNavButtons = () => {
       calendarNavigationButtonsRoot.render(
-        <CalendarNavButtonsGroup
-          onRender={() => renderCalendar()}
-        />,
+        <CalendarNavButtonsGroup onRender={() => renderCalendar()} />,
       );
     };
 
