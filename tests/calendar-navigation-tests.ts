@@ -4,7 +4,7 @@ type CalendarNavigationFunctions = {
   navigateMonth: (date: Date, delta: number) => string;
 };
 
-/** Use calendar dates in the local timezone (not ISO date strings) so expectations match toLocaleDateString("en-CA"). */
+// Use calendar dates in the local timezone (not ISO date strings) so expectations match toLocaleDateString("en-CA") output.
 function setDate(year: number, monthIndex: number, day: number): Date {
   return new Date(year, monthIndex, day);
 }
