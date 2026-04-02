@@ -2,6 +2,8 @@ import CalendarEvent from "./classCalendarEvent";
 import StorageManager from "./dataStorage";
 import { CalendarViews } from "./enumCalendarViews";
 
+import { createMockEvents, registerCheatCode } from "./mockEvents";
+
 // Helper functions to map events by UID and by Date for efficient access
 
 /**
@@ -52,7 +54,7 @@ class AppState {
 
     // Set date view to current date in "YYYY-MM-DD" format
     this._dateView = new Date().toLocaleDateString("en-CA");
-    console.log(this._dateView);
+
     // Load calendar view from storage, default to "day" if not saved
     this._calendarView = StorageManager.loadCalendarView();
   }
@@ -228,5 +230,12 @@ class AppState {
  * dateView (getter/setter) "YYYY-MM-DD" string
  */
 const appState = new AppState();
+
+// Tapping F2 3x within a couple seconds will load mock events for testing purposes. This is a "cheat code" that allows us to easily load mock events without having to run tests or manually create events one by one.
+registerCheatCode(() => {
+  console.log("Loading mock events...");
+  const events = createMockEvents();
+  events.forEach((event) => appState.addEvent(event));
+});
 
 export default appState;

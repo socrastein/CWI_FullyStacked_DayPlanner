@@ -5,23 +5,19 @@ import "../styling/dayCalendar.css";
 import "../styling/eventForm.css";
 import "../styling/weeklyCalendar.css";
 
-import StorageManager from "./dataStorage";
+import appState from "./appState";
 import appSettings from "./settings";
 import createSettingsMenu from "./settingsMenu";
 
 import initTodayButton from "./todayButton.js";
-
 import { initializeEventManager } from "./eventManager";
+import { initializeCalendarUI } from "./calendar/calendar-ui";
 
 import { loadWeatherDisplay } from "./weatherDisplay";
 
 import runTests from "../tests/runTests.js";
-import { initializeCalendarUI } from "./calendar/calendar-ui";
 
-// TODO: change this to utilize appState.eventsByUID and appState.eventsByDate instead of loading events from storage.
-const allEvents = StorageManager.loadAllEvents();
 appSettings.loadSettings();
-
 createSettingsMenu();
 
 initializeEventManager();
@@ -32,4 +28,14 @@ initializeCalendarUI();
 initTodayButton();
 loadWeatherDisplay();
 
-// runTests();
+/* 
+This checks that "--mode development" was passed to the webpack CLI, which sets process.env.NODE_ENV to "development". 
+
+If we are in development mode, we run the tests. 
+
+This allows us to run tests during development without affecting the production build, since the test code will be ignored in production mode due to the DefinePlugin configuration in webpack.config.js. 
+*/
+if (process.env.NODE_ENV !== "production") {
+  console.info("Running in development mode, executing tests...");
+  runTests();
+}
