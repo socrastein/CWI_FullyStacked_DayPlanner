@@ -39,6 +39,10 @@ const appSettings = {
   set lightMode(value) {
     if (lightModeOptions.includes(value)) {
       lightMode = value;
+      document.documentElement.setAttribute("data-bs-theme", value);
+      if (value === "dark") {
+        document.body.classList.add("dark-mode");
+      }
     } else {
       logInvalidValue(value, "lightMode", lightModeOptions);
     }
@@ -46,8 +50,12 @@ const appSettings = {
   toggleLightMode() {
     if (lightMode === "light") {
       lightMode = "dark";
+      document.documentElement.setAttribute("data-bs-theme", "dark");
+      document.body.classList.add("dark-mode");
     } else {
       lightMode = "light";
+      document.documentElement.setAttribute("data-bs-theme", "light");
+      document.body.classList.remove("dark-mode");
     }
   },
   //
@@ -145,19 +153,16 @@ const appSettings = {
 
   loadSettings() {
     const settingsString = localStorage.getItem("DayPlannerSettings");
-    if (settingsString) {
-      try {
-        const settings = JSON.parse(settingsString);
-        this.lightMode = settings.lightMode;
-        this.tempUnit = settings.tempUnit;
-        this.colorTheme = settings.colorTheme;
-        this.firstDayOfWeek = settings.firstDayOfWeek;
-        this.displayHolidays = settings.displayHolidays;
-      } catch (error) {
-        console.warn("Error parsing settings from localStorage:", error);
-      }
-    } else {
-      console.log("No saved settings found in localStorage.");
+    if (!settingsString) return;
+    try {
+      const settings = JSON.parse(settingsString);
+      this.lightMode = settings.lightMode;
+      this.tempUnit = settings.tempUnit;
+      this.colorTheme = settings.colorTheme;
+      this.firstDayOfWeek = settings.firstDayOfWeek;
+      this.displayHolidays = settings.displayHolidays;
+    } catch (error) {
+      console.warn("Error parsing settings from localStorage:", error);
     }
   },
 };

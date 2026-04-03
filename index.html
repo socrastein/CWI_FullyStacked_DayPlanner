@@ -1,39 +1,33 @@
 <!doctype html>
-<html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Day Planner</title>
-		<link rel="stylesheet" href="./styling/baseStyling.css" />
-		<link rel="stylesheet" href="./styling/eventForm.css" />
-		<link rel="stylesheet" href="./styling/calendar.css" />
-		<link rel="stylesheet" href="./styling/dayCalendar.css" />
-		<script src="./modules/main.js" type="module"></script>
-	</head>
-	<body>
-		<!--  -->
-		<!-- Top of the app with title, today's date, and weather container -->
-		<!-- 15% of screen height -->
-		<!--  -->
-		<header id="appHeader" class="basicContainer">
-		<h3 id="appTitle">Day Planner</h3>
-		<div id="headerInfoContainer">
-			<div id="headerDateContainer">Tuesday, Feb 10</div>
+<html lang="en" data-bs-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Day Planner</title>
+  </head>
+  <body>
+    <!--  -->
+    <!-- Top of the app with title, today's date, and weather container -->
+    <!-- 15% of screen height -->
+    <!--  -->
+    <header id="appHeader" class="basicContainer">
+      <h3 id="appTitle">Day Planner</h3>
+      <div id="headerInfoContainer">
+        <div id="headerDateContainer"></div>
 
-			<div id="headerWeatherContainer">
-			<div id="weatherDisplay">
-				<p>Weather loading...</p>
-			</div>
-			</div>
-		</div>
-		<!-- Holds the buttons that swap calendar view between Day, Week, Month -->
-		<div id="displayButtonsContainer">
-			<button class="displayChangeButton highlightDisplayButton">Day</button>
-			<button class="displayChangeButton">Week</button>
-			<button class="displayChangeButton">Month</button>
-			<button class="displayChangeButton" id="goToTodayButton">Today</button>
-		</div>
-		</header>
+        <div id="headerWeatherContainer">
+          <div id="weatherDisplay">
+            <p>Weather loading...</p>
+          </div>
+        </div>
+      </div>
+      <!-- Holds the buttons that swap calendar view between Day, Week, Month -->
+      <div id="displayButtonsContainer">
+        <!-- If we refactor the today button, we can switch out the 'calendarDisplayButtonsRoot' for the 'displayButtonsContainer' -->
+        <div id="calendarDisplayButtonsRoot"></div> 
+        <button class="displayChangeButton" id="goToTodayButton">Today</button>
+      </div>
+    </header>
 
 		<!--  -->
 		<!-- Main container that will hold calendar view and events -->
@@ -74,41 +68,24 @@
 			</div>
 		</div>
 
-		<!--  -->
-	</div>
-	<!--Event Popup-->
-	<div id="clickedEventPopup" class="clickedEventPopup">
-		<h2 id="clickedEventPopupTitle"></h2>
-		<p id="clickedEventPopupTime"></p>
-		<p id="clickedEventPopupAddress"></p>
-		<p id="clickedEventPopupDescription"></p>
-		<button type="button" id="editEventButton">Edit</button>
-	</div>
-	
-		<!-- Container for navigation and new event buttons -->
-		<!-- 10% of screen height -->
-		<!--  -->
-		<div id="calendarActionButtonsContainer">
-		<div id="calendarNavButtonsContainer">
-			<button
-			id="prevNavButton"
-			class="calendarNavButton"
-			type="button"
-			aria-label="Previous day, week, or month"
-			>
-			<img src="./assets/icons/chevron-left.svg" />
-			</button>
-			<button
-			id="nextNavButton"
-			class="calendarNavButton"
-			type="button"
-			aria-label="Next day, week, or month"
-			>
-			<img src="./assets/icons/chevron-right.svg" />
-			</button>
-		</div>
-		<button id="addEventButton">Add Event</button>
-		</div>
+    <!--  -->
+  </div>
+  <!--Event Popup-->
+  <div id="clickedEventPopup" class="clickedEventPopup">
+    <h2 id="clickedEventPopupTitle"></h2>
+    <p id="clickedEventPopupTime"></p>
+    <p id="clickedEventPopupAddress"></p>
+    <p id="clickedEventPopupDescription"></p>
+    <button type="button" id="editEventButton">Edit</button>
+  </div>
+  
+    <!-- Container for navigation and new event buttons -->
+    <!-- 10% of screen height -->
+    <!--  -->
+    <div id="calendarActionButtonsContainer">
+      <div id="calendarNavButtonsContainer"></div>
+      <button id="addEventButton">Add Event</button>
+    </div>
 
 		<div id="eventPopupContainer" class="hidden">
 		<!-- Event Form -->

@@ -1,3 +1,5 @@
+@import url(animations.css);
+
 .settingsMenuButton {
   position: absolute;
   top: 0.25rem;
@@ -13,6 +15,10 @@
   width: 2rem;
 
   border: none;
+}
+
+body.dark-mode .settingsMenuButton {
+  filter: invert(1);
 }
 
 .settingsMenuClose {
@@ -37,38 +43,70 @@
   height: 100%;
   padding: 2.25rem 1% 0 0;
 
-  border: none;
-
   background-color: rgba(255, 255, 255, 0.5);
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(10px); /* Safari support */
+}
+
+.settingsMenuItemsContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1rem;
+
+  border: solid 1px black;
+  border-left: solid 0.25rem black;
+  border-radius: 0.5rem;
+  padding: 0.25rem;
+
+  overflow: hidden;
+  animation: expandWidth 0.5s ease-out forwards;
+}
+
+.settingsMenuItemsContainer.closing {
+  animation: closeWidth 0.25s ease-in forwards;
+}
+
+body.dark-mode .settingsMenuItemsContainer {
+  border: solid 1px white;
+  border-left: solid 0.25rem white;
 }
 
 .menuItemContainer {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: 0.5rem;
+  gap: 1rem;
 
   padding: 0.25rem;
   width: 16rem;
   height: 3rem;
 
-  background-color: white;
-  border: solid 1px black;
-  border-radius: .5rem 0 0 .25rem;
+  border: none;
 
   /* Keeps borders from overlapping and doubling in thickness */
   margin-bottom: -1px;
 }
 
+.menuItemContainer:hover {
+  cursor: pointer;
+  background-color: rgba(var(--bs-primary-rgb), 0.5);
+}
+
 .menuItemName {
-  font-size: 0.9rem;
+  margin: 0;
 }
 
 .menuItemIcon {
 }
 
+body.dark-mode .menuItemIcon {
+  filter: invert(1);
+}
+
 .menuItemSetting {
+  text-transform: capitalize;
+  font-style: italic;
   margin-left: auto;
+  margin-bottom: 0;
 }

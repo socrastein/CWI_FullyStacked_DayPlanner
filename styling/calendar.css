@@ -1,3 +1,9 @@
+#calendarDisplayButtonsRoot {
+  border: none;
+  display: flex;
+  gap: 0.375rem;
+}
+
 #calendarContainer {
     height: 75vh;
     width: 100%;
@@ -41,7 +47,7 @@
   @media (min-width: 768px) {
     #calendarViewArea {
       grid-column: span 6;
-    }
+    } 
   }
   
   /* Two-column layout: time labels | day grid */

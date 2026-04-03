@@ -1,5 +1,3 @@
-@import url("./settingsMenu.css");
-
 * {
   box-sizing: border-box;
   margin: 0;
@@ -46,6 +44,7 @@ div {
   display: flex;
   justify-content: center;
   align-items: center;
+  font-weight: bold;
 }
 
 #headerWeatherContainer #weatherDisplay {
@@ -70,18 +69,6 @@ div {
   padding: 0.25rem;
 }
 
-.displayChangeButton {
-  width: 4rem;
-  height: 1.375rem;
-}
-
-.highlightDisplayButton {
-  background-color: black;
-  border: 1px solid black;
-  border-radius: 0.125rem;
-  color: white;
-}
-
 #calendarActionButtonsContainer {
   display: flex;
   flex-direction: column;
@@ -100,17 +87,10 @@ div {
   border: none;
 }
 
-.calendarNavButton {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 1.75rem;
-  width: 1.75rem;
-
-  & img {
-    height: 1rem;
-    width: 1rem;
-  }
+#calendarNavButton img {
+  filter: invert(1);
+  width: 1rem;
+  height: 1.0625rem;
 }
 
 #addEventButton {
