@@ -12,7 +12,8 @@ import createSettingsMenu from "./settingsMenu";
 import initTodayButton from "./todayButton.js";
 import { initializeEventManager } from "./eventManager";
 import { initializeCalendarUI } from "./calendar/calendar-ui";
-
+import CalendarWrapper from "./components/CalendarWrapper";
+import { createRoot } from "react-dom/client";
 import { loadWeatherDisplay } from "./weatherDisplay";
 
 import runTests from "../tests/runTests.js";
@@ -25,6 +26,27 @@ initializeEventManager();
 // Initialize and render all of the calendar UI components (e.g. display (view) buttons, navigation buttons, and the full calendar)
 initializeCalendarUI();
 
+const reactRootElement = document.getElementById("calendarViewArea");
+
+if (reactRootElement) {
+  const root = createRoot(reactRootElement);
+
+  const plainEvents = allEvents.map((event) => ({
+    UID: event.UID,
+    title: event.title,
+    timeStart: event.timeStart,
+    timeEnd: event.timeEnd,
+    description: event.description,
+    color: event.color,
+    address: event.address,
+  }));
+
+  root.render(
+    React.createElement(CalendarWrapper, {
+      inititialEvents: plainEvents,
+    })
+  );
+}
 initTodayButton();
 loadWeatherDisplay();
 
