@@ -1,23 +1,28 @@
 import CalendarNavButton from "../navigation/calendar-nav-button";
 
 type CalendarNavButtonsGroupProps = {
-  onRender: () => void;
+  onAfterNavigate: () => void;
 };
 
 /**
  * A component that represents a group of buttons to navigate the calendar by one day, week, or month.
- * @param onRender - Function to call when a button is clicked.
+ * @param onAfterNavigate - Function to call after a navigation button is clicked.
  * @returns The JSX element
  */
-function CalendarNavButtonsGroup({ onRender }: CalendarNavButtonsGroupProps) {
+function CalendarNavButtonsGroup({
+  onAfterNavigate,
+}: CalendarNavButtonsGroupProps) {
   return (
     <>
       {/* Go to previous day/week/month */}
-      <CalendarNavButton direction="subtract" onRender={onRender}>
+      <CalendarNavButton
+        directionType="previous"
+        onAfterNavigate={onAfterNavigate}
+      >
         <img src="./assets/icons/chevron-left.svg" />
       </CalendarNavButton>
       {/* Go to next day/week/month */}
-      <CalendarNavButton direction="add" onRender={onRender}>
+      <CalendarNavButton directionType="next" onAfterNavigate={onAfterNavigate}>
         <img src="./assets/icons/chevron-right.svg" />
       </CalendarNavButton>
     </>
