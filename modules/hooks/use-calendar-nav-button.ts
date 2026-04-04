@@ -48,6 +48,10 @@ export function applyCalendarNavigation(navDirection: number): void {
     case CalendarViews.Month:
       appState.dateView = addMonth(currentDate, navDirection);
       break;
+    default:
+      throw new Error(
+        `Calendar view ${appState.calendarView} is not supported. Please add support for this view.`,
+      );
   }
 }
 
