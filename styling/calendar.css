@@ -25,6 +25,7 @@
     overflow-x: hidden;
     grid-column: span 1;
     border: none;
+    margin-block: 0.25rem;
   }
 
   #calendarViewArea .calendarDayContent,

@@ -11,7 +11,6 @@
     <!-- 15% of screen height -->
     <!--  -->
     <header id="appHeader" class="basicContainer">
-      <h3 id="appTitle">Day Planner</h3>
       <div id="headerInfoContainer">
         <div id="headerDateContainer"></div>
 
@@ -24,7 +23,7 @@
       <!-- Holds the buttons that swap calendar view between Day, Week, Month -->
       <div id="displayButtonsContainer">
         <!-- If we refactor the today button, we can switch out the 'calendarDisplayButtonsRoot' for the 'displayButtonsContainer' -->
-        <div id="calendarDisplayButtonsRoot"></div> 
+        <div id="calendarDisplayButtonsRoot"></div>
         <button class="displayChangeButton" id="goToTodayButton">Today</button>
       </div>
     </header>
@@ -67,17 +66,15 @@
       </div>
     </div>
 
-    <!--  -->
-  </div>
-  <!--Event Popup-->
-  <div id="clickedEventPopup" class="clickedEventPopup">
-    <h2 id="clickedEventPopupTitle"></h2>
-    <p id="clickedEventPopupTime"></p>
-    <p id="clickedEventPopupAddress"></p>
-    <p id="clickedEventPopupDescription"></p>
-    <button type="button" id="editEventButton">Edit</button>
-  </div>
-  
+    <!--Event Popup-->
+    <div id="clickedEventPopup" class="clickedEventPopup">
+      <h2 id="clickedEventPopupTitle"></h2>
+      <p id="clickedEventPopupTime"></p>
+      <p id="clickedEventPopupAddress"></p>
+      <p id="clickedEventPopupDescription"></p>
+      <button type="button" id="editEventButton">Edit</button>
+    </div>
+
     <!-- Container for navigation and new event buttons -->
     <!-- 10% of screen height -->
     <!--  -->
@@ -85,7 +82,6 @@
       <div id="calendarNavButtonsContainer"></div>
       <button id="addEventButton">Add Event</button>
     </div>
-    <div id="eventFormRoot">
-    </div>
+    <div id="eventFormRoot"></div>
   </body>
 </html>

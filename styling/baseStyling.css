@@ -11,28 +11,25 @@ body {
   align-items: center;
 }
 
-div {
-  border: 1px solid black;
-  border-radius: 0.5rem;
-}
-
 #appHeader {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
-  height: 15vh;
   width: 100%;
-}
-
-#appTitle {
-  text-align: center;
-  height: 2rem;
+  padding-top: 0.5rem;
 }
 
 #headerInfoContainer {
-  display: flex;
-  justify-content: space-around;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   width: 100%;
+
+  @media (min-width: 768px) {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+  }
 }
 
 #headerDate {
@@ -48,18 +45,18 @@ div {
 }
 
 #headerWeatherContainer #weatherDisplay {
-  border: none;
-  padding: 0 0.1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 #headerWeatherContainer #weatherDisplay p {
-  display: inline-block;
-  margin-right: 0.1rem;
+  padding-inline: 0.25rem;
+  margin-bottom: 0;
 }
 
 #headerWeatherContainer img {
   width: 2rem;
-  vertical-align: middle;
 }
 
 #displayButtonsContainer {
