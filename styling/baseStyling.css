@@ -87,7 +87,8 @@ div {
   border: none;
 }
 
-#calendarNavButton img {
+#calendarNavButton-next img,
+#calendarNavButton-previous img {
   filter: invert(1);
   width: 1rem;
   height: 1.0625rem;
