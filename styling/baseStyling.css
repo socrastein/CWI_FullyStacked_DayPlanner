@@ -70,11 +70,13 @@ div {
 }
 
 #calendarActionButtonsContainer {
+  position: fixed;
+  bottom: 0px;
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
   align-items: center;
-  height: 10vh;
+  height: auto;
   width: 100%;
   gap: 0.5rem;
 }
@@ -88,14 +90,15 @@ div {
 }
 
 #calendarNavButton-next img,
-#calendarNavButton-previous img {
+#calendarNavButton-previous img,
+#addEventButton img {
   filter: invert(1);
   width: 1rem;
   height: 1.0625rem;
 }
 
 #addEventButton {
-  width: 6rem;
+  width: 4rem;
 }
 
 .clickedEventPopup {
