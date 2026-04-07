@@ -76,7 +76,7 @@ function renderCalendarNavigationButtons(): void {
     // Function to render the calendar navigation buttons using the react components.
     const renderCalendarNavButtons = () => {
       calendarNavigationButtonsRoot.render(
-        <CalendarNavButtonsGroup onRender={() => renderCalendar()} />,
+        <CalendarNavButtonsGroup onAfterNavigate={() => renderCalendar()} />,
       );
     };
 

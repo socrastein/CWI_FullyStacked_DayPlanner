@@ -1,39 +1,4 @@
 import CalendarEvent from "./classCalendarEvent";
-/**
- * Validates that the year is an integer with the allowed range we decided for Eventmanager.
- * @param {number} year
- */
-function validateYear(year) {
-  if (!Number.isInteger(year) || year < 2000 || year > 2099) {
-    throw new Error(
-      "Event year is out of the allowed range. Allowed range is from 2000 through 2099",
-    );
-  }
-}
-
-/**
- *  Validates that the month is an integer with the allowed range we decided for Eventmanager.
- * @param {number} month
- */
-function validateMonth(month) {
-  if (!Number.isInteger(month) || month < 1 || month > 12) {
-    throw new Error(
-      "Event month is out of the allowed range. Allowed range is from 1 through 12",
-    );
-  }
-}
-
-/**
- *  Validates that the weekday is an integer with the allowed range we decided for Eventmanager.
- * @param {number} weekday
- */
-function validateWeekday(weekday) {
-  if (!Number.isInteger(weekday) || weekday < 0 || weekday > 6) {
-    throw new Error(
-      "Event day is out of the allowed range. Allowed range is from 0 through 6 with 0 being sunday.",
-    );
-  }
-}
 
 /**
  * Creates a generated holiday event using the CalendarEvent format.
@@ -73,9 +38,6 @@ function formatDate(year, month, day) {
  * helper function to calculate holidays with a variable date that is a specific day of a specific week AKA Thanksgiving is Fourth Thursday of November.
  */
 function getNthWeekdayOfMonth(year, month, weekday, week) {
-  validateYear(year);
-  validateMonth(month);
-  validateWeekday(weekday);
   if (!Number.isInteger(week) || week < 1 || week > 5) {
     /* left this validation in this functiion as it's the only one to use week param*/
     throw new Error(
@@ -107,10 +69,6 @@ function getNthWeekdayOfMonth(year, month, weekday, week) {
  * and using getNthWeekdayOfMonth could roll into the next month.
  */
 function getLastWeekdayOfMonth(year, month, weekday) {
-  validateYear(year);
-  validateMonth(month);
-  validateWeekday(weekday);
-
   const date = new Date(year, month, 0); //sets to last day of the month
 
   while (date.getDay() !== weekday) {
@@ -132,7 +90,7 @@ function holidayDefinitions(year) {
   return [
     { title: "New Year's Day", date: formatDate(year, 1, 1) },
     {
-      title: "Martin Luther King Jr. Day",
+      title: "Martin Luther King Jr. Day", // prettier thinks it's prettier for this to be the only one to be set across multiple lines.
       date: getNthWeekdayOfMonth(year, 1, 1, 3),
     },
     { title: "Valentine's Day", date: formatDate(year, 2, 14) },
@@ -161,6 +119,8 @@ function holidayDefinitions(year) {
  * @returns {CalendarEvent[]}
  */
 export function getHolidayEvents(year) {
-  validateYear(year);
+  if (!Number.isInteger(year) || year < 2000 || year > 2099) {
+    throw new Error("Event year is out of the allowed range."); //Since this is a public function, and not protected by event validation from eventManager or CalendarEvent yet, I left a year validation for protection.
+  }
   return holidayDefinitions(year).map(createHolidayEvent);
 }
