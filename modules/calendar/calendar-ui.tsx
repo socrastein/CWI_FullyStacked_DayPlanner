@@ -92,7 +92,7 @@ function renderCalendarNavigationButtons(): void {
     const renderCalendarNavButtons = () => {
       calendarNavigationButtonsRoot.render(
         <CalendarNavButtonsGroup
-          onRender={() => renderCalendar()}
+          onAfterNavigate={() => renderCalendar()}
         />,
       );
     };
