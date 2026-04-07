@@ -1,50 +1,76 @@
 import { useState, useEffect } from 'react';
 import CalendarView from './CalendarView';
-import { CalendarEvent } from '../types';
+import appState from "../appState";
+import { CalendarViews } from "../enumCalendarViews";
+import CalendarEvent  from '../classCalendarEvent';
 
-import "../../styling/baseStyling.css";
-import "../../styling/calendar.css";
-import "../../styling/dayCalendar.css";
-import "../../styling/eventForm.css";
-import "../../styling/weeklyCalendar.css";
+/**
+ * Reads from appState, Controls react state, 
+ * and updates UI when things change
+ */
 
+export default function CalendarWrapper() {
 
-type Props = {
-    initialEvents: CalendarEvent[];
-};
+	// Current calendar view
+	const [calendarView, setCalendarView] = useState<CalendarViews>(
+		appState.calendarView,
+	);
 
-export default function CalendarWrapper({ initialEvents }: Props) {
-    const [events, setEvents] = useState<CalendarEvent[]>(initialEvents);
-    const [viewDate, setViewDate] = useState(new Date());
-    const [view] = useState<"day" | "week" | "month">("day");
-    const [slotDuration, setSlotDuration] = useState<number>(60);
+	// Events for the current day being viewed
+	const [events, setEvents] = useState<CalendarEvent[]> (
+		appState.getEventsByDate(appState.dateView)
+	);
 
-    useEffect(() => {
-        const slotSelect = document.getElementById(
-            "slotDurationSelect",
-        ) as HTMLSelectElement | null;
+	// Current date being viewed
+	const [viewDate, setViewDate] = useState<Date>(
+		appState.dateViewObject,
+	);
 
-        if (!slotSelect) return;
+	const [slotDuration, setSlotDuration] = useState<number>(60);
 
-        setSlotDuration(Number(slotSelect.value));
+	// sync react state from appState
+	const syncFromAppState = () => {
+		setCalendarView(appState.calendarView);
+		setViewDate(appState.dateViewObject);
+		setEvents(appState.getEventsByDate(appState.dateView));
+	};
 
-        const handleChange = () => {
-            setSlotDuration(Number(slotSelect.value));
-        };
+	useEffect(() => {
+		syncFromAppState();
+	}, []);
 
-        slotSelect.removeEventListener("change", handleChange);
+	useEffect(() => {
+		const slotSelect = document.getElementById(
+			"slotDurationSelect",
+		) as HTMLSelectElement | null;
 
-        return () => {
-            slotSelect.removeEventListener("change", handleChange);
-        };
-    }, []);
+		if (!slotSelect) return;
 
-    return (
-        <CalendarView
-            view={view}
-            events={events}
-            viewDate={viewDate}
-            slotDuration={slotDuration}
-        />
-    );
+		// Set the initial value from the DOM
+		setSlotDuration(Number(slotSelect.value));
+
+		// Update React state whenever the select changes
+		const handleChange = () => {
+			setSlotDuration(Number(slotSelect.value));
+			syncFromAppState();
+		};
+
+		slotSelect.addEventListener("change", handleChange);
+
+		return () => {
+			slotSelect.removeEventListener("change", handleChange);
+		};
+	}, []);
+
+	// Renders the calendar content
+	return (
+		<>
+			<CalendarView
+				view={calendarView}
+				events={events}
+				viewDate={viewDate}
+				slotDuration={slotDuration}
+			/>
+		</>
+	);
 }

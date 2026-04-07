@@ -1,28 +1,28 @@
 import DayCalendarHourGridLines from './DayCalendarHourGridLines';
 import DayCalendarCurrentTimeLine from './DayCalendarCurrentTimeLine';
 import DayCalendarEventsLayer from './DayCalendarEventsLayer';
-import { CalendarEvent } from '../types';
+import CalendarEvent from '../classCalendarEvent';
 
 type Props = {
-    events: CalendarEvent[];
-    slots: number[];
-    slotHeight: number;
-    currentMinutesFromMidnight: number | null;
+	events: CalendarEvent[];
+	slots: number[];
+	slotHeight: number;
+	currentMinutesFromMidnight: number | null;
 };
 
 export default function DayCalendarGridColumn({
-    events,
-    slots,
-    slotHeight,
-    currentMinutesFromMidnight,
+	events,
+	slots,
+	slotHeight,
+	currentMinutesFromMidnight,
 }: Props) {
-    return (
-        <div id="calendarDayGridColumn" className="calendarDayGridColumn">
-            <DayCalendarHourGridLines slots={slots} slotHeight={slotHeight} />
-            <DayCalendarCurrentTimeLine
-                currentMinutesFromMidnight={currentMinutesFromMidnight}
-            />
-            <DayCalendarEventsLayer events={events} />
-        </div>
-    );
+	return (
+		<div id="calendarDayGridColumn" className="calendarDayGridColumn">
+			<DayCalendarHourGridLines slots={slots} slotHeight={slotHeight} />
+			<DayCalendarCurrentTimeLine
+				currentMinutesFromMidnight={currentMinutesFromMidnight}
+			/>
+			<DayCalendarEventsLayer events={events} />
+		</div>
+	);
 }

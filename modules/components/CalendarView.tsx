@@ -1,26 +1,48 @@
-import DayView from './DayView';
-import { CalendarEvent } from '../types';
+import DayView from "./DayView";
+import CalendarEvent from "../classCalendarEvent";
+import { CalendarViews } from "../enumCalendarViews";
 
 type Props = {
-    view: "day" | "week" | "month";
-    events: CalendarEvent[];
-    viewDate: Date;
-    slotDuration: number;
+	view: CalendarViews;
+	events: CalendarEvent[];
+	viewDate: Date;
+	slotDuration: number;
 };
 
-export default function CalendarView({ view, events, viewDate, slotDuration }: Props) {
-    return (
-        <div id="calendarViewArea">
-            {view === "day" && (
-                <DayView 
-                    events={events} 
-                    viewDate={viewDate}
-                    slotDuration={slotDuration} 
-                />
-            )}
+// Determines which calendar screen to show; Day | Week | Month
+export default function CalendarView({ 
+	view, 
+	events, 
+	viewDate, 
+	slotDuration 
+}: Props) {
+	if (view === CalendarViews.Day) {
+		return (
+			<DayView 
+				events={events}
+				viewDate={viewDate}
+				slotDuration={slotDuration}
+			/>
+		);
+	}
 
-            {view === "week" && <div id="calendarWeekContentWrapper" className="calendarWeekContent" />}
-            {view === "month" && <div id="calendarMonthContentWrapper" className="calendarMonthContent" />}
-        </div>
-    );
+	if (view === CalendarViews.Week) {
+		return (
+			<div 
+			id="calendarWeekContentWrapper"
+			className="calendarWeekContent"
+			/>
+		);
+	}
+
+	if (view === CalendarViews.Month) {
+		return (
+			<div 
+				id="calendarMonthContentWrapper"
+				className="calendarMonthContent"
+			/>
+		);
+	}
+
+	return null;
 }

@@ -299,7 +299,7 @@ function getSlotDuration() {
 
 // Creates a popup for the event clicked that shows more info about it.
 // Displays popup at position clicked
-function showClickedEventPopup(event) {
+export function showClickedEventPopup(event) {
   const clickedEventPopup = document.getElementById("clickedEventPopup");
 
   document.getElementById("clickedEventPopupTitle").textContent = event.title;

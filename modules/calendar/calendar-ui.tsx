@@ -1,10 +1,10 @@
 import { createRoot, type Root } from "react-dom/client";
 import CalendarDisplayButtonsGroup from "./navigation/calendar-display-buttons-group";
 import CalendarNavButtonsGroup from "./navigation/calendar-nav-buttons-group";
-import { renderCalendarView } from "./calendar";
 import { CalendarHeaderDisplay } from "./calendar-header-display";
 import appState from "../appState";
 import { CalendarViews } from "../enumCalendarViews";
+import CalendarWrapper from "../components/CalendarWrapper";
 
 
 /**
@@ -15,22 +15,36 @@ function initializeCalendarUI(): void {
   renderCalendarViewButtons(); // Render the 'Day', 'Week', 'Month' buttons.
   renderCalendarNavigationButtons(); // Render the previous and next buttons.
 
-  renderCalendar(); // Render the whole calendar view that includes the events per slot.
+  // renderCalendar(); // Render the whole calendar view that includes the events per slot.
+  renderCalendarWrapper(); // Render the main calendar content
 
   document
     .getElementById("slotDurationSelect")
-    ?.addEventListener("change", () => renderCalendar()); // Event listener for the slot duration select
+    ?.addEventListener("change", () => renderCalendarWrapper()); // Event listener for the slot duration select
 }
 
 // Render the calendar view for the given calendar state. This function should be called when the calendar state changes (e.g. when the user clicks a button to change the view).
 function renderCalendar(): void {
-  renderCalendarView(
-    appState.allEventsByDate,
-    appState.dateViewObject,
-    appState.calendarView,
-  );
+  renderCalendarWrapper();
 
   renderCalendarHeaderDisplay();
+}
+
+let calendarViewAreaRoot: Root | null = null;
+
+// Render the main calendar content area
+function renderCalendarWrapper(): void {
+  const calendarViewAreaElement = document.getElementById("calendarViewArea");
+
+  if (!calendarViewAreaElement) {
+    console.error("calendarViewArea not found");
+    return;
+  }
+
+  if(calendarViewAreaRoot === null) {
+    calendarViewAreaRoot = createRoot(calendarViewAreaElement);
+  }
+  calendarViewAreaRoot.render(<CalendarWrapper />);
 }
 
 // Render the calendary view button group that includes the 'Day', 'Week', 'Month' buttons
