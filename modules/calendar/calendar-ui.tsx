@@ -1,7 +1,7 @@
 import { createRoot, type Root } from "react-dom/client";
 import CalendarDisplayButtonsGroup from "./navigation/calendar-display-buttons-group";
 import CalendarNavButtonsGroup from "./navigation/calendar-nav-buttons-group";
-import { renderCalendarView } from "./calendar";
+import { CalendarView, renderCalendarView } from "./calendar";
 import { CalendarHeaderDisplay } from "./calendar-header-display";
 import appState from "../appState";
 import { CalendarViews } from "../enumCalendarViews";
@@ -52,6 +52,17 @@ function renderCalendarViewButtons(): void {
             renderCalendar();
             renderDisplayButtons(); // Re-render the calendar view buttons to reflect the new active view.
           }}
+          //todayButton logic.  sets new date to today, set view to dayView, and rerenders the calendar and buttons.
+          onSelectToday={() => {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            appState.dateView = today.toLocaleDateString("en-CA");
+            appState.calendarView = CalendarViews.Day;
+
+            renderCalendar();
+            renderDisplayButtons();
+          }}
         />,
       );
     };
@@ -76,7 +87,7 @@ function renderCalendarNavigationButtons(): void {
     // Function to render the calendar navigation buttons using the react components.
     const renderCalendarNavButtons = () => {
       calendarNavigationButtonsRoot.render(
-        <CalendarNavButtonsGroup onRender={() => renderCalendar()} />,
+        <CalendarNavButtonsGroup onAfterNavigate={() => renderCalendar()} />,
       );
     };
 

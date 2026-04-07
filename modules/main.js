@@ -9,7 +9,6 @@ import appState from "./appState";
 import appSettings from "./settings";
 import createSettingsMenu from "./settingsMenu";
 
-import initTodayButton from "./todayButton.js";
 import { initializeEventManager } from "./eventManager";
 import { initializeCalendarUI } from "./calendar/calendar-ui";
 
@@ -25,7 +24,6 @@ initializeEventManager();
 // Initialize and render all of the calendar UI components (e.g. display (view) buttons, navigation buttons, and the full calendar)
 initializeCalendarUI();
 
-initTodayButton();
 loadWeatherDisplay();
 
 /* 
