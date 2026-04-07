@@ -1,5 +1,7 @@
 // Remember to change the restoreDefaults() method and testSuite() if you change any of these default values
 
+import { loadWeatherDisplay } from "./weatherDisplay";
+
 let lightMode = "light";
 const lightModeOptions = ["light", "dark"];
 
@@ -77,6 +79,9 @@ const appSettings = {
     } else {
       tempUnit = "Fahrenheit";
     }
+    
+    // Reload weather display after changing temperature unit
+    loadWeatherDisplay();
   },
   //
   // Color theme
@@ -153,19 +158,16 @@ const appSettings = {
 
   loadSettings() {
     const settingsString = localStorage.getItem("DayPlannerSettings");
-    if (settingsString) {
-      try {
-        const settings = JSON.parse(settingsString);
-        this.lightMode = settings.lightMode;
-        this.tempUnit = settings.tempUnit;
-        this.colorTheme = settings.colorTheme;
-        this.firstDayOfWeek = settings.firstDayOfWeek;
-        this.displayHolidays = settings.displayHolidays;
-      } catch (error) {
-        console.warn("Error parsing settings from localStorage:", error);
-      }
-    } else {
-      console.log("No saved settings found in localStorage.");
+    if (!settingsString) return;
+    try {
+      const settings = JSON.parse(settingsString);
+      this.lightMode = settings.lightMode;
+      this.tempUnit = settings.tempUnit;
+      this.colorTheme = settings.colorTheme;
+      this.firstDayOfWeek = settings.firstDayOfWeek;
+      this.displayHolidays = settings.displayHolidays;
+    } catch (error) {
+      console.warn("Error parsing settings from localStorage:", error);
     }
   },
 };
