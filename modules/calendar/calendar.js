@@ -4,6 +4,9 @@ import { renderSingleDay } from "./dailyCalendar";
 import { renderSingleWeek } from "./weeklyCalendar";
 import { renderSingleMonth } from "./monthlyCalendar";
 import appState from "../appState";
+import appSettings from "../settings";
+import { getHolidayEvents } from "../holidayEvent";
+import CalendarEvent from "../classCalendarEvent";
 
 /*
    !!! This is the entry point for the calendar module. It is used to render the calendar view based on the calendar view type.
@@ -22,6 +25,29 @@ export const MINUTES_PER_DAY = 24 * 60;
 export const PIXELS_PER_MINUTE = 1; // 1 pixel per minute
 export const DAY_TOTAL_HEIGHT = MINUTES_PER_DAY * PIXELS_PER_MINUTE; // Give the day 24 hours of height
 
+/**
+ * This function builds the list of events that should be rendered for the given date, always including regular events form appstate based on date.
+ * if the displayHolidays setting is enabled it also generates any holiday for that date.
+ * !!when I finished with the new display are for holiday/allday events
+ * @param {Date} viewDate  param of current date.
+ * @returns {CalendarEvent[]} Array of the regular evens and holiday events if enabled.
+ */
+function getRenderableEventsForDate(viewDate) {
+  const dateString = viewDate.toLocaleDateString("en-CA");
+  const regularEvents = appState.getEventsByDate(dateString);
+
+  if (!appSettings.displayHolidays) {
+    return regularEvents;
+  }
+
+  const holidayEventsForYear = getHolidayEvents(viewDate.getFullYear());
+  const holidaysForThisDate = holidayEventsForYear.filter(
+    (holiday) => holiday.date === dateString,
+  );
+
+  return [...regularEvents, ...holidaysForThisDate];
+}
+
 // ----------------------Main Functions----------------------
 // Render the calendar view based on the calendar view type
 export function renderCalendarView(
@@ -33,9 +59,10 @@ export function renderCalendarView(
   if (calendarViewArea)
     calendarViewArea.setAttribute("data-calendar-view", calendarView); // Sets the 'data-calendar-view' attribute so we can show/hide the correct content.
 
-  const filteredDateEvents = appState.getEventsByDate(
-    viewDate.toLocaleDateString("en-CA"),
-  );
+  /*save this for when holiday/alldayevents ge their own display area.  DO NOT DELETE.
+  const filteredDateEvents = appState.getEventsByDate(viewDate.toLocaleDateString("en-CA"))*/
+  const filteredDateEvents = getRenderableEventsForDate(viewDate);
+
   switch (calendarView) {
     case CalendarView.DAY:
       renderSingleDay(filteredDateEvents, viewDate);

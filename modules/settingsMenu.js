@@ -1,6 +1,7 @@
 import "../styling/settingsMenu.css";
 
 import appSettings from "./settings";
+import { renderCalendar } from "./calendar/calendar-ui";
 
 // Icons for menuItems
 import moonIcon from "../assets/icons/moon.svg";
@@ -117,6 +118,7 @@ function createMenuItem(props) {
   container.onclick = () => {
     props.click();
     setting.textContent = props.setting();
+    renderCalendar();
   };
 
   return container;
