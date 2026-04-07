@@ -6,6 +6,7 @@ import appState from "../appState";
 import { CalendarViews } from "../enumCalendarViews";
 import CalendarWrapper from "../components/CalendarWrapper";
 
+
 /**
  * Initializes the calendar UI and renders the components. This function should only call the render functions for the calendar UI components.
  * @returns void
@@ -15,7 +16,7 @@ function initializeCalendarUI(): void {
   renderCalendarNavigationButtons(); // Render the previous and next buttons.
 
   // renderCalendar(); // Render the whole calendar view that includes the events per slot.
-  renderCalendarWrapper(); // Render the main calendar content
+  renderCalendarWrapper(); // Render the whole calendar view that includes the events per slot.
 
   document
     .getElementById("slotDurationSelect")
@@ -90,7 +91,9 @@ function renderCalendarNavigationButtons(): void {
     // Function to render the calendar navigation buttons using the react components.
     const renderCalendarNavButtons = () => {
       calendarNavigationButtonsRoot.render(
-        <CalendarNavButtonsGroup onAfterNavigate={() => renderCalendar()} />,
+        <CalendarNavButtonsGroup
+          onRender={() => renderCalendar()}
+        />,
       );
     };
 
