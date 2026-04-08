@@ -92,3 +92,4 @@ const headerDateRoot = createRoot(
 headerDateRoot.render(<CalendarHeaderDisplay />);
 
 export { initializeCalendarUI };
+export { renderCalendar };

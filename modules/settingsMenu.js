@@ -8,6 +8,7 @@ import thermIcon from "../assets/icons/thermometer.svg";
 import calIcon from "../assets/icons/calendar-1.svg";
 import giftIcon from "../assets/icons/gift.svg";
 import paletteIcon from "../assets/icons/palette.svg";
+import { renderCalendar } from "./calendar/calendar-ui";
 
 let menuIsOpen = false;
 
@@ -117,6 +118,7 @@ function createMenuItem(props) {
   container.onclick = () => {
     props.click();
     setting.textContent = props.setting();
+    renderCalendar();
   };
 
   return container;
