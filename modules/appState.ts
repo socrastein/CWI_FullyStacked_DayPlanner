@@ -1,3 +1,4 @@
+import { useSyncExternalStore } from "react";
 import CalendarEvent from "./classCalendarEvent";
 import StorageManager from "./dataStorage";
 import { CalendarViews } from "./enumCalendarViews";
@@ -45,6 +46,9 @@ class AppState {
   private _eventsByDate: Map<string, CalendarEvent[]>;
   private _calendarView: CalendarViews;
   private _dateView: string;
+
+  // Set of listener functions to call whenever the app state changes (e.g. when events are added, edited, or deleted)
+  private listeners = new Set<() => void>();
 
   constructor() {
     const loadedEvents = StorageManager.loadAllEvents();
@@ -128,6 +132,7 @@ class AppState {
       this._eventsByDate.get(dateKey).push(event);
     }
     StorageManager.saveEvent(event);
+    this.notifyListeners();
   }
 
   /**
@@ -159,6 +164,7 @@ class AppState {
       }
     }
     StorageManager.deleteEvent(uid);
+    this.notifyListeners();
   }
 
   /**
@@ -184,6 +190,7 @@ class AppState {
     }
     this._calendarView = view;
     StorageManager.saveCalendarView(view);
+    this.notifyListeners();
   }
 
   /**
@@ -218,6 +225,49 @@ class AppState {
       );
     }
     this._dateView = date;
+    this.notifyListeners();
+  }
+
+  /**
+   * Allows components to subscribe to changes in the app state.
+   * Whenever the app state changes, all subscribed listener functions will be called
+   * so that they can update their UI accordingly.
+   *
+   * Returns an unsubscribe function that React uses when the component unmounts.
+   */
+  subscribe(listener: () => void) {
+    this.listeners.add(listener);
+    return () => this.listeners.delete(listener);
+  }
+
+  /**
+   * Calls all subscribed listener functions to notify them that the app state has changed.
+   * Passes a snapshot of the current app state to each listener so React can update the UI accordingly.
+   * This replaces extra calls to rerender elsewhere in the code.
+   */
+  private notifyListeners() {
+    this.snapshot = this.buildSnapshot();
+    this.listeners.forEach((listener) => listener());
+  }
+
+  /**
+   * Snapshot of the current app state that is passed to subscribed listener functions whenever the app state changes.
+   * This is how React decides if a component needs to rerender - if the snapshot has changed
+   * since the last time it was called, then the component will rerender with the new snapshot data.
+   * @returns
+   */
+  getSnapshot() {
+    return this.snapshot;
+  }
+
+  private snapshot = this.buildSnapshot();
+
+  private buildSnapshot() {
+    return {
+      allEventsByDate: this.allEventsByDate,
+      calendarView: this.calendarView,
+      dateView: this.dateView,
+    };
   }
 }
 
@@ -248,5 +298,18 @@ registerCheatCode(() => {
   const events = createMockEvents();
   events.forEach((event) => appState.addEvent(event));
 });
+
+/**
+ * Function that React components can import and call to subscribe to changes in the app state.
+ * Whenever the app state changes, the subscribed component will receive a new snapshot
+ * of the app state and can update its UI if needed. *
+ */
+
+export function useAppStateStore() {
+  return useSyncExternalStore(
+    (listener) => appState.subscribe(listener),
+    () => appState.getSnapshot(),
+  );
+}
 
 export default appState;
