@@ -3,6 +3,7 @@ import eventTests from "./classCalendarEvent_test";
 import storageTests from "./dataStorage_test";
 import { appSettingsTests } from "./appSettings_test";
 import appStateTests from "./appState_test";
+import holidayTests from "./holidayTesting";
 
 function runTests() {
   eventTests();
@@ -10,6 +11,7 @@ function runTests() {
   appStateTests();
   appSettingsTests();
   calendarNavigationFunctionsTest();
+  holidayTests();
 }
 
 export default runTests;
