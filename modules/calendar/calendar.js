@@ -4,6 +4,7 @@ import { renderSingleDay } from "./dailyCalendar";
 import { renderSingleWeek } from "./weeklyCalendar";
 import { renderSingleMonth } from "./monthlyCalendar";
 import appState from "../appState";
+import appSettings from "../appSettings";
 
 /*
    !!! This is the entry point for the calendar module. It is used to render the calendar view based on the calendar view type.
@@ -22,6 +23,18 @@ export const MINUTES_PER_DAY = 24 * 60;
 export const PIXELS_PER_MINUTE = 1; // 1 pixel per minute
 export const DAY_TOTAL_HEIGHT = MINUTES_PER_DAY * PIXELS_PER_MINUTE; // Give the day 24 hours of height
 
+function getRenderableEventsForDate(viewDate) {
+  const dateString = viewDate.toLocaleDateString("en-CA");
+  const regularEvents = appState.getEventsByDate(dateString);
+
+  if (!appSettings.displayHolidays) {
+    return regularEvents;
+  }
+
+  const holidayEvents = appState.getHolidayEventsByDate(dateString);
+  return [...regularEvents, ...holidayEvents];
+}
+
 // ----------------------Main Functions----------------------
 // Render the calendar view based on the calendar view type
 export function renderCalendarView(
@@ -32,8 +45,9 @@ export function renderCalendarView(
   const calendarViewArea = document.getElementById("calendarViewArea");
   if (calendarViewArea)
     calendarViewArea.setAttribute("data-calendar-view", calendarView); // Sets the 'data-calendar-view' attribute so we can show/hide the correct content.
-  
-  const filteredDateEvents = appState.getEventsByDate(viewDate.toLocaleDateString("en-CA"))
+
+  const filteredDateEvents = getRenderableEventsForDate(viewDate);
+
   switch (calendarView) {
     case CalendarView.DAY:
       renderSingleDay(filteredDateEvents, viewDate);

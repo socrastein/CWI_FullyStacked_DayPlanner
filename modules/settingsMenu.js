@@ -8,6 +8,8 @@ import thermIcon from "../assets/icons/thermometer.svg";
 import calIcon from "../assets/icons/calendar-1.svg";
 import giftIcon from "../assets/icons/gift.svg";
 import paletteIcon from "../assets/icons/palette.svg";
+import appState from "./appState";
+import { renderCalendarView } from "./calendar/calendar";
 
 let menuIsOpen = false;
 
