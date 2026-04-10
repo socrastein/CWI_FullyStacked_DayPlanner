@@ -1,0 +1,93 @@
+@import url(animations.css);
+
+#weatherDisplay {
+  margin-right: 2.5rem;
+  border-radius: 0.5rem;
+  height: 2rem;
+  border: 1px solid rgba(var(--bs-secondary-rgb), 0.5);
+  display: flex;
+  align-items: center;
+}
+
+#weatherDisplay:hover {
+  background: rgba(var(--bs-secondary-rgb), 0.25);
+}
+
+/* Remove margin from all elements inside of weatherDisplay */
+#weatherDisplay * {
+  margin: 0;
+}
+
+.weather-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.weatherLoadingText {
+  font-size: 0.75rem;
+  color: var(--bs-secondary);
+}
+
+.weather-readout {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 0 0.5rem;
+}
+
+.weather-readout img {
+  height: 2rem;
+  width: 2rem;
+}
+
+/* .weather-readout p {
+  margin: 0;
+} */
+
+.weather-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 99;
+}
+
+.weather-detail-panel {
+  position: absolute;
+  z-index: 100;
+  top: 0;
+  right: 0;
+  background: var(--bs-body-bg);
+  border: 1px solid var(--bs-secondary);
+  border-bottom-width: 4px;
+  border-radius: 0 0 0.5rem 0.5rem;
+  padding: 1rem;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 14rem;
+  gap: 0.75rem;
+
+  height: 0;
+  overflow: hidden;
+  animation: expandHeight 0.5s ease-out forwards;
+}
+
+.weather-detail-panel hr {
+  width: 100%;
+  color: var(--bs-primary);
+}
+
+.weather-detail-panel img {
+  height: 4rem;
+  width: 4rem;
+  border: white;
+}
+
+.weather-detail-panel span {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+}

@@ -13,19 +13,6 @@ body {
   }
 }
 
-#headerDate {
-  width: 100%;
-}
-
-#headerWeatherContainer {
-  margin-right: 2rem;
-}
-
-#weatherDisplay img {
-  width: 2rem;
-  height: 2rem;
-}
-
 #displayButtonsContainer {
   display: flex;
   justify-content: center;

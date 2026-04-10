@@ -15,3 +15,14 @@
     max-width: 0;
   }
 }
+
+@keyframes expandHeight {
+  from {
+    height: 0;
+    opacity: 0;
+  }
+  to {
+    height: 300px;
+    opacity: 1;
+  }
+}
