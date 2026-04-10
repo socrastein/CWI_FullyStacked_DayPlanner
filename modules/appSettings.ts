@@ -74,6 +74,7 @@ class AppSettings {
       document.documentElement.setAttribute("data-bs-theme", "light");
       document.body.classList.remove("dark-mode");
     }
+    this.saveSettings();
   };
 
   get tempUnit() {
@@ -86,6 +87,7 @@ class AppSettings {
       this._tempUnit = "Fahrenheit";
     }
     this.notifyListeners();
+    this.saveSettings();
   };
 
   get firstDayOfWeek() {
@@ -98,6 +100,7 @@ class AppSettings {
       this._firstDayOfWeek = "Sunday";
     }
     this.notifyListeners();
+    this.saveSettings();
   };
 
   get displayHolidays() {
@@ -115,6 +118,7 @@ class AppSettings {
       appState.dateViewObject,
       appState.calendarView,
     );
+    this.saveSettings();
   };
 
   get colorTheme() {
@@ -133,6 +137,7 @@ class AppSettings {
         ).join(", ")}.`,
       );
     }
+    this.saveSettings();
   }
 
   restoreDefaults() {
@@ -144,6 +149,7 @@ class AppSettings {
     this._displayHolidays = true;
     this._colorTheme = "blue";
     this.notifyListeners();
+    this.saveSettings();
   }
 
   saveSettings() {
