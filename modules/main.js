@@ -9,7 +9,7 @@ import appSettings from "./appSettings";
 import createSettingsMenu from "./settingsMenu";
 
 import { initializeEventManager } from "./eventManager";
-import { initializeCalendarUI } from "./calendar/calendar-ui";
+import { initializeCalendarUI, refreshCalendarUI } from "./calendar/calendar-ui";
 
 import { loadWeatherDisplay } from "./weatherDisplay";
 
