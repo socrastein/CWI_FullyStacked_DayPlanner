@@ -20,36 +20,6 @@ export default function calendarWrapper() {
 	 */
 	const snapshot = useAppState();
 
-	/**
-	 * Tracks the duration of a calendar time slot in minutes.
-	 * Defaults to 60 (hourly)
-	 */
-	const [slotDuration, setSlotDuration] = useState<number>(60);
-
-	// Listen to the slot duration dropdown that exist in index.html
-	useEffect(() => {
-		const slotSelect = document.getElementById(
-			"slotDurationSelect",
-		) as HTMLSelectElement | null;
-
-		if (!slotSelect) return;
-
-		// Initializes state with the dropdown's current value on mount
-		setSlotDuration(Number(slotSelect.value));
-
-		// Update state whenever the user selects a new duration
-		const handleChange = () => {
-			setSlotDuration(Number(slotSelect.value));
-		};
-
-		slotSelect.addEventListener("change", handleChange);
-
-		// removes the listener if this component unmounts (prevents memory leaks)
-		return () => {
-			slotSelect.removeEventListener("change", handleChange);
-		};
-	}, []);
-
 	// Get only the events for the currently viewed day.
 	const eventsForViewDate = appState.getEventsByDate(snapshot.dateView);
 
@@ -57,9 +27,8 @@ export default function calendarWrapper() {
 		<CalendarView 
 			view={snapshot.calendarView}
 			events={eventsForViewDate}
-			viewDate={appState.dateViewObject}
-			slotDuration={slotDuration}
-		/>
+			viewDate={appState.dateViewObject} 
+			slotDuration={0}		/>
 	);
 
 }
