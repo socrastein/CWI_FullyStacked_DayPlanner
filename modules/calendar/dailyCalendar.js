@@ -163,7 +163,6 @@ function createEventButton(eventsLayer, events, event, index, assignedLanes) {
   eventButton.style.setProperty("--event-color", event.color ?? "#1a73e8");
   eventButton.style.top = `${topPosition}px`;
   eventButton.style.height = `${maxHeight}px`;
-  eventButton.style.zIndex = String(index);
   eventButton.style.left =
     totalLanes <= 1 ? "0" : `calc(${leftPosition}% + ${laneIndex * 2}px)`;
   eventButton.style.width = totalLanes <= 1 ? "100%" : `calc(${width}% - 2px)`;

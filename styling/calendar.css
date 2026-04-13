@@ -1,24 +1,15 @@
 #calendarContainer {
-  height: 79.5vh;
-  width: 100%;
-  position: relative;
-  border: none;
-  z-index: 1;
-
-  @media (min-width: 768px) {
-    display: grid;
-    gap: 0.25rem;
-    grid-template-columns: repeat(6, 1fr);
-  }
+  flex: 1 1 0;
+  min-height: 0;
 }
 
 #calendarViewArea {
-  position: relative;
-  height: 100%;
+  flex: 1 1 0;
+  min-height: 0;
   overflow-y: auto;
   overflow-x: hidden;
-  grid-column: span 1;
-  border: none;
+  border: var(--bs-border-width) solid var(--bs-border-color);
+  border-radius: var(--bs-border-radius);
 }
 
 #calendarViewArea .calendarDayContent,
