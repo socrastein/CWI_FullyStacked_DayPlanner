@@ -20,8 +20,6 @@
 }
 
 #eventForm {
-  color: black;
-  background-color: white;
   border: 1px solid black;
   border-radius: 0.5rem;
   display: flex;
@@ -30,14 +28,6 @@
   min-height: auto;
   width: 70%;
   max-width: 600px;
-}
-
-body.dark-mode #eventForm {
-  filter: invert(1);
-}
-
-body.dark-mode #eventForm .text-danger {
-  filter: invert(1);
 }
 
 #eventForm h2 {
