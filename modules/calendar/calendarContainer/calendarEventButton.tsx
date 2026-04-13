@@ -41,7 +41,6 @@ export default function CalendarEventButton({
 				["--event-color" as any]: event.color ?? "#1a73e8",
 				top: `${topPosition}px`,
 				height: `${maxHeight}px`,
-				zIndex: index,
 				left: 
 					totalLanes <= 1 
 					? "0"
