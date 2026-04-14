@@ -11,6 +11,7 @@ import createSettingsMenu from "./settingsMenu";
 
 import { initializeEventManager } from "./eventManager";
 import { initializeCalendarUI } from "./calendar/calendar-ui";
+import enableSwipeNavigation from "./calendar/navigation/swipeNavigation";
 
 import { loadWeatherDisplay } from "./weatherDisplay";
 
@@ -20,9 +21,8 @@ appSettings.loadSettings();
 createSettingsMenu();
 
 initializeEventManager();
-
-// Initialize and render all of the calendar UI components (e.g. display (view) buttons, navigation buttons, and the full calendar)
 initializeCalendarUI();
+enableSwipeNavigation();
 
 loadWeatherDisplay();
 
