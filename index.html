@@ -54,6 +54,7 @@
           id="calendarSettingsTrigger"
           class="d-flex gap-1 btn btn-sm btn-primary align-items-center justify-content-center"
           data-bs-toggle="dropdown"
+          data-bs-auto-close="outside"
           aria-expanded="false"
           title="Calendar Settings"
         >
@@ -64,7 +65,7 @@
             style="width: 1.25rem; height: 1.25rem"
           />
         </button>
-        <div class="dropdown-menu pt-0 pb-1">
+        <div class="dropdown-menu pt-0 pb-1" style="--bs-dropdown-min-width: 2rem;">
           <h6 class="dropdown-header -mt-2 text-center">Calendar View</h6>
           <div
             id="calendarDisplayButtonsRoot"
