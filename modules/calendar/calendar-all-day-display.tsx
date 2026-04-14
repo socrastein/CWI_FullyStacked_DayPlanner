@@ -1,12 +1,23 @@
-import type { AllDayDisplayItem } from "./all-day-display-items";
+import { useAppState } from "../appState";
+import { useAppSettings } from "../appSettings";
+import { getAllDayDisplayItems } from "./all-day-display-items";
 
-function CalendarAllDayDisplay({ items }: { items: AllDayDisplayItem[] }) {
-  // Do not render the display if there are no all-day items.
+function CalendarAllDayDisplay() {
+  /*Tie into useAppState and useAppSettings so the component can re-render
+  when the view date or holiday display setting are changed*/
+  //these should
+  useAppState();
+  useAppSettings();
+
+  const items = getAllDayDisplayItems();
+
+  //if there aren't any holiday/allDay events to display, don't render.
   if (items.length === 0) {
     return null;
   }
 
-  // For now, keep the display small and only show the first two items.
+  //this slice should keep it small and we can add nav later to move through more then 2.
+  //currently no day has more then one holiday.  Add testing for multiple events on wednesday. ***
   const visibleItems = items.slice(0, 2);
 
   return (
@@ -15,7 +26,7 @@ function CalendarAllDayDisplay({ items }: { items: AllDayDisplayItem[] }) {
         {visibleItems.map((item) => (
           <div
             key={item.id}
-            className="px-2 py-1 border rounded bg-body-tertiary text-center fw-bold "
+            className="px-2 py-1 border rounded bg-body-tertiary text-center fw-bold"
           >
             {item.title}
           </div>

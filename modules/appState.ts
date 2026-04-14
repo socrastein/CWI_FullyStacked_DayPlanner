@@ -5,7 +5,7 @@ import { CalendarViews } from "./enumCalendarViews";
 
 import { createMockEvents, registerCheatCode } from "./mockEvents";
 
-import { getHolidayEvents } from "./holidayEvent";
+import { createMockAllDayEvents, getHolidayEvents } from "./holidayEvent";
 
 // Helper functions to map events by UID and by Date for efficient access
 

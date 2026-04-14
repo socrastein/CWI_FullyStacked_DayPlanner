@@ -7,7 +7,7 @@ import appState from "../appState";
 import { CalendarViews } from "../enumCalendarViews";
 import { CalendarAllDayDisplay } from "./calendar-all-day-display";
 import { getAllDayDisplayItems } from "./all-day-display-items";
-import { type AllDayDisplayItem } from "./all-day-display-items";
+
 /**
  * Initializes the calendar UI and renders the components. This function should only call the render functions for the calendar UI components.
  * @returns void
@@ -15,7 +15,8 @@ import { type AllDayDisplayItem } from "./all-day-display-items";
 function initializeCalendarUI(): void {
   renderCalendarViewButtons(); // Render the 'Day', 'Week', 'Month' buttons.
   renderCalendarNavigationButtons(); // Render the previous and next buttons.
-  mountCalendarWrapper(); // Mount React into #calendarViewArea
+  mountCalendarWrapper(); // Mount React into #calendarAllDayDisplayRoot
+  mountAllDayDisplay(); //Mount React into #calendarViewArea
 }
 
 /**
@@ -108,24 +109,20 @@ const headerDateRoot = createRoot(
 headerDateRoot.render(<CalendarHeaderDisplay />);
 
 /**
- * renders the allday display bellow the header but above the calendar display
+ * Mounts the all-day display into its root element.
+ * This renders holiday and future all-day items above the main calendar.
  */
-function renderAllDayDisplay(): void {
+function mountAllDayDisplay(): void {
   const allDayDisplayRootElement = document.getElementById(
     "calendarAllDayDisplayRoot",
   );
 
-  // Stop if the root element isn't on the page
   if (!allDayDisplayRootElement) {
     return;
   }
 
-  const allDayDisplayRoot = createRoot(allDayDisplayRootElement);
-  const allDayDisplayItems = getAllDayDisplayItems();
-
-  allDayDisplayRoot.render(
-    <CalendarAllDayDisplay items={allDayDisplayItems} />,
-  );
+  const root = createRoot(allDayDisplayRootElement);
+  root.render(<CalendarAllDayDisplay />);
 }
 
 export { initializeCalendarUI };
