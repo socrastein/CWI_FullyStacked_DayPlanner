@@ -39,6 +39,21 @@
 #calendarSettingsTrigger {
   --bs-btn-bg: rgba(var(--bs-primary-rgb), 0.8);
   --bs-btn-border-color: rgba(var(--bs-primary-rgb), 0.8);
+
+  position: absolute;
+  right: 1.25rem;
+
+  @media (min-width: 768px) {
+    right: 25dvw;
+  }
+
+  @media (min-width: 1024px) {
+    right: 30dvw;
+  }
+
+  @media (min-width: 1278px) {
+    right: 35dvw;
+  }
 }
 
 .body.dark-mode #calendarSettingsTrigger {
