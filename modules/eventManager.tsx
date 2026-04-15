@@ -99,8 +99,9 @@ function submitEvent(
   const data: FormData = new FormData(eventForm);
   const eventProps: any = Object.fromEntries(data);
 
-  //allDay checkbox altering UID with prefix allDay-
-  const isAllDay = data.get("allDay") === "on";
+  const isExistingAllDayEvent = Boolean(UID?.startsWith("allDay-"));
+  const isNewAllDaySelection = data.get("allDay") === "on";
+  const isAllDay = isExistingAllDayEvent || isNewAllDaySelection;
 
   //forces mock time to meet requirements for CalendarEvent generation
   if (isAllDay) {

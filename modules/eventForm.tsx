@@ -108,6 +108,7 @@ export default function EventForm({
             name="color"
             defaultValue={targetEvent?.color ?? "#ffffff"}
             list="colorOptions"
+            disabled={isAllDay}
           />
           <datalist id="colorOptions">
             <option value="#ffffff">White</option>
