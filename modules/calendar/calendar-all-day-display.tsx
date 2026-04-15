@@ -56,12 +56,8 @@ function CalendarAllDayDisplay() {
         {visibleItems.map((event) => (
           <div
             key={event.UID}
-<<<<<<< HEAD
-            className="px-2 py-1 border rounded bg-body-tertiary text-center fw-bold"
-            onClick={() => allDayEventClick(event.UID)}
-=======
             className="allDayDisplay px-2 py-1 border rounded text-center fw-bold"
->>>>>>> main
+            onClick={() => allDayEventClick(event.UID)}
           >
             {event.title}
           </div>
