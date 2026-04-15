@@ -51,13 +51,17 @@ function CalendarAllDayDisplay() {
   }
 
   return (
-    <div className="allDayDisplay w-100 px-1 py-1">
+    <div className="w-100 px-1 py-1">
       <div className="d-flex flex-column gap-2 w-100">
         {visibleItems.map((event) => (
           <div
             key={event.UID}
+<<<<<<< HEAD
             className="px-2 py-1 border rounded bg-body-tertiary text-center fw-bold"
             onClick={() => allDayEventClick(event.UID)}
+=======
+            className="allDayDisplay px-2 py-1 border rounded text-center fw-bold"
+>>>>>>> main
           >
             {event.title}
           </div>

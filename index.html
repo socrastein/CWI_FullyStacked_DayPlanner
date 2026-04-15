@@ -11,7 +11,7 @@
     <!-- 15% of screen height -->
     <!--  -->
     <header
-      class="d-flex d-flex px-1 align-items-center justify-content-between py-1 w-100 border-bottom"
+      class="d-flex d-flex px-1 align-items-center justify-content-between py-1 w-100"
     >
       <div id="headerDateContainer" class="px-2"></div>
       <div id="weatherDisplay"></div>
@@ -25,35 +25,8 @@
       <!-- this is the location for allday display-->
       <div id="calendarAllDayDisplayRoot"></div>
 
-      <div id="calendarContainer" class="d-flex flex-column pb-1">
-        <div id="calendarViewArea" data-calendar-view="day">
-          <div id="calendarDayContentWrapper" class="calendarDayContent">
-            <div
-              id="calendarTimeLabelsColumn"
-              class="calendarTimeLabelsColumn"
-            ></div>
-            <div id="calendarDayGridColumn" class="calendarDayGridColumn">
-              <div
-                id="calendarHourGridLinesContainer"
-                class="calendarHourGridLines"
-              ></div>
-              <div
-                id="calendarCurrentTimeLineContainer"
-                class="calendarNowLine"
-                aria-hidden="true"
-              ></div>
-              <div id="calendarEventsLayer" class="calendarEventsLayer"></div>
-            </div>
-          </div>
-          <div
-            id="calendarWeekContentWrapper"
-            class="calendarWeekContent"
-          ></div>
-          <div
-            id="calendarMonthContentWrapper"
-            class="calendarMonthContent"
-          ></div>
-        </div>
+      <div id="calendarContainer" class="d-flex pb-1">
+        <div id="calendarViewArea" data-calendar-view="day"></div>
       </div>
     </div>
 
@@ -78,30 +51,32 @@
           class="d-flex justify-content-center align-items-center gap-4"
         ></div>
 
-        <!-- Calendar Settings Menu -->
-        <div class="position-absolute end-0 me-3 me-sm-4">
-          <button
-            type="button"
-            id="calendarSettingsTrigger"
-            class="d-flex gap-1 btn btn-sm btn-primary align-items-center justify-content-center"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-            title="Calendar Settings"
-          >
-            <img
-              src="./assets/icons/calendar-cog.svg"
-              alt=""
-              class="calendarSettingsIcon"
-              style="width: 1.25rem; height: 1.25rem"
-            />
-          </button>
-          <div class="dropdown-menu pt-0 pb-1">
-            <h6 class="dropdown-header -mt-2 text-center">Calendar View</h6>
-            <div
-              id="calendarDisplayButtonsRoot"
-              class="d-flex flex-column gap-1 px-1"
-            ></div>
-          </div>
+        <!-- Calendar Settings Button and Dropdown -->
+        <button
+          type="button"
+          id="calendarSettingsTrigger"
+          class="d-flex gap-1 btn btn-sm btn-primary align-items-center justify-content-center"
+          data-bs-toggle="dropdown"
+          data-bs-auto-close="outside"
+          aria-expanded="false"
+          title="Calendar Settings"
+        >
+          <img
+            src="./assets/icons/calendar-cog.svg"
+            alt=""
+            class="calendarSettingsIcon"
+            style="width: 1.25rem; height: 1.25rem"
+          />
+        </button>
+        <div
+          class="dropdown-menu pt-0 pb-1"
+          style="--bs-dropdown-min-width: 2rem"
+        >
+          <h6 class="dropdown-header -mt-2 text-center">Calendar View</h6>
+          <div
+            id="calendarDisplayButtonsRoot"
+            class="d-flex flex-column gap-1 px-1"
+          ></div>
         </div>
       </div>
     </footer>

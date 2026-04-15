@@ -1,10 +1,13 @@
+.allDayDisplay{
+  background-color: rgba(var(--bs-primary-rgb), 0.15);
+}
+
 /* Two-column layout: time labels | day grid */
 .calendarDayContent {
   /* Counterintuitive to use display: hidden, but we need to hide the content until the calendar view is set to day */
   display: hidden;
   flex-direction: row;
   min-height: 100%;
-  border: none;
 }
 
 /* Left column: time labels (Google-style narrow strip) */
@@ -12,10 +15,7 @@
   flex-shrink: 0;
   padding-left: 0.5rem;
   padding-top: 0.125rem;
-  border: none;
-  border-right: 1px solid rgba(0, 0, 0, 0.12);
-  border-radius: 0%;
-  background-color: rgba(0, 0, 0, 0.02);
+  border-right: var(--bs-border-width) solid var(--bs-border-color);
 }
 
 .calendarTimeSlotRow {
@@ -23,17 +23,16 @@
   align-items: flex-start;
   justify-content: flex-end;
   padding-right: 0.5rem;
-  border: none;
 }
 
 .calendarTimeSlotRow[data-active="true"] .calendarTimeLabel {
-  color: #1a73e8;
+  color: var(--bs-primary);
   font-weight: 600;
 }
 
 .calendarTimeLabel {
   font-size: 0.625rem;
-  color: #70757a;
+  color: var(--bs-secondary);
   white-space: nowrap;
 }
 
@@ -42,9 +41,6 @@
   flex: 1;
   position: relative;
   min-width: 0;
-  background-color: #fff;
-  border: none;
-  border-radius: 0%;
 }
 
 .calendarHourGridLines {
@@ -55,14 +51,11 @@
   display: flex;
   flex-direction: column;
   pointer-events: none;
-  border: none;
 }
 
 .calendarHourGridLine {
   flex-shrink: 0;
-  border: none;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-  border-radius: 0%;
+  border-bottom: var(--bs-border-width) solid color-mix(in srgb, var(--bs-border-color) 50%, transparent);
 
   &:last-child {
     border-bottom: none;
@@ -75,10 +68,9 @@
   left: 0;
   right: 0;
   height: 2px;
-  background-color: #ea4335;
+  background-color: var(--bs-danger);
   z-index: 2;
   pointer-events: none;
-  border: none;
 }
 
 .calendarNowLine::before {
@@ -88,7 +80,7 @@
   top: -3px;
   width: 8px;
   height: 8px;
-  background-color: #ea4335;
+  background-color: var(--bs-danger);
   border-radius: 50%;
 }
 
@@ -100,8 +92,6 @@
   right: 0.125rem;
   padding: 0 0.5rem;
   pointer-events: none;
-  border: none;
-  background-color: rgba(0, 0, 0, 0.02);
 }
 
 .calendarEventsLayer .calendarEventContainer {
@@ -115,7 +105,7 @@
   right: 0.5rem;
   border: none;
   outline: 1px solid black;
-  border-left: 4px solid var(--event-color, #1a73e8);
+  border-left: 4px solid var(--event-color, var(--bs-primary));
   border-radius: 4px;
   padding: 0.375rem 0.5rem;
   display: flex;
@@ -125,33 +115,33 @@
   text-align: left;
   overflow: hidden;
   box-sizing: border-box;
-  background-color: rgba(0, 0, 0, 0.1);
+  background-color: var(--bs-secondary-bg);
   cursor: pointer;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .calendarEventContainer:hover {
-  background-color: color-mix(in srgb, var(--event-color) 20%, transparent);
+  background-color: color-mix(in srgb, var(--event-color) 20%, var(--bs-secondary-bg));
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
 .calendarEventTime {
   order: -1;
   font-size: 0.6875rem;
-  color: #5f6368;
+  color: var(--bs-secondary);
   font-weight: 500;
 }
 
 .calendarEventTitle {
   font-size: 0.8125rem;
   font-weight: 600;
-  color: #202124;
+  color: var(--bs-body-color);
   line-height: 1.3;
 }
 
 .calendarEventDescription {
   font-size: 0.75rem;
-  color: #5f6368;
+  color: color-mix(in srgb, var(--bs-body-color) 50%, transparent);
   line-height: 1.3;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -188,8 +178,4 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   font-size: 0.75rem;
-}
-
-.durationSelectInput {
-  width: 100%;
 }

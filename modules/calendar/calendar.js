@@ -53,10 +53,9 @@ export function renderCalendarView(
 // Formats the time slot time (e.g. 10:00 AM). Not using the event times!
 export function formatSlotTime(minutes) {
   const hours = Math.floor(minutes / 60);
-  const remainingMinutes = minutes % 60;
   const ampm = hours >= 12 ? "PM" : "AM";
   const formattedHours = hours % 12 || 12;
-  return `${formattedHours}:${remainingMinutes.toString().padStart(2, "0")} ${ampm}`;
+  return `${formattedHours} ${ampm}`;
 }
 
 // Returns true if the given date is today (same calendar day).
