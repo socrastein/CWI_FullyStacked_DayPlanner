@@ -114,11 +114,7 @@ headerDateRoot.render(<CalendarHeaderDisplay />);
 function mountAllDayDisplay(): void {
   const allDayDisplayRootElement = document.getElementById(
     "calendarAllDayDisplayRoot",
-  );
-
-  if (!allDayDisplayRootElement) {
-    return;
-  }
+  )!; //this should fail in a pretty obvious way if the getElementById returns anything but the correct return for the div
 
   const root = createRoot(allDayDisplayRootElement);
   root.render(<CalendarAllDayDisplay />);

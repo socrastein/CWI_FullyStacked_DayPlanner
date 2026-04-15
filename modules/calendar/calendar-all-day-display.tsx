@@ -14,17 +14,20 @@ function CalendarAllDayDisplay() {
     return null;
   }
 
-  //only show holiday's in allDay if displayHolidays is true/ not false
-  if (!displayHolidays) {
-    return null;
-  }
-
   const eventsForViewDate = appState.getEventsByDate(dateView);
 
-  const allDayEvents = eventsForViewDate.filter(
-    (event) =>
-      event.UID.startsWith("holiday-") || event.UID.startsWith("allDay-"),
-  );
+  let allDayEvents = [];
+
+  if (!displayHolidays) {
+    allDayEvents = eventsForViewDate.filter((event) =>
+      event.UID.startsWith("allDay-"),
+    );
+  } else {
+    allDayEvents = eventsForViewDate.filter(
+      (event) =>
+        event.UID.startsWith("allDay-") || event.UID.startsWith("holiday-"),
+    );
+  }
 
   // Do not render the display if there aren't any events to display.
   if (allDayEvents.length === 0) {

@@ -124,5 +124,3 @@ export function getHolidayEvents(year) {
   }
   return holidayDefinitions(year).map(createHolidayEvent);
 }
-
-export { createMockAllDayEvents };
