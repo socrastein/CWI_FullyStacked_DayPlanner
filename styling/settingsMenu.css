@@ -55,13 +55,14 @@ body.dark-mode .settingsMenuButton {
 .settingsMenuItemsContainer {
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+  align-items: center;
   gap: 1rem;
 
-  border: solid 1px black;
-  border-left: solid 0.25rem black;
+  border: 1px solid rgba(var(--bs-primary-rgb), 0.5);
+  border-left-width: 0.5rem;
   border-radius: 0.5rem;
   padding: 0.25rem;
+  padding-bottom: 1rem;
 
   overflow: hidden;
   animation: expandWidth 0.5s ease-out forwards;
@@ -69,11 +70,6 @@ body.dark-mode .settingsMenuButton {
 
 .settingsMenuItemsContainer.closing {
   animation: closeWidth 0.25s ease-in forwards;
-}
-
-body.dark-mode .settingsMenuItemsContainer {
-  border: solid 1px white;
-  border-left: solid 0.25rem white;
 }
 
 .menuItemContainer {
@@ -87,6 +83,7 @@ body.dark-mode .settingsMenuItemsContainer {
   height: 3rem;
 
   border: none;
+  border-radius: 0.5rem;
 
   /* Keeps borders from overlapping and doubling in thickness */
   margin-bottom: -1px;
@@ -113,4 +110,49 @@ body.dark-mode .menuItemIcon {
   font-style: italic;
   margin-left: auto;
   margin-bottom: 0;
+  width: 4rem;
+  height: 1.5rem;
+  text-align: right;
+}
+
+.colorThemeOption {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1rem;
+
+  padding: 0.25rem 2rem;
+  width: 14rem;
+  height: 2rem;
+
+  border: none;
+  border-radius: 0.5rem;
+  transition: all 0.25s ease-out;
+}
+
+.colorThemeOption:hover {
+  width: 15rem;
+  transition: all 0.25s ease-out;
+}
+
+.colorThemeHighlight {
+  border: solid 3px rgb(var(--bs-body-color-rgb));
+}
+
+#colorThemeButton .menuItemSetting {
+  width: 1.5rem;
+  height: 1.5rem;
+  background-image: url("../assets/icons/chevron-right.svg");
+  rotate: 90deg;
+  transition: rotate 0.25s ease-out;
+}
+
+body.dark-mode #colorThemeButton .menuItemSetting {
+  filter: invert(1);
+}
+
+#colorThemeButton .menuItemSetting.flipped {
+  rotate: -90deg;
+  transition: rotate 0.25s ease-out;
 }

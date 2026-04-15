@@ -2,14 +2,14 @@ import { useSyncExternalStore } from "react";
 import { renderCalendarView } from "./calendar/calendar";
 import appState from "./appState";
 
-const colorThemes = {
+export const colorThemes = {
   blue: { hex: "#0d6efd", rgb: "13, 110, 253" },
-  purple: { hex: "#6c5a91", rgb: "108, 90, 145" },
-  pink: { hex: "#8f5173", rgb: "143, 81, 115" },
-  red: { hex: "#c15b58", rgb: "193, 91, 88" },
-  orange: { hex: "#b7613f", rgb: "157, 119, 81" },
+  purple: { hex: "#4e3a77", rgb: "78, 58, 119" },
+  pink: { hex: "#b8568c", rgb: "184, 86, 140" },
+  red: { hex: "#a32420", rgb: "163, 36, 32" },
+  orange: { hex: "#da5b29", rgb: "218, 91, 41" },
   yellow: { hex: "#c8ac69", rgb: "200, 172, 105" },
-  green: { hex: "#378e3c", rgb: "114, 132, 97" },
+  green: { hex: "#378e3c", rgb: "55, 142, 60" },
 };
 
 /**
@@ -124,12 +124,38 @@ class AppSettings {
   get colorTheme() {
     return this._colorTheme;
   }
+
   set colorTheme(value) {
     if (value in colorThemes) {
       this._colorTheme = value;
-      // Update Bootstrap primary color CSS variables based on selected theme
-      this.root.style.setProperty("--bs-primary", colorThemes[value].hex);
-      this.root.style.setProperty("--bs-primary-rgb", colorThemes[value].rgb);
+      const theme = colorThemes[value];
+      document.getElementById("dynamic-theme")?.remove();
+      // Create an element meant to hold Bootstrap CSS variable overrides
+      // for the selected color theme
+
+      // Directly overrwriting CSS variables on the document :root
+      // doesn't properly change button styling as those are scoped
+      // to the .btn-primary class, so we need to create a style element
+      // with the correct selectors to ensure the new theme is applied correctly
+      const style = document.createElement("style");
+      style.id = "dynamic-theme";
+      style.innerHTML = `
+    :root {
+      --bs-primary: ${theme.hex};
+      --bs-primary-rgb: ${theme.rgb};
+    }
+    .btn-primary {
+      --bs-btn-bg: ${theme.hex};
+      --bs-btn-border-color: ${theme.hex};
+      --bs-btn-hover-bg: ${this.darkenColor(theme.hex, 10)};
+      --bs-btn-hover-border-color: ${this.darkenColor(theme.hex, 12)};
+      --bs-btn-active-bg: ${this.darkenColor(theme.hex, 15)};
+    }
+    .text-primary { color: ${theme.hex} !important; }
+    .bg-primary { background-color: ${theme.hex} !important; }
+    .border-primary { border-color: ${theme.hex} !important; }
+    `;
+      document.head.appendChild(style);
     } else {
       throw new Error(
         `Invalid color theme: ${value}. Valid options are: ${Object.keys(
@@ -138,6 +164,14 @@ class AppSettings {
       );
     }
     this.saveSettings();
+  }
+
+  private darkenColor(hex: string, percent: number) {
+    const factor = 1 - percent / 100;
+    const r = Math.round(parseInt(hex.slice(1, 3), 16) * factor);
+    const g = Math.round(parseInt(hex.slice(3, 5), 16) * factor);
+    const b = Math.round(parseInt(hex.slice(5, 7), 16) * factor);
+    return `#${[r, g, b].map((v) => v.toString(16).padStart(2, "0")).join("")}`;
   }
 
   restoreDefaults() {
@@ -172,7 +206,7 @@ class AppSettings {
       this._tempUnit = settings.tempUnit;
       this._firstDayOfWeek = settings.firstDayOfWeek;
       this._displayHolidays = settings.displayHolidays;
-      this._colorTheme = settings.colorTheme;
+      this.colorTheme = settings.colorTheme;
     } catch (error) {
       console.warn("Error parsing settings from localStorage:", error);
     }
