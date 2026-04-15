@@ -44,19 +44,19 @@ export default function EventForm({
           defaultValue={targetEvent?.title}
           required
         />
-        <label htmlFor="eventDate">
-          Date <span className="text-danger">*</span>
-        </label>
-        <input
-          type="date"
-          id="eventDate"
-          name="date"
-          defaultValue={targetEvent?.date ?? appState.dateView}
-          required
-        />
-        <div id="timeContainer">
+        <div>
+          <label htmlFor="eventDate">
+            Date <span className="text-danger">*</span>
+          </label>
+          <input
+            type="date"
+            id="eventDate"
+            name="date"
+            defaultValue={targetEvent?.date ?? appState.dateView}
+            required
+          />
           <label htmlFor="eventStartTime">
-            Start Time <span className="text-danger">*</span>
+            Start <span className="text-danger">*</span>
           </label>
           <input
             type="time"
@@ -67,7 +67,7 @@ export default function EventForm({
             required
           />
           <label htmlFor="eventEndTime">
-            End Time <span className="text-danger">*</span>
+            End <span className="text-danger">*</span>
           </label>
           <input
             type="time"
@@ -77,7 +77,6 @@ export default function EventForm({
             step={900}
             required
           />
-          <label htmlFor="eventColor">Color</label>
           <input
             type="color"
             id="eventColor"
@@ -94,7 +93,7 @@ export default function EventForm({
             <option value="#ff00ff">Magenta</option>
             <option value="#00ffff">Cyan</option>
           </datalist>
-        </div>
+          </div>
         <label htmlFor="eventAddress">Address</label>
         <input
           type="text"
@@ -112,12 +111,24 @@ export default function EventForm({
           cols={50}
         />
         <div id="eventFormButtonsContainer">
-          <button type="submit">Save</button>
-          <button type="button" onClick={onCancel} id="cancelEventButton">
+          <button type="submit" className="btn btn-success btn-sm">
+            Save
+          </button>
+          <button
+            type="button"
+            className="btn btn-sm"
+            onClick={onCancel}
+            id="cancelEventButton"
+          >
             Cancel
           </button>
           {UID ? (
-            <button type="button" onClick={onDelete} id="deleteEventButton">
+            <button
+              type="button"
+              className="btn btn-danger btn-sm"
+              onClick={onDelete}
+              id="deleteEventButton"
+            >
               Delete
             </button>
           ) : undefined}

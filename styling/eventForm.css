@@ -16,6 +16,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow: auto;
+  flex-shrink: 1;
   pointer-events: auto;
 }
 
@@ -30,6 +32,13 @@
   max-width: 600px;
 }
 
+#eventDate,
+#eventStartTime,
+#eventEndTime {
+  width: 110px;
+  height: fit-content;
+}
+
 #eventForm h2 {
   margin: 0;
   text-align: center;
@@ -40,8 +49,8 @@
   border-radius: 0.25rem;
 }
 
-html[data-bs-theme="light"] #eventForm :is(input, textarea, button) {
-  background-color: rgb(236, 236, 236);
+#cancelEventButton {
+  background-color: #0d6efd;
 }
 
 #eventForm #eventColor {
