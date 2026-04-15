@@ -21,18 +21,6 @@ export const MINUTES_PER_DAY = 24 * 60;
 export const PIXELS_PER_MINUTE = 1; // 1 pixel per minute
 export const DAY_TOTAL_HEIGHT = MINUTES_PER_DAY * PIXELS_PER_MINUTE; // Give the day 24 hours of height
 
-function getRenderableEventsForDate(viewDate) {
-  const dateString = viewDate.toLocaleDateString("en-CA");
-  const regularEvents = appState.getEventsByDate(dateString);
-
-  if (!appSettings.displayHolidays) {
-    return regularEvents;
-  }
-
-  const holidayEvents = appState.getHolidayEventsByDate(dateString);
-  return [...regularEvents, ...holidayEvents];
-}
-
 // ----------------------Main Functions----------------------
 // Render the calendar view based on the calendar view type
 export function renderCalendarView(
@@ -44,7 +32,8 @@ export function renderCalendarView(
   if (calendarViewArea)
     calendarViewArea.setAttribute("data-calendar-view", calendarView); // Sets the 'data-calendar-view' attribute so we can show/hide the correct content.
 
-  const filteredDateEvents = getRenderableEventsForDate(viewDate);
+  const dateString = viewDate.toLocaleDateString("en-CA");
+  const filteredDateEvents = appState.getEventsByDate(dateString);
 
   switch (calendarView) {
     case CalendarView.DAY:
@@ -64,10 +53,9 @@ export function renderCalendarView(
 // Formats the time slot time (e.g. 10:00 AM). Not using the event times!
 export function formatSlotTime(minutes) {
   const hours = Math.floor(minutes / 60);
-  const remainingMinutes = minutes % 60;
   const ampm = hours >= 12 ? "PM" : "AM";
   const formattedHours = hours % 12 || 12;
-  return `${formattedHours}:${remainingMinutes.toString().padStart(2, "0")} ${ampm}`;
+  return `${formattedHours} ${ampm}`;
 }
 
 // Returns true if the given date is today (same calendar day).

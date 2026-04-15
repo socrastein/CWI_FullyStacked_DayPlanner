@@ -54,8 +54,8 @@ class AppState {
   // Load calendar view from storage; defaults to "day" if not saved
   private _calendarView = StorageManager.loadCalendarView();
 
-  //holidayEvent Map and set year tester
-  private _holidayEventsByDate = new Map<string, CalendarEvent[]>();
+  //holidayEvent set year tester
+
   private _loadedHolidayYears = new Set<number>();
 
   // Set of listener functions to call whenever the app state changes (e.g. when events are added, edited, or deleted)
@@ -67,18 +67,11 @@ class AppState {
   }
 
   /**
-   * Returns an array of holiday CalendarEvent objects for the specified date.
-   * If no holiday events exist for that date, returns an empty array.
-   * @param date "YYYY-MM-DD" formatted date string to retrieve holiday events for
-   * @returns Array of holiday CalendarEvent objects for that date, or []
-   */
-  getHolidayEventsByDate(date: string): CalendarEvent[] {
-    return this._holidayEventsByDate.get(date) || [];
-  }
-
-  /**
    * Loads holiday events for the specified year into memory if they have not already been loaded.
-   * Holiday events are stored only in app state and are not saved to localStorage.
+   * create a copy of the _eventsByDate map.
+   * add each holiday into the date array that matches the holiday's date.
+   * if there currently isn't an array for that date, create one
+   * then writes the updated map back to _eventsByDate.
    * @param year Four-digit year to load holiday events for
    */
   loadHolidayEventsForYear(year: number): void {
@@ -87,18 +80,18 @@ class AppState {
     }
 
     const holidayEvents = getHolidayEvents(year);
+    const updatedEventsByDate = new Map(this._eventsByDate);
 
     holidayEvents.forEach((holidayEvent) => {
       const dateKey = holidayEvent.date;
+      const existingEvents = updatedEventsByDate.get(dateKey) ?? [];
 
-      if (!this._holidayEventsByDate.has(dateKey)) {
-        this._holidayEventsByDate.set(dateKey, []);
-      }
-
-      this._holidayEventsByDate.get(dateKey)!.push(holidayEvent);
+      updatedEventsByDate.set(dateKey, [...existingEvents, holidayEvent]);
     });
 
+    this._eventsByDate = updatedEventsByDate;
     this._loadedHolidayYears.add(year);
+    this.notifyListeners();
   }
 
   /**
@@ -341,8 +334,9 @@ const appState = new AppState();
 // Tapping F2 3x within a couple seconds will load mock events for testing purposes. This is a "cheat code" that allows us to easily load mock events without having to run tests or manually create events one by one.
 registerCheatCode(() => {
   console.log("Loading mock events...");
-  const events = createMockEvents();
-  events.forEach((event) => appState.addEvent(event));
+  const mockEvents = createMockEvents();
+
+  mockEvents.forEach((event) => appState.addEvent(event));
 
   // Reload the page to update the UI with the new events
   location.reload();

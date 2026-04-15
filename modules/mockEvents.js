@@ -3,6 +3,7 @@ import CalendarEvent from "./classCalendarEvent";
 
 function getDate(offsetDays) {
   const d = new Date();
+  d.setHours(0, 0, 0, 0);
   d.setDate(d.getDate() + offsetDays);
   return d.toISOString().slice(0, 10);
 }
@@ -191,6 +192,25 @@ const mockEvents = [
     description:
       "Birthday dinner at Carmine's. Don't forget to pick up the cake beforehand.",
     color: "#50C878",
+  },
+  // All Day Mock Events
+  {
+    UID: `allDay-test-holiday-2-${getDate(0)}`,
+    title: "Anniversary",
+    date: getDate(0),
+    timeStart: "00:00",
+    timeEnd: "01:00",
+    description: "Mock all-day holiday for testing",
+    address: "",
+  },
+  {
+    UID: `allDay-test-holiday-3-${getDate(1)}`,
+    title: "Taco Night",
+    date: getDate(1),
+    timeStart: "00:00",
+    timeEnd: "01:00",
+    description: "Mock all-day holiday for testing",
+    address: "",
   },
 ];
 

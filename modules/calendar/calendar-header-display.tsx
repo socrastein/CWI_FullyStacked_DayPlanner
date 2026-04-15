@@ -10,7 +10,7 @@ function CalendarHeaderDisplay() {
   const { calendarView } = useAppState();
   const { firstDayOfWeek } = useAppSettings();
   return (
-    <span>
+    <span className="fs-5 fw-bold">
       {formatHeaderDate(calendarView, firstDayOfWeek, appState.dateViewObject)}
     </span>
   );

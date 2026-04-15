@@ -28,8 +28,6 @@ export default function CalendarEventButton({
 	const width = 100 / totalLanes;
 	const leftPosition =  width * laneIndex;
 
-	const formattedTimeString = `${Calendar.formatTime(event.timeStart)} - ${Calendar.formatTime(event.timeEnd)}`;
-
 	return (
 		<button
 			className={
@@ -54,12 +52,10 @@ export default function CalendarEventButton({
 		>
 			{isShort ? (
 				<span className="calendarEventHeader">
-					<span className="calendarEventTime">{formattedTimeString}</span>
 					<span className="calendarEventTitle">{event.title}</span>
 				</span>
 			) : (
 				<>
-					<span className="calendarEventTime">{formattedTimeString}</span>
 					<span className="calendarEventTitle">{event.title}</span>
 					<span className="calendarEventDescription">{event.description}</span>
 				</>
