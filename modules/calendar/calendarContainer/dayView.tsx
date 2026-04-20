@@ -70,6 +70,7 @@ export default function DayView({ events, viewDate }: Props) {
 				slots={slots}
 				slotHeight={slotHeight}
 				currentMinutesFromMidnight={currentMinutesFromMidnight}
+				viewDate={viewDate}
 			/>
 		</div>
 	);

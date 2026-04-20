@@ -6,6 +6,7 @@ import { createRoot, type Root } from "react-dom/client";
 import React from "react";
 import EventForm from "./eventForm";
 import appState from "./appState";
+import { clearTimeSlot } from "./calendar/calendarContainer/tapToAddEvent";
 
 // TODO: Add non null verification/exception handling
 
@@ -29,6 +30,13 @@ function initializeEventManager(): void {
   addEventButton?.addEventListener("click", () => {
     showEventManager();
   });
+
+  // For long press on calandar
+  window.addEventListener("openAddEvent", () => {
+    showEventManager();
+  });
+
+
 
   //additional listener for 'edit event' option.  Reads clicks on event targets and stores eventUID then runs openEventEditor() based on eventUID.
 
@@ -63,6 +71,7 @@ function showEventManager(UID: string | null = null): void {
   );
 
   function close() {
+    clearTimeSlot();
     eventFormRoot!.unmount();
   }
 
