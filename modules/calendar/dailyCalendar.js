@@ -303,14 +303,10 @@ export function showClickedEventPopup(event) {
   document.getElementById("clickedEventPopupTitle").textContent = event.title;
   document.getElementById("clickedEventPopupTime").textContent =
     `${Calendar.formatTime(event.timeStart)} - ${Calendar.formatTime(event.timeEnd)}`;
-  document.getElementById("clickedEventPopupDescription").textContent =
-    "Description: " + event.description;
-  if (event.address !== undefined) {
-    document.getElementById("clickedEventPopupAddress").textContent =
-      "Address: " + event.address;
-  } else {
-    document.getElementById("clickedEventPopupAddress").textContent = "";
-  }
+  document.getElementById("clickedEventPopupDescriptionText").textContent =
+    event.description;
+  document.getElementById("clickedEventPopupAddressText").textContent =
+    event.address;
   document.getElementById("editEventButton").onclick = () => {
     editClickedEventPopup(event);
   };
