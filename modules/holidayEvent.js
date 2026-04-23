@@ -12,7 +12,7 @@ function createHolidayEvent({ title, date }) {
     UID: `holiday-${title.toLowerCase().replaceAll(" ", "-")}-${date}`,
     date,
     timeStart: "00:00",
-    timeEnd: "01:00",
+    timeEnd: "23:45",
     title,
     description: "",
     address: "",
