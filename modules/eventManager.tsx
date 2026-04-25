@@ -31,13 +31,6 @@ function initializeEventManager(): void {
     showEventManager();
   });
 
-  // For long press on calandar
-  window.addEventListener("openAddEvent", () => {
-    showEventManager();
-  });
-
-
-
   //additional listener for 'edit event' option.  Reads clicks on event targets and stores eventUID then runs openEventEditor() based on eventUID.
 
   calendarEventsLayer?.addEventListener("click", (event) => {

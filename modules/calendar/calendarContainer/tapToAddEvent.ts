@@ -1,6 +1,8 @@
 // Lets you do a long press anywhere on the day calandar
 // and it automatically fills out time
 
+import { showEventManager } from "../../eventManager";
+
 let selectedTime: { startTime: string; endTime: string } | null = null;
 
 let pressTimer: ReturnType<typeof setTimeout> | null = null;
@@ -70,7 +72,7 @@ function calcTime(
     endTime: formatTime(endMinutes),
   };
 
-  window.dispatchEvent(new Event("openAddEvent"));
+  showEventManager();
 }
 
 // Long Press
