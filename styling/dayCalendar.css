@@ -1,11 +1,10 @@
-.allDayDisplay{
+.allDayDisplay {
   background-color: rgba(var(--bs-primary-rgb), 0.15);
 }
 
 /* Two-column layout: time labels | day grid */
 .calendarDayContent {
-  /* Counterintuitive to use display: hidden, but we need to hide the content until the calendar view is set to day */
-  display: hidden;
+  display: flex;
   flex-direction: row;
   min-height: 100%;
 }
@@ -55,7 +54,8 @@
 
 .calendarHourGridLine {
   flex-shrink: 0;
-  border-bottom: var(--bs-border-width) solid color-mix(in srgb, var(--bs-border-color) 50%, transparent);
+  border-bottom: var(--bs-border-width) solid
+    color-mix(in srgb, var(--bs-border-color) 50%, transparent);
 
   &:last-child {
     border-bottom: none;
@@ -121,7 +121,11 @@
 }
 
 .calendarEventContainer:hover {
-  background-color: color-mix(in srgb, var(--event-color) 20%, var(--bs-secondary-bg));
+  background-color: color-mix(
+    in srgb,
+    var(--event-color) 20%,
+    var(--bs-secondary-bg)
+  );
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
