@@ -169,7 +169,6 @@ function closeMenu() {
     { once: true },
   ); // 'once' ensures the event listener is removed after it runs
   colorThemeChevronDown();
-  // cityChevronDown();
 }
 
 function outsideClickListener(event) {
