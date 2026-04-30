@@ -35,6 +35,10 @@ function mountCalendarWrapper(): void {
   root.render(<CalendarWrapper />);
 }
 
+function refreshUI(): void {
+
+}
+
 // Render the calendary view button group that includes the 'Day', 'Week', 'Month' buttons
 function renderCalendarViewButtons(): void {
   // Get the root element for the calendar view buttons.
@@ -97,4 +101,4 @@ function mountAllDayDisplay(): void {
   root.render(<CalendarAllDayDisplay />);
 }
 
-export { initializeCalendarUI };
+export { initializeCalendarUI, refreshUI };

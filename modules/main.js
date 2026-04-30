@@ -10,7 +10,7 @@ import appSettings from "./appSettings";
 import createSettingsMenu from "./settingsMenu";
 
 import { initializeEventManager } from "./eventManager";
-import { initializeCalendarUI } from "./calendar/calendar-ui";
+import { initializeCalendarUI, refreshUI } from "./calendar/calendar-ui";
 import enableSwipeNavigation from "./calendar/navigation/swipeNavigation";
 
 import { loadWeatherDisplay } from "./weatherDisplay";
@@ -22,6 +22,7 @@ createSettingsMenu();
 
 initializeEventManager();
 initializeCalendarUI();
+refreshUI();
 enableSwipeNavigation();
 
 loadWeatherDisplay();

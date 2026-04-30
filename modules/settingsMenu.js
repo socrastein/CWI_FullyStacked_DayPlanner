@@ -9,6 +9,8 @@ import thermIcon from "../assets/icons/thermometer.svg";
 import calIcon from "../assets/icons/calendar-1.svg";
 import giftIcon from "../assets/icons/gift.svg";
 import paletteIcon from "../assets/icons/palette.svg";
+import cityIcon from "../assets/icons/map-pin.svg";
+import sendIcon from "../assets/icons/send-horizontal.svg";
 
 let menuIsOpen = false;
 
@@ -51,6 +53,15 @@ const menuItems = [
       return appSettings.displayHolidays;
     },
     click: appSettings.toggleDisplayHolidays,
+  },
+  {
+    name: "Enter City",
+    id: "selectCityButton",
+    icon: cityIcon,
+    setting: function () {
+      return appSettings.city
+    },
+    click: toggleCityMenu,
   },
   {
     name: "Color Theme",
@@ -153,10 +164,12 @@ function closeMenu() {
       menuIsOpen = false;
       document.removeEventListener("click", outsideClickListener);
       closeColorThemesMenu();
+      closeCityMenu();
     },
     { once: true },
   ); // 'once' ensures the event listener is removed after it runs
   colorThemeChevronDown();
+  // cityChevronDown();
 }
 
 function outsideClickListener(event) {
@@ -166,6 +179,87 @@ function outsideClickListener(event) {
   // Check if event.target is within the menu container
   if (menu.contains(event.target)) return;
   closeMenu();
+}
+
+// City menu
+let cityMenuIsOpen = false;
+
+function toggleCityMenu() {
+  if (cityMenuIsOpen) {
+    closeCityMenu();
+  } else {
+    expandCityMenu();
+  }
+}
+
+/**
+ * Inserts an inline input panel directly below the "Select City" row.
+ * The user types any city name or country name and submits with Enter or the button.
+ */
+function expandCityMenu() {
+  if (colorThemesMenuIsOpen) closeColorThemesMenu();
+
+  const panel = document.createElement("div");
+  panel.id = "cityInputPanel";
+  panel.classList.add("cityInputPanel");
+
+  const input = document.createElement("input");
+  input.type = "text";
+  input.id = "cityInput";
+  input.classList.add("cityInput");
+  input.placeholder = appSettings.city;
+  input.setAttribute("autocomplete", "off");
+
+  const confirmBtn = document.createElement("button");
+  confirmBtn.classList.add("cityConfirmBtn");
+
+  const img = document.createElement("img");
+  img.src = sendIcon;
+
+  confirmBtn.prepend(img);
+  confirmBtn.title = "Set city";
+
+  // Stop clicks inside the panel from bubbling to the outside-click listener
+  panel.addEventListener("click", (e) => e.stopPropagation());
+
+  function submit() {
+    const value = input.value.trim();
+    if (!value) return;
+    handleCityChange(value);
+    closeCityMenu();
+  }
+
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") submit();
+    if (e.key === "Escape") closeCityMenu();
+  });
+
+  confirmBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    submit();
+  });
+
+  panel.append(input, confirmBtn);
+  settingsMenuItemsContainer.insertBefore(panel, colorThemeButton);
+
+  // Auto-focus after insertion so the user can type immediately
+  requestAnimationFrame(() => input.focus());
+  cityMenuIsOpen = true;
+}
+
+function closeCityMenu() {
+  document.getElementById("cityInputPanel")?.remove();
+  cityMenuIsOpen = false;
+}
+
+function handleCityChange(city) {
+  appSettings.setCity(city);
+
+  // Update the setting label on the "Select City" row
+  const selectCityRow = document.getElementById("selectCityButton");
+  if (selectCityRow) {
+    selectCityRow.querySelector(".menuItemSetting").textContent = city.slice(0, 6);
+  }
 }
 
 function toggleColorThemesMenu() {
@@ -184,6 +278,8 @@ const colorThemeTimeoutDelay = 30; // ms delay between each color option appeari
  * Currently set color is assigned a highlight class to visually indicate which theme is active.
  */
 function expandColorThemesMenu() {
+  if (cityMenuIsOpen) closeCityMenu();
+
   const colorNames = Object.keys(colorThemes);
 
   for (let i = 0; i < colorNames.length; i++) {

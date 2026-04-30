@@ -2,10 +2,9 @@ import "../styling/weatherDisplay.css";
 
 import { createRoot } from "react-dom/client";
 import { useEffect, useState } from "react";
-import { useAppSettings } from "./appSettings";
+import appSettings, { useAppSettings } from "./appSettings";
 
 const API_KEY = "63b4c58720ac4505abc204820260503";
-const DEFAULT_CITY = "Boise";
 
 // For fetching new data if cached data is older than 10 minutes
 const CACHE_DURATION_MS = 10 * 60 * 1000;
@@ -32,7 +31,7 @@ export function loadWeatherDisplay() {
   const container = document.getElementById("weatherDisplay");
   if (!container) throw new Error("weatherDisplay container not found");
 
-  createRoot(container).render(<WeatherDisplay city={DEFAULT_CITY} />);
+  createRoot(container).render(<WeatherDisplay />);
 }
 
 /**
@@ -40,15 +39,20 @@ export function loadWeatherDisplay() {
  * It uses caching to avoid unnecessary API calls. Display updates when
  * the temp unit changes. Clicking the readout opens an expanded overlay with more details.
  */
-function WeatherDisplay({ city }: { city: string }) {
+function WeatherDisplay() {
   const { tempUnit } = useAppSettings();
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
   const [error, setError] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
 
   useEffect(() => {
+    // Reset stale data immediately so we don't show the old city's weather
+    // while the new fetch is in flight.
+    setWeatherData(null);
+    setError(false);
+
     const fetchData = () => {
-      loadWeather(city)
+      loadWeather(appSettings.city)
         .then((data) => {
           setWeatherData(data);
           setError(false);
@@ -65,7 +69,7 @@ function WeatherDisplay({ city }: { city: string }) {
     // This ensures we get updated weather information without needing a page refresh.
     const interval = setInterval(fetchData, CACHE_DURATION_MS);
     return () => clearInterval(interval);
-  }, [city]);
+  }, [appSettings.city]);
 
   if (error) return <p>⛓️‍💥</p>;
   if (!weatherData) return <p className="weatherLoadingText">Loading...</p>;
