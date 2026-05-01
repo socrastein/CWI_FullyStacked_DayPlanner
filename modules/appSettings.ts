@@ -191,7 +191,7 @@ class AppSettings {
     this._firstDayOfWeek = "Sunday";
     this._displayHolidays = true;
     this._colorTheme = "blue";
-    this._city = "Boise";
+    this._city = appSettings._city;
     this.notifyListeners();
     this.saveSettings();
   }

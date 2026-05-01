@@ -207,7 +207,7 @@ function expandCityMenu() {
   input.id = "cityInput";
   input.classList.add("cityInput");
   input.placeholder = appSettings.city;
-  input.setAttribute("autocomplete", "off");
+  input.setAttribute("autocomplete", "on");
 
   const confirmBtn = document.createElement("button");
   confirmBtn.classList.add("cityConfirmBtn");
@@ -217,9 +217,6 @@ function expandCityMenu() {
 
   confirmBtn.prepend(img);
   confirmBtn.title = "Set city";
-
-  // Stop clicks inside the panel from bubbling to the outside-click listener
-  panel.addEventListener("click", (e) => e.stopPropagation());
 
   function submit() {
     const value = input.value.trim();
@@ -257,7 +254,7 @@ function handleCityChange(city) {
   // Update the setting label on the "Select City" row
   const selectCityRow = document.getElementById("selectCityButton");
   if (selectCityRow) {
-    selectCityRow.querySelector(".menuItemSetting").textContent = city.slice(0, 6);
+    selectCityRow.querySelector(".menuItemSetting").textContent = appSettings.city;
   }
 }
 
