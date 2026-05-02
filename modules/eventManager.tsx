@@ -1,11 +1,11 @@
 import generateUID from "./UIDGenerator";
 import StorageManager from "./dataStorage";
 import CalendarEvent from "./classCalendarEvent";
-import { renderCalendarView } from "./calendar/calendar";
 import { createRoot, type Root } from "react-dom/client";
 import React from "react";
 import EventForm from "./eventForm";
 import appState from "./appState";
+import { clearTimeSlot } from "./calendar/calendarContainer/tapToAddEvent";
 
 // TODO: Add non null verification/exception handling
 
@@ -63,6 +63,7 @@ function showEventManager(UID: string | null = null): void {
   );
 
   function close() {
+    clearTimeSlot();
     eventFormRoot!.unmount();
   }
 
@@ -72,13 +73,14 @@ function showEventManager(UID: string | null = null): void {
   }
 
   function deleteEvent() {
-    appState.removeEvent(UID!);
-    renderCalendarView(
-      appState.allEventsByDate,
-      appState.dateViewObject,
-      appState.calendarView,
-    );
-    close();
+    if (
+      confirm(
+        "Are you sure you want to delete this event? This action cannot be undone.",
+      )
+    ) {
+      appState.removeEvent(UID!);
+      close();
+    }
   }
 }
 
@@ -125,11 +127,6 @@ function submitEvent(
   const newEvent = new CalendarEvent(eventProps);
 
   appState.addEvent(newEvent);
-  renderCalendarView(
-    appState.allEventsByDate,
-    appState.dateViewObject,
-    appState.calendarView,
-  );
 }
 
 /**

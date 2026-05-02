@@ -5,8 +5,7 @@
 
 /* Two-column layout: time labels | day grid */
 .calendarDayContent {
-  /* Counterintuitive to use display: hidden, but we need to hide the content until the calendar view is set to day */
-  display: hidden;
+  display: flex;
   flex-direction: row;
   min-height: 100%;
 }

@@ -2,6 +2,7 @@ import React from "react";
 import appState from "./appState";
 import CalendarEvent from "./classCalendarEvent";
 import { useState } from "react";
+import { getTimeSlot } from "./calendar/calendarContainer/tapToAddEvent";
 
 type eventFormProps = {
   UID: string | null;
@@ -42,66 +43,17 @@ export default function EventForm({
     >
       <form id="eventForm" className="bg-body" onSubmit={onSubmit}>
         <h2 id="eventFormTitle">{title}</h2>
-        <label htmlFor="eventTitle">
-          Event Name <span className="text-danger">*</span>
-        </label>
-        <input
-          type="text"
-          id="eventTitle"
-          name="title"
-          defaultValue={targetEvent?.title}
-          required
-        />
-        <label htmlFor="eventDate">
-          Date <span className="text-danger">*</span>
-        </label>
-        <input
-          type="date"
-          id="eventDate"
-          name="date"
-          defaultValue={targetEvent?.date ?? appState.dateView}
-          required
-        />
-        <div id="timeContainer">
-          <label htmlFor="eventStartTime">
-            Start Time <span className="text-danger">*</span>
+        <div>
+          <label htmlFor="eventTitle">
+            Event Name <span className="text-danger">*</span>
           </label>
           <input
-            type="time"
-            id="eventStartTime"
-            name="timeStart"
-            defaultValue={targetEvent?.timeStart}
-            step={900}
-            required={!isAllDay}
-            disabled={isAllDay}
+            type="text"
+            id="eventTitle"
+            name="title"
+            defaultValue={targetEvent?.title}
+            required
           />
-          <label htmlFor="eventEndTime">
-            End Time <span className="text-danger">*</span>
-          </label>
-          <input
-            type="time"
-            id="eventEndTime"
-            name="timeEnd"
-            defaultValue={targetEvent?.timeEnd}
-            step={900}
-            required={!isAllDay}
-            disabled={isAllDay}
-          />
-          <div className="form-check mb-3">
-            <input
-              className="form-check-input"
-              type="checkbox"
-              id="allDay"
-              name="allDay"
-              checked={isAllDay}
-              disabled={isExistingAllDayEvent}
-              onChange={(event) => setIsAllDay(event.target.checked)}
-            />
-            <label className="form-check-label" htmlFor="allDay">
-              All-Day
-            </label>
-          </div>
-          <label htmlFor="eventColor">Color</label>
           <input
             type="color"
             id="eventColor"
@@ -120,6 +72,63 @@ export default function EventForm({
             <option value="#00ffff">Cyan</option>
           </datalist>
         </div>
+        <div>
+          <div className="inputPair">
+            <label htmlFor="eventDate">
+              Date <span className="text-danger">*</span>
+            </label>
+            <input
+              type="date"
+              id="eventDate"
+              name="date"
+              defaultValue={targetEvent?.date ?? appState.dateView}
+              required
+            />
+          </div>
+          <div className="inputPair">
+            <label htmlFor="eventStartTime">
+              Start <span className="text-danger">*</span>
+            </label>
+            <input
+              type="time"
+              id="eventStartTime"
+              name="timeStart"
+              defaultValue={targetEvent?.timeStart ?? getTimeSlot()?.startTime}
+              step={900}
+              required={!isAllDay}
+              disabled={isAllDay}
+            />
+          </div>
+          <div className="inputPair">
+            <label htmlFor="eventEndTime">
+              End <span className="text-danger">*</span>
+            </label>
+            <input
+              type="time"
+              id="eventEndTime"
+              name="timeEnd"
+              defaultValue={targetEvent?.timeEnd ?? getTimeSlot()?.endTime}
+              step={900}
+              required={!isAllDay}
+              disabled={isAllDay}
+            />
+          </div>
+          <div className="form-check mb-3">
+            <input
+              className="form-check-input"
+              type="checkbox"
+              id="allDay"
+              name="allDay"
+              checked={isAllDay}
+              disabled={isExistingAllDayEvent}
+              onChange={(event) => setIsAllDay(event.target.checked)}
+            />
+            <label className="form-check-label" htmlFor="allDay">
+              All-Day
+            </label>
+            d
+          </div>
+        </div>
         <label htmlFor="eventAddress">Address</label>
         <input
           type="text"
@@ -133,16 +142,28 @@ export default function EventForm({
           id="eventDescription"
           name="description"
           defaultValue={targetEvent?.description}
-          rows={4}
+          rows={3}
           cols={50}
         />
         <div id="eventFormButtonsContainer">
-          <button type="submit">Save</button>
-          <button type="button" onClick={onCancel} id="cancelEventButton">
+          <button type="submit" className="btn btn-success btn-sm">
+            Save
+          </button>
+          <button
+            type="button"
+            className="btn btn-sm"
+            onClick={onCancel}
+            id="cancelEventButton"
+          >
             Cancel
           </button>
           {UID ? (
-            <button type="button" onClick={onDelete} id="deleteEventButton">
+            <button
+              type="button"
+              className="btn btn-danger btn-sm"
+              onClick={onDelete}
+              id="deleteEventButton"
+            >
               Delete
             </button>
           ) : undefined}

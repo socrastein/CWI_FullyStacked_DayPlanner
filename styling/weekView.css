@@ -1,0 +1,57 @@
+.weekEventsContainer {
+  position: relative;
+  height: 1440px;
+}
+
+.weekViewGridContainer {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  column-gap: 0.00625rem;
+}
+
+.weekHourGridLine {
+  height: 60px;
+  border-bottom: 1px solid
+    color-mix(in srgb, var(--bs-secondary) 10%, transparent);
+}
+
+.weekDayHeader {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background-color: var(--bs-body-bg);
+  border-bottom: 1px solid
+    color-mix(in srgb, var(--bs-secondary) 50%, transparent);
+}
+
+.weekDayHeader:hover {
+  background-color: color-mix(
+    in srgb,
+    var(--bs-primary) 10%,
+    var(--bs-body-bg)
+  );
+}
+
+.eventTitle {
+  font-size: 0.8rem;
+  font-weight: 600; /* medium */
+}
+
+@media (max-width: 768px) {
+  .eventTitle {
+    font-size: 0.625rem;
+  }
+}
+
+.weekEventButton {
+  position: absolute;
+  overflow: hidden;
+  display: flex;
+  align-items: start;
+  justify-content: start;
+  padding-block: 0rem;
+  text-align: start;
+}
