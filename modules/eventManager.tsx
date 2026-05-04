@@ -108,7 +108,7 @@ function submitEvent(
   //forces mock time to meet requirements for CalendarEvent generation
   if (isAllDay) {
     eventProps.timeStart = "00:00";
-    eventProps.timeEnd = "23:45";
+    eventProps.timeEnd = "01:00";
   }
 
   // Validate form input data
