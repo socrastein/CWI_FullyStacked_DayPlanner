@@ -22,6 +22,16 @@ export default function EventForm({
   const targetEvent: CalendarEvent | undefined = UID
     ? appState.getEventByUID(UID)
     : undefined;
+
+  const [isRecurring, setIsRecurring] = React.useState(
+    Boolean(targetEvent && targetEvent.recurrence !== "none"),
+  );
+
+  const [selectedRecurrence, setSelectedRecurrence] = React.useState(
+    targetEvent?.recurrence && targetEvent.recurrence !== "none"
+      ? targetEvent.recurrence
+      : "weekly",
+  );
   // If UID is null, return an empty event form submission
   return (
     <div
@@ -103,102 +113,125 @@ export default function EventForm({
               required
             />
           </div>
-
           <div id="recurringEventContainer">
             <label htmlFor="isRecurringEvent">
               <input
                 type="checkbox"
                 id="isRecurringEvent"
                 name="isRecurring"
-                defaultChecked={targetEvent?.recurrence !== "none"}
+                checked={isRecurring}
+                onChange={(event) => setIsRecurring(event.target.checked)}
               />
               Recurring event
             </label>
 
-            <div id="recurrenceOptionsContainer">
-              <label htmlFor="eventRecurrence">Repeat</label>
-              <select
-                id="eventRecurrence"
-                name="recurrence"
-                defaultValue={
-                  targetEvent?.recurrence && targetEvent.recurrence !== "none"
-                    ? targetEvent.recurrence
-                    : "weekly"
-                }
-              >
-                <option value="weekly">Weekly</option>
-                <option value="monthly">Monthly</option>
-                <option value="yearly">Yearly</option>
-              </select>
+            {isRecurring && (
+              <div id="recurrenceOptionsContainer">
+                <label htmlFor="eventRecurrence">Repeat</label>
+                <select
+                  id="eventRecurrence"
+                  name="recurrence"
+                  value={selectedRecurrence}
+                  onChange={(event) =>
+                    setSelectedRecurrence(event.target.value)
+                  }
+                >
+                  <option value="weekly">Weekly</option>
+                  <option value="monthly">Monthly</option>
+                  <option value="yearly">Yearly</option>
+                </select>
 
-              <fieldset id="eventRecurrenceDays">
-                <legend>Repeat Days</legend>
+                {selectedRecurrence === "weekly" && (
+                  <fieldset id="eventRecurrenceDays">
+                    <legend>Repeat Days</legend>
 
-                <label>
-                  <input
-                    type="checkbox"
-                    name="recurrenceDays"
-                    value="SU"
-                    defaultChecked={targetEvent?.recurrenceDays?.includes("SU")}
-                  />{" "}
-                  Sunday
-                </label>
-                <label>
-                  <input
-                    type="checkbox"
-                    name="recurrenceDays"
-                    value="MO"
-                    defaultChecked={targetEvent?.recurrenceDays?.includes("MO")}
-                  />{" "}
-                  Monday
-                </label>
-                <label>
-                  <input
-                    type="checkbox"
-                    name="recurrenceDays"
-                    value="TU"
-                    defaultChecked={targetEvent?.recurrenceDays?.includes("TU")}
-                  />{" "}
-                  Tuesday
-                </label>
-                <label>
-                  <input
-                    type="checkbox"
-                    name="recurrenceDays"
-                    value="WE"
-                    defaultChecked={targetEvent?.recurrenceDays?.includes("WE")}
-                  />{" "}
-                  Wednesday
-                </label>
-                <label>
-                  <input
-                    type="checkbox"
-                    name="recurrenceDays"
-                    value="TH"
-                    defaultChecked={targetEvent?.recurrenceDays?.includes("TH")}
-                  />{" "}
-                  Thursday
-                </label>
-                <label>
-                  <input
-                    type="checkbox"
-                    name="recurrenceDays"
-                    value="FR"
-                    defaultChecked={targetEvent?.recurrenceDays?.includes("FR")}
-                  />{" "}
-                  Friday
-                </label>
-                <label>
-                  <input
-                    type="checkbox"
-                    name="recurrenceDays"
-                    value="SA"
-                    defaultChecked={targetEvent?.recurrenceDays?.includes("SA")}
-                  />{" "}
-                  Saturday
-                </label>
-              </fieldset>
-            </div>
+                    <label>
+                      <input
+                        type="checkbox"
+                        name="recurrenceDays"
+                        value="SU"
+                        defaultChecked={targetEvent?.recurrenceDays?.includes(
+                          "SU",
+                        )}
+                      />{" "}
+                      Sunday
+                    </label>
+
+                    <label>
+                      <input
+                        type="checkbox"
+                        name="recurrenceDays"
+                        value="MO"
+                        defaultChecked={targetEvent?.recurrenceDays?.includes(
+                          "MO",
+                        )}
+                      />{" "}
+                      Monday
+                    </label>
+
+                    <label>
+                      <input
+                        type="checkbox"
+                        name="recurrenceDays"
+                        value="TU"
+                        defaultChecked={targetEvent?.recurrenceDays?.includes(
+                          "TU",
+                        )}
+                      />{" "}
+                      Tuesday
+                    </label>
+
+                    <label>
+                      <input
+                        type="checkbox"
+                        name="recurrenceDays"
+                        value="WE"
+                        defaultChecked={targetEvent?.recurrenceDays?.includes(
+                          "WE",
+                        )}
+                      />{" "}
+                      Wednesday
+                    </label>
+
+                    <label>
+                      <input
+                        type="checkbox"
+                        name="recurrenceDays"
+                        value="TH"
+                        defaultChecked={targetEvent?.recurrenceDays?.includes(
+                          "TH",
+                        )}
+                      />{" "}
+                      Thursday
+                    </label>
+
+                    <label>
+                      <input
+                        type="checkbox"
+                        name="recurrenceDays"
+                        value="FR"
+                        defaultChecked={targetEvent?.recurrenceDays?.includes(
+                          "FR",
+                        )}
+                      />{" "}
+                      Friday
+                    </label>
+
+                    <label>
+                      <input
+                        type="checkbox"
+                        name="recurrenceDays"
+                        value="SA"
+                        defaultChecked={targetEvent?.recurrenceDays?.includes(
+                          "SA",
+                        )}
+                      />{" "}
+                      Saturday
+                    </label>
+                  </fieldset>
+                )}
+              </div>
+            )}
           </div>
         </div>
         <label htmlFor="eventAddress">Address</label>

@@ -7,6 +7,8 @@ import { createMockEvents, registerCheatCode } from "./mockEvents";
 
 import { getHolidayEvents } from "./holidayEvent";
 
+import { getRecurringEventsForDate } from "./recurringEvents";
+
 // Helper functions to map events by UID and by Date for efficient access
 
 /**
@@ -137,7 +139,14 @@ class AppState {
    * or [] if no events exist for that date
    */
   getEventsByDate(date: string): CalendarEvent[] {
-    return this._eventsByDate.get(date) || [];
+    const eventsSavedOnDate = this._eventsByDate.get(date) || [];
+
+    const recurringEventsForDate = getRecurringEventsForDate(
+      Array.from(this._eventsByUID.values()),
+      date,
+    );
+
+    return [...eventsSavedOnDate, ...recurringEventsForDate];
   }
 
   /**

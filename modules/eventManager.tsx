@@ -101,7 +101,9 @@ function submitEvent(
   const data: FormData = new FormData(eventForm);
   const eventProps: any = Object.fromEntries(data);
 
-  eventProps.recurrenceDays = data.getAll("recurrenceDays");
+  eventProps.recurrenceDays = data
+    .getAll("recurrenceDays")
+    .map((day) => String(day));
 
   if (!data.has("isRecurring")) {
     eventProps.recurrence = "none";
