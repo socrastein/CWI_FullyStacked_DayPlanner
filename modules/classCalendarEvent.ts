@@ -1,5 +1,25 @@
 import generateUID from "./UIDGenerator";
 
+type DayOfWeek = "Sun" | "Mon" | "Tue" | "Wed" | "Thu" | "Fri" | "Sat";
+
+type RecurrenceRule =
+  | { type: "weekDays"; days: DayOfWeek[] }
+  | { type: "monthly" }
+  | { type: "yearly" };
+
+interface CalendarEventOptions {
+  UID?: string;
+  date: string;
+  timeStart: string;
+  timeEnd: string;
+  title: string;
+  description?: string | undefined;
+  address?: string | undefined;
+  color?: string | undefined;
+  recurrence?: RecurrenceRule | undefined;
+  exceptions?: string[];
+}
+
 /**
  * Event class represents a calendar event and includes validation for date and time formats.
  * Pass an options object to the constructor with the following properties:
@@ -11,17 +31,21 @@ import generateUID from "./UIDGenerator";
  * - description: string representing the event description
  * - address: string representing the event address
  * - color: string representing the event color (e.g. "#FF0000")
+ * - recurrence: RecurrenceRule object with .type and .days[] if .type is "weekDays"
+ * - exceptions: string[] dates that have been deleted from a recurring series
  */
 export default class CalendarEvent {
   // Private fields
-  #UID;
-  #date;
-  #timeStart;
-  #timeEnd;
-  #title;
-  #description;
-  #address;
-  #color;
+  #UID: string;
+  #date!: string;
+  #timeStart!: string;
+  #timeEnd!: string;
+  #title!: string;
+  #description: string | undefined;
+  #address: string | undefined;
+  #color: string | undefined;
+  #recurrence: RecurrenceRule | undefined;
+  #exceptions: string[];
 
   // Uses object destructuring to pull named properties off of props object
   constructor({
@@ -33,7 +57,9 @@ export default class CalendarEvent {
     description,
     address,
     color,
-  }) {
+    recurrence,
+    exceptions = [],
+  }: CalendarEventOptions) {
     // Check that the required properties have been passed to the constructor
     if (!date || !timeStart || !timeEnd || !title) {
       throw new Error(
@@ -55,18 +81,26 @@ export default class CalendarEvent {
     this.description = description;
     this.address = address;
     this.color = color;
+    this.#recurrence = recurrence;
+    this.#exceptions = exceptions;
   }
 
   // Getter with no setter since UID should be read-only after construction
-  get UID() {
+  get UID(): string {
     return this.#UID;
   }
 
   // Calculate difference between timeStart and timeEnd in minutes
-  get length() {
+  get length(): number {
     // Grab hours and minutes from timeStart and timeEnd
-    const [startHour, startMinute] = this.timeStart.split(":").map(Number);
-    const [endHour, endMinute] = this.timeEnd.split(":").map(Number);
+    const [startHour, startMinute] = this.timeStart.split(":").map(Number) as [
+      number,
+      number,
+    ];
+    const [endHour, endMinute] = this.timeEnd.split(":").map(Number) as [
+      number,
+      number,
+    ];
 
     // Convert hours and minutes to total minutes for easier calculation
     const startTotalMinutes = startHour * 60 + startMinute;
@@ -76,20 +110,20 @@ export default class CalendarEvent {
     return endTotalMinutes - startTotalMinutes;
   }
 
-  get date() {
+  get date(): string {
     return this.#date;
   }
 
-  set date(newDate) {
+  set date(newDate: string) {
     validateDate(newDate);
     this.#date = newDate;
   }
 
-  get timeStart() {
+  get timeStart(): string {
     return this.#timeStart;
   }
 
-  set timeStart(newStart) {
+  set timeStart(newStart: string) {
     validateTime(newStart);
     // If timeEnd is already set, validate the order (won't run during constructor)
     if (this.#timeEnd !== undefined) {
@@ -98,11 +132,11 @@ export default class CalendarEvent {
     this.#timeStart = newStart;
   }
 
-  get timeEnd() {
+  get timeEnd(): string {
     return this.#timeEnd;
   }
 
-  set timeEnd(newEnd) {
+  set timeEnd(newEnd: string) {
     validateTime(newEnd);
     // If timeStart is already set, validate the order (won't run during constructor)
     if (this.#timeStart !== undefined) {
@@ -111,45 +145,99 @@ export default class CalendarEvent {
     this.#timeEnd = newEnd;
   }
 
-  get title() {
+  get title(): string {
     return this.#title;
   }
 
-  set title(newTitle) {
+  set title(newTitle: string) {
     validateStringProperty(newTitle, "title");
     this.#title = newTitle;
   }
 
-  get description() {
+  get description(): string | undefined {
     return this.#description;
   }
 
-  set description(newDescription) {
+  set description(newDescription: string | undefined) {
     validateStringProperty(newDescription, "description");
     this.#description = newDescription;
   }
 
-  get address() {
+  get address(): string | undefined {
     return this.#address;
   }
 
-  set address(newAddress) {
+  set address(newAddress: string | undefined) {
     validateStringProperty(newAddress, "address");
     this.#address = newAddress;
   }
 
-  get color() {
+  get color(): string | undefined {
     return this.#color;
   }
 
-  set color(newColor) {
+  set color(newColor: string | undefined) {
     validateColor(newColor);
     this.#color = newColor;
   }
 
+  get recurrence(): RecurrenceRule | undefined {
+    return this.#recurrence;
+  }
+
+  set recurrence(newRecurrence: RecurrenceRule | undefined) {
+    this.#recurrence = newRecurrence;
+  }
+
+  get exceptions(): string[] {
+    return this.#exceptions;
+  }
+
+  addException(date: string): void {
+    validateDate(date);
+    if (!this.#exceptions.includes(date)) {
+      this.#exceptions.push(date);
+    }
+  }
+
+  removeException(date: string): void {
+    this.#exceptions = this.#exceptions.filter((d) => d !== date);
+  }
+
+  occursOn(date: string): boolean {
+    if (!this.#recurrence) return false;
+    if (this.#exceptions.includes(date)) return false;
+    if (date < this.#date) return false;
+
+    const { month, day, dayOfWeek } = this.parseDate(date);
+    const { month: originMonth, day: originDay } = this.parseDate(this.#date);
+    const days: DayOfWeek[] = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+    switch (this.#recurrence.type) {
+      case "weekDays":
+        return this.#recurrence.days.includes(days[dayOfWeek] as DayOfWeek);
+      case "monthly":
+        return day === originDay;
+      case "yearly":
+        return month === originMonth && day === originDay;
+    }
+  }
+
+  /**
+   * Pulls numerical values for the properties of the Event's date
+   * or whatever ISO date string is passed
+   * @param date defaults to Event's date
+   * @returns
+   */
+  parseDate(date = this.#date) {
+    const [year, month, day] = date.split("-").map(Number);
+    const dayOfWeek = new Date(date).getDay();
+    return { year, month, day, dayOfWeek };
+  }
+
   // Used for JSON.stringify(event) so that private variables get passed
   // Attempting to save to localStorage will just save an empty object {} otherwise
-  toJSON() {
+  toJSON(): CalendarEventOptions {
     return {
       UID: this.#UID,
       date: this.#date,
@@ -159,13 +247,15 @@ export default class CalendarEvent {
       description: this.#description,
       address: this.#address,
       color: this.#color,
+      recurrence: this.#recurrence,
+      exceptions: this.#exceptions,
     };
   }
 }
 
 // Check that date string passed to Event constructor is in "YYYY-MM-DD" format
 // and represents a valid date
-function validateDate(date) {
+function validateDate(date: string): void {
   // If date string doesn't parse to a valid date, throw error
   if (isNaN(Date.parse(date))) {
     throw new Error(`Event assignment error: invalid date format ${date}`);
@@ -183,7 +273,7 @@ function validateDate(date) {
 
 // Check that time strings passed to Event constructor are in "HH:MM" 24-hour format
 // and that timeEnd is after timeStart
-function validateTime(time) {
+function validateTime(time: string): void {
   // If time string isn't in 24-hour format, throw error
   const timeRegex = /^([01][0-9]|2[0-3]):([0-5][0-9])$/;
   if (!timeRegex.test(time)) {
@@ -193,7 +283,7 @@ function validateTime(time) {
   }
 
   // Minutes should only be in 15 minute increments (00, 15, 30, 45)
-  const minutes = time.split(":")[1];
+  const minutes = time.split(":")[1] as string;
   if (!["00", "15", "30", "45"].includes(minutes)) {
     throw new Error(
       `Event assignment error: time string ${time} has invalid minutes. Minutes must be in 15 minute increments (00, 15, 30, 45).`,
@@ -202,10 +292,15 @@ function validateTime(time) {
 }
 
 // Makes sure that timeEnd is after timeStart
-function validateTimeOrder(timeStart, timeEnd) {
-  const [startHour, startMinute] = timeStart.split(":").map(Number);
-  const [endHour, endMinute] = timeEnd.split(":").map(Number);
-
+function validateTimeOrder(timeStart: string, timeEnd: string): boolean {
+  const [startHour, startMinute] = timeStart.split(":").map(Number) as [
+    number,
+    number,
+  ];
+  const [endHour, endMinute] = timeEnd.split(":").map(Number) as [
+    number,
+    number,
+  ];
   if (
     endHour < startHour ||
     (endHour === startHour && endMinute <= startMinute)
@@ -219,7 +314,10 @@ function validateTimeOrder(timeStart, timeEnd) {
 
 // Check that Event properties that should be strings are actually strings.
 // Will not throw for undefined properties except for title, which is a required property
-function validateStringProperty(prop, propName) {
+function validateStringProperty(
+  prop: string | undefined,
+  propName: string,
+): void {
   if (propName === "title") {
     if (typeof prop !== "string") {
       throw new Error(
@@ -236,7 +334,7 @@ function validateStringProperty(prop, propName) {
 }
 
 // Checks that
-function validateColor(color) {
+function validateColor(color: string | undefined): void {
   if (color === undefined) return;
   if (typeof color !== "string") {
     throw new Error(
