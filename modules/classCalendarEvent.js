@@ -22,6 +22,8 @@ export default class CalendarEvent {
   #description;
   #address;
   #color;
+  #recurrence;
+  #recurrenceDays;
 
   // Uses object destructuring to pull named properties off of props object
   constructor({
@@ -33,6 +35,8 @@ export default class CalendarEvent {
     description,
     address,
     color,
+    recurrence,
+    recurrenceDays,
   }) {
     // Check that the required properties have been passed to the constructor
     if (!date || !timeStart || !timeEnd || !title) {
@@ -55,6 +59,8 @@ export default class CalendarEvent {
     this.description = description;
     this.address = address;
     this.color = color;
+    this.recurrence = recurrence ?? "none";
+    this.recurrenceDays = recurrenceDays ?? [];
   }
 
   // Getter with no setter since UID should be read-only after construction
@@ -147,6 +153,24 @@ export default class CalendarEvent {
     this.#color = newColor;
   }
 
+  get recurrence() {
+    return this.#recurrence;
+  }
+
+  set recurrence(newRecurrence) {
+    validateRecurrence(newRecurrence);
+    this.#recurrence = newRecurrence;
+  }
+
+  get recurrenceDays() {
+    return this.#recurrenceDays;
+  }
+
+  set recurrenceDays(newRecurrenceDays) {
+    validateRecurrenceDays(newRecurrenceDays);
+    this.#recurrenceDays = newRecurrenceDays;
+  }
+
   // Used for JSON.stringify(event) so that private variables get passed
   // Attempting to save to localStorage will just save an empty object {} otherwise
   toJSON() {
@@ -159,6 +183,8 @@ export default class CalendarEvent {
       description: this.#description,
       address: this.#address,
       color: this.#color,
+      recurrence: this.#recurrence,
+      recurrenceDays: this.#recurrenceDays,
     };
   }
 }
@@ -251,4 +277,36 @@ function validateColor(color) {
       `Event assignment error: "${color}" is not a valid CSS color.`,
     );
   }
+}
+
+function validateRecurrence(recurrence) {
+  const validRecurrenceOptions = [
+    "none",
+    "weekly",
+    "monthly",
+    "yearly",
+    "custom-Weekdays",
+  ];
+
+  if (!validRecurrenceOptions.includes(recurrence)) {
+    throw new Error(
+      `Event assignment error: recurrence must be one of: ${validRecurrenceOptions.join(", ")}.`,
+    );
+  }
+}
+
+function validateRecurrenceDays(recurrenceDays) {
+  if (!Array.isArray(recurrenceDays)) {
+    throw new Error("Event assignment error: recurrenceDays must be an array.");
+  }
+
+  const validDayOptions = ["SU", "MO", "TU", "WE", "TH", "FR", "SA"];
+
+  recurrenceDays.forEach((day) => {
+    if (!validDayOptions.includes(day)) {
+      throw new Error(
+        `Event assignment error: ${day} is not a valid recurrence day.`,
+      );
+    }
+  });
 }

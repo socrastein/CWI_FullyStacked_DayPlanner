@@ -99,8 +99,9 @@
 }
 
 @media (min-width: 768px) {
-  #eventForm > div {
-    flex-direction: row;
+  #eventForm #recurringEventContainer,
+  #eventForm #recurrenceOptionsContainer {
+    flex-direction: column;
   }
 
   #eventForm #eventFormButtonsContainer * {
@@ -121,4 +122,33 @@
     width: 135px;
     flex-grow: 0;
   }
+}
+#eventForm #recurringEventContainer {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+#eventForm #recurrenceOptionsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+#eventForm #eventRecurrenceDays {
+  border: 1px solid black;
+  border-radius: 0.25rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  margin: 0;
+  padding: 0.5rem;
+  width: 100%;
+}
+
+#eventForm #eventRecurrenceDays label {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
 }
