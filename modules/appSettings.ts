@@ -28,6 +28,7 @@ class AppSettings {
   private _firstDayOfWeek: "Sunday" | "Monday" = "Sunday";
   private _displayHolidays: boolean = true;
   private _colorTheme: keyof typeof colorThemes = "blue";
+  private _city: string = "Boise";
 
   // For setting CSS variables related to color themes
   private root = document.documentElement;
@@ -51,6 +52,7 @@ class AppSettings {
       firstDayOfWeek: this._firstDayOfWeek,
       displayHolidays: this._displayHolidays,
       colorTheme: this._colorTheme,
+      city: this._city,
     };
   }
 
@@ -58,6 +60,19 @@ class AppSettings {
     this.snapshot = this.buildSnapshot();
     this.listeners.forEach((listener) => listener());
   }
+
+  // return city, if characters longer than 7 slice city name to keep the menu settings clean
+  get city() {
+    return this._city.length > 7 ? this._city.slice(0, 6) + "..." : this._city;
+  }
+
+  setCity = (city: string) => {
+    const trimmed = city.trim();
+    if (!trimmed) return;
+    this._city = trimmed;
+    this.notifyListeners();
+    this.saveSettings();
+  };
 
   get lightMode() {
     return this._lightMode;
@@ -176,6 +191,7 @@ class AppSettings {
     this._firstDayOfWeek = "Sunday";
     this._displayHolidays = true;
     this._colorTheme = "blue";
+    this._city = appSettings._city;
     this.notifyListeners();
     this.saveSettings();
   }
@@ -187,6 +203,7 @@ class AppSettings {
       firstDayOfWeek: this._firstDayOfWeek,
       displayHolidays: this._displayHolidays,
       colorTheme: this._colorTheme,
+      city: this._city,
     };
     localStorage.setItem("DayPlannerSettings", JSON.stringify(settings));
   }
@@ -201,6 +218,7 @@ class AppSettings {
       this._firstDayOfWeek = settings.firstDayOfWeek;
       this._displayHolidays = settings.displayHolidays;
       this.colorTheme = settings.colorTheme;
+      if (settings.city) this._city = settings.city;
     } catch (error) {
       console.warn("Error parsing settings from localStorage:", error);
     }
