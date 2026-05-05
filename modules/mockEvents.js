@@ -195,11 +195,11 @@ const mockEvents = [
   },
   // All Day Mock Events
   {
-    UID: `allDay-test-holiday-2-${getDate(0)}`,
-    title: "Anniversary",
+    UID: `holiday-test-holiday-2-${getDate(0)}`,
+    title: "Federal Holiday",
     date: getDate(0),
     timeStart: "00:00",
-    timeEnd: "01:00",
+    timeEnd: "23:45",
     description: "Mock all-day holiday for testing",
     address: "",
   },
@@ -208,7 +208,7 @@ const mockEvents = [
     title: "Taco Night",
     date: getDate(1),
     timeStart: "00:00",
-    timeEnd: "01:00",
+    timeEnd: "23:45",
     description: "Mock all-day holiday for testing",
     address: "",
   },

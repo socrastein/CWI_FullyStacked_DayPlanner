@@ -1,6 +1,7 @@
 import React from "react";
 import appState from "./appState";
 import CalendarEvent from "./classCalendarEvent";
+import { useState } from "react";
 import { getTimeSlot } from "./calendar/calendarContainer/tapToAddEvent";
 
 type eventFormProps = {
@@ -23,6 +24,7 @@ export default function EventForm({
     ? appState.getEventByUID(UID)
     : undefined;
 
+<<<<<<< HEAD
   const [isRecurring, setIsRecurring] = React.useState(
     Boolean(targetEvent && targetEvent.recurrence !== "none"),
   );
@@ -32,6 +34,14 @@ export default function EventForm({
       ? targetEvent.recurrence
       : "weekly",
   );
+=======
+  //use state and edit control consts
+  const isExistingAllDayEvent = Boolean(
+    targetEvent?.UID?.startsWith("allDay-"),
+  );
+  const [isAllDay, setIsAllDay] = useState(isExistingAllDayEvent);
+
+>>>>>>> main
   // If UID is null, return an empty event form submission
   return (
     <div
@@ -62,6 +72,7 @@ export default function EventForm({
             name="color"
             defaultValue={targetEvent?.color ?? "#ffffff"}
             list="colorOptions"
+            disabled={isAllDay}
           />
           <datalist id="colorOptions">
             <option value="#ffffff">White</option>
@@ -97,7 +108,8 @@ export default function EventForm({
               name="timeStart"
               defaultValue={targetEvent?.timeStart ?? getTimeSlot()?.startTime}
               step={900}
-              required
+              required={!isAllDay}
+              disabled={isAllDay}
             />
           </div>
           <div className="inputPair">
@@ -110,9 +122,11 @@ export default function EventForm({
               name="timeEnd"
               defaultValue={targetEvent?.timeEnd ?? getTimeSlot()?.endTime}
               step={900}
-              required
+              required={!isAllDay}
+              disabled={isAllDay}
             />
           </div>
+<<<<<<< HEAD
           <div id="recurringEventContainer">
             <label htmlFor="isRecurringEvent">
               <input
@@ -232,6 +246,22 @@ export default function EventForm({
                 )}
               </div>
             )}
+=======
+          <div className="form-check mb-3">
+            <input
+              className="form-check-input"
+              type="checkbox"
+              id="allDay"
+              name="allDay"
+              checked={isAllDay}
+              disabled={isExistingAllDayEvent}
+              onChange={(event) => setIsAllDay(event.target.checked)}
+            />
+            <label className="form-check-label" htmlFor="allDay">
+              All-Day
+            </label>
+            d
+>>>>>>> main
           </div>
         </div>
         <label htmlFor="eventAddress">Address</label>

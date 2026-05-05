@@ -17,7 +17,7 @@ type TimedEvent = {
   timeStart: string;
   timeEnd: string;
   title: string;
-  color?: string;
+  color: string | undefined;
 };
 
 type PositionedEvent = {
