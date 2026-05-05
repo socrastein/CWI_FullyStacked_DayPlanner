@@ -182,7 +182,7 @@ export default function EventForm({
                         "SU",
                       )}
                     />{" "}
-                    Sunday
+                    Su
                   </label>
 
                   <label>
@@ -194,7 +194,7 @@ export default function EventForm({
                         "MO",
                       )}
                     />{" "}
-                    Monday
+                    Mo
                   </label>
 
                   <label>
@@ -206,7 +206,7 @@ export default function EventForm({
                         "TU",
                       )}
                     />{" "}
-                    Tuesday
+                    Tu
                   </label>
 
                   <label>
@@ -218,7 +218,7 @@ export default function EventForm({
                         "WE",
                       )}
                     />{" "}
-                    Wednesday
+                    Wed
                   </label>
 
                   <label>
@@ -230,7 +230,7 @@ export default function EventForm({
                         "TH",
                       )}
                     />{" "}
-                    Thursday
+                    Thr
                   </label>
 
                   <label>
@@ -242,7 +242,7 @@ export default function EventForm({
                         "FR",
                       )}
                     />{" "}
-                    Friday
+                    Fr
                   </label>
 
                   <label>
@@ -254,7 +254,7 @@ export default function EventForm({
                         "SA",
                       )}
                     />{" "}
-                    Saturday
+                    Sat
                   </label>
                 </fieldset>
               )}
@@ -270,9 +270,7 @@ export default function EventForm({
             name="allDay"
             checked={isAllDay}
             disabled={isExistingAllDayEvent}
-            onChange={(event) =>
-              setSelectedRecurrence(event.target.value as SelectedRecurrence)
-            }
+            onChange={(event) => setIsAllDay(event.target.checked)}
           />
 
           <label className="form-check-label" htmlFor="allDay">
