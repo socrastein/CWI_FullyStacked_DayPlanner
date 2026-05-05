@@ -1,5 +1,6 @@
 .allDayDisplay {
   background-color: rgba(var(--bs-primary-rgb), 0.15);
+  cursor: pointer;
 }
 
 /* Two-column layout: time labels | day grid */

@@ -1,6 +1,7 @@
 import appState, { useAppState } from "../appState";
 import { useAppSettings } from "../appSettings";
 import { CalendarViews } from "../enumCalendarViews";
+import { showEventManager } from "../eventManager";
 
 function CalendarAllDayDisplay() {
   /*Tie into useAppState and useAppSettings so the component can re-render
@@ -38,6 +39,17 @@ function CalendarAllDayDisplay() {
   //currently no day has more then one holiday.  Add testing for multiple events on wednesday. ***
   const visibleItems = allDayEvents.slice(0, 2);
 
+  //click handler for allDayDisplay
+  function allDayEventClick(eventUID: string) {
+    if (eventUID.startsWith("holiday-")) {
+      alert(
+        "This is a Holiday Event and can't be edited.  Holiday's can be toggled off in settings",
+      );
+      return;
+    }
+    showEventManager(eventUID);
+  }
+
   return (
     <div className="w-100 px-1 py-1">
       <div className="d-flex flex-column gap-2 w-100">
@@ -45,6 +57,7 @@ function CalendarAllDayDisplay() {
           <div
             key={event.UID}
             className="allDayDisplay px-2 py-1 border rounded text-center fw-bold"
+            onClick={() => allDayEventClick(event.UID)}
           >
             {event.title}
           </div>
