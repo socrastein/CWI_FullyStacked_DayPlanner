@@ -43,11 +43,21 @@ function mapEventsByDate(
   return mappedDates;
 }
 
+/**
+ * Pulls all the events with a recurrence setting into a separate array
+ * @param events Array of CalendarEvent objects loaded from storage
+ * @returns
+ */
+function mapRecurringEvents(events: CalendarEvent[]): CalendarEvent[] {
+  return events.filter((event) => event.recurrence !== undefined);
+}
+
 class AppState {
   private _loadedEvents = StorageManager.loadAllEvents();
 
   private _eventsByUID = mapEventsByUID(this._loadedEvents);
   private _eventsByDate = mapEventsByDate(this._loadedEvents);
+  private _recurringEvents = mapRecurringEvents(this._loadedEvents);
 
   // Set date view to current date in "YYYY-MM-DD" format
   private _dateView = new Date().toLocaleDateString("en-CA");
@@ -137,28 +147,45 @@ class AppState {
    * or [] if no events exist for that date
    */
   getEventsByDate(date: string): CalendarEvent[] {
-    return this._eventsByDate.get(date) || [];
+    const oneTime = this._eventsByDate.get(date) ?? [];
+    const recurring = this._recurringEvents.filter((e) => e.occursOn(date));
+    return [...oneTime, ...recurring];
   }
 
   /**
-   * Adds a new event to the app state, updates both eventsByUID and eventsByDate maps,
-   * and saves the event to localStorage.
+   * Adds a new event to the app state if one doesn't already exist,
+   * replaces event with same UID if it exists, and saves to localStorage.
    *
-   * USE THIS FOR EDITING AS WELL
-   *
-   * If an event with the same UID already exists, it will be overwritten.
    * @param event CalendarEvent object to add
    */
   addEvent(event: CalendarEvent): void {
     // Replace map instead of mutating
     this._eventsByUID = new Map(this._eventsByUID).set(event.UID, event);
 
-    // Check if an event with the same UID already exists for that date
+    // If it's already in recurringEvents, replace the existing event
+    // If it is new, add it to recurringEvents
+    const alreadyInRecurring = this._recurringEvents.some(
+      (e) => e.UID === event.UID,
+    );
+
+    if (event.recurrence) {
+      this._recurringEvents = alreadyInRecurring
+        ? this._recurringEvents.map((e) => (e.UID === event.UID ? event : e))
+        : [...this._recurringEvents, event];
+
+      // If a recurring event has been modified to now be single occurence,
+      // remove it from recurringEvents
+    } else if (alreadyInRecurring) {
+      this._recurringEvents = this._recurringEvents.filter(
+        (e) => e.UID !== event.UID,
+      );
+    }
+
+    // If it's already in eventsByDate, replace the existing event
+    // If it is new, add it to eventsByDate
     const existingEvents = this._eventsByDate.get(event.date) ?? [];
     const alreadyExists = existingEvents.some((e) => e.UID === event.UID);
 
-    // If it already exists, replace the existing event with the new event in the array of events for that date.
-    // If it doesn't already exist, add the new event to the array of events for that date.
     const updatedEvents = alreadyExists
       ? existingEvents.map((e) => (e.UID === event.UID ? event : e))
       : [...existingEvents, event];
@@ -174,8 +201,8 @@ class AppState {
   }
 
   /**
-   * Removes an event with the specified UID from the app state,
-   * updates both eventsByUID and eventsByDate maps, and deletes the event from localStorage.
+   * Removes an event with the specified UID from the app state
+   * and deletes the event from localStorage.
    *
    * If no event with the specified UID exists, throws an error.
    * @param uid Unique identifier of the event to retrieve
@@ -187,6 +214,13 @@ class AppState {
     // Replace map instead of mutating
     this._eventsByUID = new Map(this._eventsByUID);
     this._eventsByUID.delete(uid);
+
+    // Remove from recurringEvents
+    if (event.recurrence) {
+      this._recurringEvents = this._recurringEvents.filter(
+        (e) => e.UID !== uid,
+      );
+    }
 
     // Remove the event from the array of events for that date
     const remainingEvents = (this._eventsByDate.get(event.date) ?? []).filter(
