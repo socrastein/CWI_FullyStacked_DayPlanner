@@ -101,7 +101,6 @@ function submitEvent(
   const data: FormData = new FormData(eventForm);
   const eventProps: any = Object.fromEntries(data);
 
-<<<<<<< HEAD
   eventProps.recurrenceDays = data
     .getAll("recurrenceDays")
     .map((day) => String(day));
@@ -113,8 +112,6 @@ function submitEvent(
     eventProps.recurrenceDays = [];
   }
 
-=======
->>>>>>> main
   const isExistingAllDayEvent = Boolean(UID?.startsWith("allDay-"));
   const isNewAllDaySelection = data.get("allDay") === "on";
   const isAllDay = isExistingAllDayEvent || isNewAllDaySelection;
@@ -122,11 +119,7 @@ function submitEvent(
   //forces mock time to meet requirements for CalendarEvent generation
   if (isAllDay) {
     eventProps.timeStart = "00:00";
-<<<<<<< HEAD
-    eventProps.timeEnd = "23:45";
-=======
     eventProps.timeEnd = "01:00";
->>>>>>> main
   }
 
   // Validate form input data

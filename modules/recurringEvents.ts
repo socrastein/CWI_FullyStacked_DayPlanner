@@ -1,13 +1,15 @@
 import CalendarEvent from "./classCalendarEvent";
 
-const dayCodes = ["SU", "MO", "TU", "WE", "TH", "FR", "SA"];
+type RecurrenceDay = "SU" | "MO" | "TU" | "WE" | "TH" | "FR" | "SA";
+
+const dayCodes: RecurrenceDay[] = ["SU", "MO", "TU", "WE", "TH", "FR", "SA"];
 
 function dateStringToDate(dateString: string): Date {
   const [year, month, day] = dateString.split("-").map(Number);
   return new Date(year!, month! - 1, day!);
 }
 
-function getDay(dateString: string): string {
+function getDay(dateString: string): RecurrenceDay {
   const date = dateStringToDate(dateString);
   return dayCodes[date.getDay()]!;
 }
