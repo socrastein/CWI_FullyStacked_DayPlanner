@@ -4,6 +4,20 @@ type RecurrenceType = "none" | "weekly" | "monthly" | "yearly";
 
 type RecurrenceDay = "SU" | "MO" | "TU" | "WE" | "TH" | "FR" | "SA";
 
+/**
+ * Event class represents a calendar event and includes validation for date and time formats.
+ * Pass an options object to the constructor with the following properties:
+ * - UID: string representing the unique identifier for the event (generated automatically if not provided)
+ * - date (required): string in "YYYY-MM-DD" format representing the event date
+ * - timeStart (required): string in "HH:MM" 24-hour format representing the event start time
+ * - timeEnd (required): string in "HH:MM" 24-hour format representing the event end time
+ * - title (required): string representing the event title
+ * - description: string representing the event description
+ * - address: string representing the event address
+ * - color: string representing the event color (e.g. "#FF0000")
+ * - recurrence: RecurrenceRule object with .type and .days[] if .type is "weekDays"
+ * - exceptions: string[] dates that have been deleted from a recurring series
+ */
 interface CalendarEventOptions {
   UID?: string;
   date: string;
@@ -34,6 +48,7 @@ export default class CalendarEvent {
   #recurrenceDays: RecurrenceDay[] = [];
   #exceptions: string[] = [];
 
+  // Uses object destructuring to pull named properties off of props object
   constructor({
     UID,
     date,
@@ -47,6 +62,7 @@ export default class CalendarEvent {
     recurrenceDays = [],
     exceptions = [],
   }: CalendarEventOptions) {
+    // Check that the required properties have been passed to the constructor
     if (!date || !timeStart || !timeEnd || !title) {
       throw new Error(
         "Event construction error: date, timeStart, timeEnd, and title fields are required.",
@@ -60,6 +76,10 @@ export default class CalendarEvent {
     this.timeEnd = timeEnd;
     validateTimeOrder(timeStart, timeEnd);
 
+    // Generate a UID if one isn't provided.
+    // Only Events loaded from storage should have a UID passed in.
+    // ?? returns the right side if the left side is falsy, e.g. undefined in case of not being passed
+
     this.title = title;
     this.description = description;
     this.address = address;
@@ -69,11 +89,14 @@ export default class CalendarEvent {
     this.#exceptions = exceptions;
   }
 
+  // Getter with no setter since UID should be read-only after construction
   get UID(): string {
     return this.#UID;
   }
 
+  // Calculate difference between timeStart and timeEnd in minutes
   get length(): number {
+    // Grab hours and minutes from timeStart and timeEnd
     const [startHour, startMinute] = this.timeStart.split(":").map(Number) as [
       number,
       number,
@@ -83,9 +106,11 @@ export default class CalendarEvent {
       number,
     ];
 
+    // Convert hours and minutes to total minutes for easier calculation
     const startTotalMinutes = startHour * 60 + startMinute;
     const endTotalMinutes = endHour * 60 + endMinute;
 
+    // Return the difference in minutes between timeEnd and timeStart
     return endTotalMinutes - startTotalMinutes;
   }
 
@@ -104,7 +129,7 @@ export default class CalendarEvent {
 
   set timeStart(newStart: string) {
     validateTime(newStart);
-
+    // If timeEnd is already set, validate the order (won't run during constructor)
     if (this.#timeEnd !== undefined) {
       validateTimeOrder(newStart, this.#timeEnd);
     }
@@ -118,7 +143,7 @@ export default class CalendarEvent {
 
   set timeEnd(newEnd: string) {
     validateTime(newEnd);
-
+    // If timeStart is already set, validate the order (won't run during constructor)
     if (this.#timeStart !== undefined) {
       validateTimeOrder(this.#timeStart, newEnd);
     }
@@ -196,6 +221,8 @@ export default class CalendarEvent {
     this.#exceptions = this.#exceptions.filter((d) => d !== date);
   }
 
+  // Used for JSON.stringify(event) so that private variables get passed
+  // Attempting to save to localStorage will just save an empty object {} otherwise
   toJSON(): CalendarEventOptions {
     return {
       UID: this.#UID,
@@ -213,11 +240,14 @@ export default class CalendarEvent {
   }
 }
 
+// Check that date string passed to Event constructor is in "YYYY-MM-DD" format
+// and represents a valid date
 function validateDate(date: string): void {
+  // If date string doesn't parse to a valid date, throw error
   if (isNaN(Date.parse(date))) {
     throw new Error(`Event assignment error: invalid date format ${date}`);
   }
-
+  // Check that date is in "YYYY-MM-DD" format for the year 2000-2099
   const dateRegex = /^(20\d{2})-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/;
 
   if (!dateRegex.test(date)) {
@@ -227,7 +257,10 @@ function validateDate(date: string): void {
   }
 }
 
+// Check that time strings passed to Event constructor are in "HH:MM" 24-hour format
+// and that timeEnd is after timeStart
 function validateTime(time: string): void {
+  // If time string isn't in 24-hour format, throw error
   const timeRegex = /^([01][0-9]|2[0-3]):([0-5][0-9])$/;
 
   if (!timeRegex.test(time)) {
@@ -236,6 +269,7 @@ function validateTime(time: string): void {
     );
   }
 
+  // Minutes should only be in 15 minute increments (00, 15, 30, 45)
   const minutes = time.split(":")[1] as string;
 
   if (!["00", "15", "30", "45"].includes(minutes)) {
@@ -245,6 +279,7 @@ function validateTime(time: string): void {
   }
 }
 
+// Makes sure that timeEnd is after timeStart
 function validateTimeOrder(timeStart: string, timeEnd: string): boolean {
   const [startHour, startMinute] = timeStart.split(":").map(Number) as [
     number,
@@ -267,6 +302,8 @@ function validateTimeOrder(timeStart: string, timeEnd: string): boolean {
   return true;
 }
 
+// Check that Event properties that should be strings are actually strings.
+// Will not throw for undefined properties except for title, which is a required property
 function validateStringProperty(
   prop: string | undefined,
   propName: string,
@@ -287,7 +324,7 @@ function validateStringProperty(
     );
   }
 }
-
+// Checks that ?
 function validateColor(color: string | undefined): void {
   if (color === undefined) return;
 
