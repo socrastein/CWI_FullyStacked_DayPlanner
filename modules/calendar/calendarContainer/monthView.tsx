@@ -56,7 +56,9 @@ function getSortedEvents(
   dateKey: string,
   displayHolidays: boolean,
 ): CalendarEvent[] {
-  return (allEventsByDate.get(dateKey) ?? [])
+  const eventsForDate = appState.getEventsByDate(dateKey);
+
+  return eventsForDate
     .filter((e) => displayHolidays || !e.UID.startsWith("holiday"))
     .sort((a, b) => getEventOrder(a) - getEventOrder(b));
 }
