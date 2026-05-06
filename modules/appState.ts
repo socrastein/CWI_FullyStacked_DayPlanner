@@ -7,8 +7,6 @@ import { createMockEvents, registerCheatCode } from "./mockEvents";
 
 import { getHolidayEvents } from "./holidayEvent";
 
-import { getRecurringEventsForDate } from "./recurringEvents";
-
 // Helper functions to map events by UID and by Date for efficient access
 
 /**
@@ -25,6 +23,11 @@ function mapEventsByUID(events: CalendarEvent[]): Map<string, CalendarEvent> {
 
   return mappedEvents;
 }
+
+//type and day-code lookup used by recurring helpers
+type RecurrenceDay = "SU" | "MO" | "TU" | "WE" | "TH" | "FR" | "SA";
+
+const dayCodes: RecurrenceDay[] = ["SU", "MO", "TU", "WE", "TH", "FR", "SA"];
 
 /**
  * Creates a map with {key: value} pairs of {date: CalendarEvent[]} for all events passed in.
@@ -52,13 +55,23 @@ function mapEventsByDate(
 }
 
 /**
- * Pulls all events with a recurrence setting into a separate array.
- * Events with recurrence set to "none" are not treated as recurring.
- * @param events Array of CalendarEvent objects loaded from storage
- * @returns
+ * Creates a map of recurring events keyed by UID.
+ * Events with recurrence set to "none" are not included.
+ * @param events Array of CalendarEvents loaded from storage
+ * @returns Map of recurring objects
  */
-function mapRecurringEvents(events: CalendarEvent[]): CalendarEvent[] {
-  return events.filter((event) => event.recurrence !== "none");
+function mapRecurringEventsByUID(
+  events: CalendarEvent[],
+): Map<string, CalendarEvent> {
+  const recurringEvents = new Map<string, CalendarEvent>();
+
+  events.forEach((event) => {
+    if (event.recurrence !== "none") {
+      recurringEvents.set(event.UID, event);
+    }
+  });
+
+  return recurringEvents;
 }
 
 class AppState {
@@ -66,7 +79,7 @@ class AppState {
 
   private _eventsByUID = mapEventsByUID(this._loadedEvents);
   private _eventsByDate = mapEventsByDate(this._loadedEvents);
-  private _recurringEvents = mapRecurringEvents(this._loadedEvents);
+  private _recurringEvents = mapRecurringEventsByUID(this._loadedEvents);
 
   // Set date view to current date in "YYYY-MM-DD" format
   private _dateView = new Date().toLocaleDateString("en-CA");
@@ -155,9 +168,126 @@ class AppState {
    */
   getEventsByDate(date: string): CalendarEvent[] {
     const oneTime = this._eventsByDate.get(date) ?? [];
-    const recurring = getRecurringEventsForDate(this._recurringEvents, date);
+    const recurring = this.getRecurringEventsForDate(date);
 
     return [...oneTime, ...recurring];
+  }
+
+  /**
+   * converts a date string into a JS date object
+   * @param dateString
+   * @returns date object
+   */
+  dateStringToDate(dateString: string): Date {
+    const [year, month, day] = dateString.split("-").map(Number);
+
+    return new Date(year!, month! - 1, day!);
+  }
+
+  /**
+   * converts a date into one of the day codes
+   * @param dateString
+   * @returns daycode
+   */
+  getDay(dateString: string): RecurrenceDay {
+    const date = this.dateStringToDate(dateString);
+
+    return dayCodes[date.getDay()]!;
+  }
+
+  /**
+   * makes sure that the date is after the origin start date
+   * @param eventDate
+   * @param targetDate
+   * @returns Boolean
+   */
+  isTargetDateAfterStartDate(eventDate: string, targetDate: string): boolean {
+    return this.dateStringToDate(targetDate) > this.dateStringToDate(eventDate);
+  }
+
+  /**
+   * checks if a weekly event should appear on the target date.
+   * @param event
+   * @param targetDate
+   * @returns boolean for dates
+   */
+  occursWeekly(event: CalendarEvent, targetDate: string): boolean {
+    if (event.recurrenceDays.length > 0) {
+      return event.recurrenceDays.includes(this.getDay(targetDate));
+    }
+
+    return this.getDay(event.date) === this.getDay(targetDate);
+  }
+
+  /**
+   * checks if a monthly event should appear on the target date
+   * @param event
+   * @param targetDate
+   * @returns boolean
+   */
+  occursMonthly(event: CalendarEvent, targetDate: string): boolean {
+    const eventDate = this.dateStringToDate(event.date);
+    const target = this.dateStringToDate(targetDate);
+
+    return eventDate.getDate() === target.getDate();
+  }
+
+  /**
+   * checks if a yearly event should appear on the target date
+   * @param event
+   * @param targetDate
+   * @returns boolean
+   */
+  occursYearly(event: CalendarEvent, targetDate: string): boolean {
+    const eventDate = this.dateStringToDate(event.date);
+    const target = this.dateStringToDate(targetDate);
+
+    return (
+      eventDate.getMonth() === target.getMonth() &&
+      eventDate.getDate() === target.getDate()
+    );
+  }
+
+  /**
+   * checks if a recuring event is present on target date
+   * returns flase if the event is not recurring or if the date is before the origin date
+   * @param event
+   * @param targetDate
+   * @returns true if the recurring event should appear on the target date
+   */
+  doesEventRepeatOnDate(event: CalendarEvent, targetDate: string): boolean {
+    if (event.recurrence === "none") {
+      return false;
+    }
+
+    if (!this.isTargetDateAfterStartDate(event.date, targetDate)) {
+      return false;
+    }
+
+    switch (event.recurrence) {
+      case "weekly":
+        return this.occursWeekly(event, targetDate);
+
+      case "monthly":
+        return this.occursMonthly(event, targetDate);
+
+      case "yearly":
+        return this.occursYearly(event, targetDate);
+
+      default:
+        return false;
+    }
+  }
+
+  /**
+   * checks through the map of recurrings and only pulls those that should appear on the requested date.
+   * @param targetDate
+   * @returns Array of recurring events that occur on the target date
+   */
+  getRecurringEventsForDate(targetDate: string): CalendarEvent[] {
+    return Array.from(this._recurringEvents.values()).filter((event) =>
+      this.doesEventRepeatOnDate(event, targetDate),
+    );
   }
 
   /**
@@ -170,23 +300,14 @@ class AppState {
     // Replace map instead of mutating
     this._eventsByUID = new Map(this._eventsByUID).set(event.UID, event);
 
-    // If it's already in recurringEvents, replace the existing event.
-    // If it is new and recurring, add it to recurringEvents.
-    const alreadyInRecurring = this._recurringEvents.some(
-      (e) => e.UID === event.UID,
-    );
+    //adjusted since i was using array methods instead of correct map methods.
+    //update the recurring event map and store recurring events by UID then check when the dates render
+    this._recurringEvents = new Map(this._recurringEvents);
 
     if (event.recurrence !== "none") {
-      this._recurringEvents = alreadyInRecurring
-        ? this._recurringEvents.map((e) => (e.UID === event.UID ? event : e))
-        : [...this._recurringEvents, event];
-
-      // If a recurring event has been modified to now be a single occurrence,
-      // remove it from recurringEvents.
-    } else if (alreadyInRecurring) {
-      this._recurringEvents = this._recurringEvents.filter(
-        (e) => e.UID !== event.UID,
-      );
+      this._recurringEvents.set(event.UID, event);
+    } else {
+      this._recurringEvents.delete(event.UID);
     }
 
     // If it's already in eventsByDate, replace the existing event.
@@ -226,12 +347,9 @@ class AppState {
     this._eventsByUID = new Map(this._eventsByUID);
     this._eventsByUID.delete(uid);
 
-    // Remove from recurringEvents if needed
-    if (event.recurrence !== "none") {
-      this._recurringEvents = this._recurringEvents.filter(
-        (e) => e.UID !== uid,
-      );
-    }
+    // Remove from recurring event definitions if present.
+    this._recurringEvents = new Map(this._recurringEvents);
+    this._recurringEvents.delete(uid);
 
     // Remove the event from the array of events for that date
     const remainingEvents = (this._eventsByDate.get(event.date) ?? []).filter(
