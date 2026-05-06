@@ -4,20 +4,6 @@ type RecurrenceType = "none" | "weekly" | "monthly" | "yearly";
 
 type RecurrenceDay = "SU" | "MO" | "TU" | "WE" | "TH" | "FR" | "SA";
 
-/**
- * Event class represents a calendar event and includes validation for date and time formats.
- * Pass an options object to the constructor with the following properties:
- * - UID: string representing the unique identifier for the event (generated automatically if not provided)
- * - date (required): string in "YYYY-MM-DD" format representing the event date
- * - timeStart (required): string in "HH:MM" 24-hour format representing the event start time
- * - timeEnd (required): string in "HH:MM" 24-hour format representing the event end time
- * - title (required): string representing the event title
- * - description: string representing the event description
- * - address: string representing the event address
- * - color: string representing the event color (e.g. "#FF0000")
- * - recurrence: RecurrenceRule object with .type and .days[] if .type is "weekDays"
- * - exceptions: string[] dates that have been deleted from a recurring series
- */
 interface CalendarEventOptions {
   UID?: string;
   date: string;
@@ -34,6 +20,17 @@ interface CalendarEventOptions {
 
 /**
  * Event class represents a calendar event and includes validation for date and time formats.
+ * Pass an options object to the constructor with the following properties:
+ * - UID: string representing the unique identifier for the event (generated automatically if not provided)
+ * - date (required): string in "YYYY-MM-DD" format representing the event date
+ * - timeStart (required): string in "HH:MM" 24-hour format representing the event start time
+ * - timeEnd (required): string in "HH:MM" 24-hour format representing the event end time
+ * - title (required): string representing the event title
+ * - description: string representing the event description
+ * - address: string representing the event address
+ * - color: string representing the event color (e.g. "#FF0000")
+ * - recurrence: RecurrenceRule object with .type and .days[] if .type is "weekDays"
+ * - exceptions: string[] dates that have been deleted from a recurring series
  */
 export default class CalendarEvent {
   #UID: string;
@@ -68,17 +65,15 @@ export default class CalendarEvent {
         "Event construction error: date, timeStart, timeEnd, and title fields are required.",
       );
     }
-
+    // Generate a UID if one isn't provided.
+    // Only Events loaded from storage should have a UID passed in.
+    // ?? returns the right side if the left side is falsy, e.g. undefined in case of not being passed
     this.#UID = UID ?? generateUID();
 
     this.date = date;
     this.timeStart = timeStart;
     this.timeEnd = timeEnd;
     validateTimeOrder(timeStart, timeEnd);
-
-    // Generate a UID if one isn't provided.
-    // Only Events loaded from storage should have a UID passed in.
-    // ?? returns the right side if the left side is falsy, e.g. undefined in case of not being passed
 
     this.title = title;
     this.description = description;
