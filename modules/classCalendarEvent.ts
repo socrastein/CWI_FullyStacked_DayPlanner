@@ -1,8 +1,18 @@
 import generateUID from "./UIDGenerator";
 
-type RecurrenceType = "none" | "weekly" | "monthly" | "yearly";
-
 type RecurrenceDay = "SU" | "MO" | "TU" | "WE" | "TH" | "FR" | "SA";
+
+const recurrenceDayCodes: RecurrenceDay[] = [
+  "SU",
+  "MO",
+  "TU",
+  "WE",
+  "TH",
+  "FR",
+  "SA",
+];
+
+type RecurrenceType = "weekly" | "monthly" | "yearly";
 
 interface CalendarEventOptions {
   UID?: string;
@@ -13,7 +23,7 @@ interface CalendarEventOptions {
   description?: string | undefined;
   address?: string | undefined;
   color?: string | undefined;
-  recurrence?: RecurrenceType;
+  recurrence?: RecurrenceType | null;
   recurrenceDays?: RecurrenceDay[];
   exceptions?: string[];
 }
@@ -41,7 +51,7 @@ export default class CalendarEvent {
   #description: string | undefined;
   #address: string | undefined;
   #color: string | undefined;
-  #recurrence: RecurrenceType = "none";
+  #recurrence: RecurrenceType | null = null; //using undefined is causing toJSON() to error. used null in place of "none" string
   #recurrenceDays: RecurrenceDay[] = [];
   #exceptions: string[] = [];
 
@@ -79,7 +89,7 @@ export default class CalendarEvent {
     this.description = description;
     this.address = address;
     this.color = color;
-    this.recurrence = recurrence ?? "none";
+    this.recurrence = fixOldRecurrence(recurrence);
     this.recurrenceDays = recurrenceDays;
     this.#exceptions = exceptions;
   }
@@ -182,11 +192,11 @@ export default class CalendarEvent {
     this.#color = newColor;
   }
 
-  get recurrence(): RecurrenceType {
+  get recurrence(): RecurrenceType | null {
     return this.#recurrence;
   }
 
-  set recurrence(newRecurrence: RecurrenceType) {
+  set recurrence(newRecurrence: RecurrenceType | null) {
     validateRecurrence(newRecurrence);
     this.#recurrence = newRecurrence;
   }
@@ -214,6 +224,113 @@ export default class CalendarEvent {
 
   removeException(date: string): void {
     this.#exceptions = this.#exceptions.filter((d) => d !== date);
+  }
+
+  //adjusting recurrence validation from appState to here.
+  get isRecurring(): boolean {
+    return Boolean(this.#recurrence);
+  }
+
+  /**
+   * converts a date string into a JS date object
+   * @param dateString
+   * @returns date object
+   */
+  dateStringToDate(dateString: string): Date {
+    const [year, month, day] = dateString.split("-").map(Number);
+
+    return new Date(year!, month! - 1, day!);
+  }
+
+  /**
+   * converts a date into one of the day codes
+   * @param dateString
+   * @returns daycode
+   */
+  getDay(dateString: string): RecurrenceDay {
+    const date = this.dateStringToDate(dateString);
+
+    return recurrenceDayCodes[date.getDay()]!;
+  }
+
+  /**
+   * makes sure that the date is after the origin start date
+   * @param targetDate
+   * @returns Boolean
+   */
+  isTargetDateAfterStartDate(targetDate: string): boolean {
+    return (
+      this.dateStringToDate(targetDate) > this.dateStringToDate(this.#date)
+    );
+  }
+  /**
+   * checks if a weekly event should appear on the target date.
+   * @param targetDate
+   * @returns boolean for dates
+   */
+  occursWeekly(targetDate: string): boolean {
+    if (this.#recurrenceDays.length > 0) {
+      return this.#recurrenceDays.includes(this.getDay(targetDate));
+    }
+
+    return this.getDay(this.#date) === this.getDay(targetDate);
+  }
+
+  /**
+   * checks if a monthly event should appear on the target date
+   * @param targetDate
+   * @returns boolean
+   */
+  occursMonthly(targetDate: string): boolean {
+    const eventDate = this.dateStringToDate(this.#date);
+    const target = this.dateStringToDate(targetDate);
+
+    return eventDate.getDate() === target.getDate();
+  }
+
+  /**
+   * checks if a yearly event should appear on the target date
+   * @param targetDate
+   * @returns boolean
+   */
+  occursYearly(targetDate: string): boolean {
+    const eventDate = this.dateStringToDate(this.#date);
+    const target = this.dateStringToDate(targetDate);
+
+    return (
+      eventDate.getMonth() === target.getMonth() &&
+      eventDate.getDate() === target.getDate()
+    );
+  }
+
+  /**
+   * checks if a recuring event is present on target date
+   * returns false if the event is not recurring or if the date is before the origin date
+   * @param targetDate
+   * @returns true if the recurring event should appear on the target date
+   */
+  occursOnDate(targetDate: string): boolean {
+    if (!this.#recurrence) {
+      return false;
+    }
+
+    if (!this.isTargetDateAfterStartDate(targetDate)) {
+      return false;
+    }
+
+    switch (this.#recurrence) {
+      case "weekly":
+        return this.occursWeekly(targetDate);
+
+      case "monthly":
+        return this.occursMonthly(targetDate);
+
+      case "yearly":
+        return this.occursYearly(targetDate);
+
+      default:
+        return false;
+    }
   }
 
   // Used for JSON.stringify(event) so that private variables get passed
@@ -339,9 +456,12 @@ function validateColor(color: string | undefined): void {
   }
 }
 
-function validateRecurrence(recurrence: RecurrenceType): void {
+function validateRecurrence(recurrence: RecurrenceType | null): void {
+  if (recurrence === null) {
+    return;
+  }
+
   const validRecurrenceOptions: RecurrenceType[] = [
-    "none",
     "weekly",
     "monthly",
     "yearly",
@@ -354,23 +474,30 @@ function validateRecurrence(recurrence: RecurrenceType): void {
   }
 }
 
+//this helper fixes any previously saved events with the old "none" tag and sets it to null so it wont error
+//if localStorage is empty this isn't neccesary.
+function fixOldRecurrence(
+  recurrence: RecurrenceType | "none" | null | undefined,
+): RecurrenceType | null {
+  if (
+    recurrence === "none" ||
+    recurrence === null ||
+    recurrence === undefined
+  ) {
+    return null;
+  }
+
+  validateRecurrence(recurrence);
+  return recurrence;
+}
+
 function validateRecurrenceDays(recurrenceDays: RecurrenceDay[]): void {
   if (!Array.isArray(recurrenceDays)) {
     throw new Error("Event assignment error: recurrenceDays must be an array.");
   }
 
-  const validDayOptions: RecurrenceDay[] = [
-    "SU",
-    "MO",
-    "TU",
-    "WE",
-    "TH",
-    "FR",
-    "SA",
-  ];
-
   recurrenceDays.forEach((day) => {
-    if (!validDayOptions.includes(day)) {
+    if (!recurrenceDayCodes.includes(day)) {
       throw new Error(
         `Event assignment error: ${day} is not a valid recurrence day.`,
       );

@@ -43,6 +43,12 @@
   width: 100%;
 }
 
+#eventForm #recurringEventContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
 #eventForm .inputPair {
   display: flex;
   flex-direction: row;
@@ -124,10 +130,22 @@
   }
 }
 
+#eventForm #recurrenceOptionsContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+#eventForm #eventRecurrenceDays {
+  flex-basis: 100%;
+}
+
 #eventForm #eventTypeOptionsContainer {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 1rddddem;
   flex-wrap: wrap;
 }
 

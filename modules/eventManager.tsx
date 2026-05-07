@@ -106,7 +106,7 @@ function submitEvent(
     .map((day) => String(day));
 
   if (!data.has("isRecurring")) {
-    eventProps.recurrence = "none";
+    eventProps.recurrence = null;
     eventProps.recurrenceDays = [];
   } else if (eventProps.recurrence !== "weekly") {
     eventProps.recurrenceDays = [];

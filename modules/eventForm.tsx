@@ -27,14 +27,12 @@ export default function EventForm({
     : undefined;
 
   const [isRecurring, setIsRecurring] = React.useState(
-    Boolean(targetEvent && targetEvent.recurrence !== "none"),
+    Boolean(targetEvent?.recurrence),
   );
 
   const [selectedRecurrence, setSelectedRecurrence] =
     React.useState<SelectedRecurrence>(
-      targetEvent?.recurrence && targetEvent.recurrence !== "none"
-        ? targetEvent.recurrence
-        : "weekly",
+      targetEvent?.recurrence ? targetEvent.recurrence : "weekly",
     );
 
   // Existing all-day events should stay all-day when edited.
@@ -195,7 +193,7 @@ export default function EventForm({
                           "SU",
                         )}
                       />{" "}
-                      Su
+                      Sun
                     </label>
 
                     <label>
@@ -207,7 +205,7 @@ export default function EventForm({
                           "MO",
                         )}
                       />{" "}
-                      Mo
+                      Mon
                     </label>
 
                     <label>
@@ -219,7 +217,7 @@ export default function EventForm({
                           "TU",
                         )}
                       />{" "}
-                      Tu
+                      Tue
                     </label>
 
                     <label>
@@ -231,7 +229,7 @@ export default function EventForm({
                           "WE",
                         )}
                       />{" "}
-                      We
+                      Wed
                     </label>
 
                     <label>
@@ -243,7 +241,7 @@ export default function EventForm({
                           "TH",
                         )}
                       />{" "}
-                      Th
+                      Thu
                     </label>
 
                     <label>
@@ -255,7 +253,7 @@ export default function EventForm({
                           "FR",
                         )}
                       />{" "}
-                      Fr
+                      Fri
                     </label>
 
                     <label>

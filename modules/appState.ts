@@ -10,7 +10,9 @@ import { getHolidayEvents } from "./holidayEvent";
 // Helper functions to map events by UID and by Date for efficient access
 
 /**
- * Creates a map with {key: value} pairs of {UID: CalendarEvent} for all events passed in.
+ * Creates a map with {key: value} pairs of {date: CalendarEvent[]} for all events passed in.
+ * Each key is a date string in "YYYY-MM-DD" format, and the value is an array
+ * of CalendarEvent objects that occur on that date.
  * @param events Array of CalendarEvent objects loaded from storage
  * @returns
  */
@@ -23,12 +25,6 @@ function mapEventsByUID(events: CalendarEvent[]): Map<string, CalendarEvent> {
 
   return mappedEvents;
 }
-
-//type and day-code lookup used by recurring helpers
-type RecurrenceDay = "SU" | "MO" | "TU" | "WE" | "TH" | "FR" | "SA";
-
-const dayCodes: RecurrenceDay[] = ["SU", "MO", "TU", "WE", "TH", "FR", "SA"];
-
 /**
  * Creates a map with {key: value} pairs of {date: CalendarEvent[]} for all events passed in.
  * Each key is a date string in "YYYY-MM-DD" format, and the value is an array
@@ -56,7 +52,7 @@ function mapEventsByDate(
 
 /**
  * Creates a map of recurring events keyed by UID.
- * Events with recurrence set to "none" are not included.
+ * Events with recurrence as null are not included.
  * @param events Array of CalendarEvents loaded from storage
  * @returns Map of recurring objects
  */
@@ -66,7 +62,7 @@ function mapRecurringEventsByUID(
   const recurringEvents = new Map<string, CalendarEvent>();
 
   events.forEach((event) => {
-    if (event.recurrence !== "none") {
+    if (event.isRecurring) {
       recurringEvents.set(event.UID, event);
     }
   });
@@ -100,7 +96,9 @@ class AppState {
 
   /**
    * Loads holiday events for the specified year into memory if they have not already been loaded.
-   * Creates a copy of the _eventsByDate map, adds each holiday into the matching date array,
+   * create a copy of the _eventsByDate map.
+   * add each holiday into the date array that matches the holiday's date.
+   * if there currently isn't an array for that date, create one
    * then writes the updated map back to _eventsByDate.
    * @param year Four-digit year to load holiday events for
    */
@@ -125,9 +123,9 @@ class AppState {
   }
 
   /**
-   * Returns true if holiday events have already been loaded for the given year.
-   * @param year Four-digit year to check
-   * @returns true if year is already loaded into holiday map, otherwise false
+   * returns true if holiday events have already been loaded for the given year.
+   * @param year
+   * @returns true if year is already loaded into holiday map, otherwise false.
    */
   areHolidaysLoadedForYear(year: number): boolean {
     return this._loadedHolidayYears.has(year);
@@ -161,10 +159,10 @@ class AppState {
 
   /**
    * Returns an array of CalendarEvent objects for the specified date.
-   * This includes one-time events saved directly on that date and recurring events
-   * that should appear on that date.
+   * If no events exist for that date, returns an empty array.
    * @param date "YYYY-MM-DD" formatted date string to retrieve events for
-   * @returns Array of CalendarEvent objects for the specified date, or [] if no events exist
+   * @returns Array of CalendarEvent objects for the specified date,
+   * or [] if no events exist for that date
    */
   getEventsByDate(date: string): CalendarEvent[] {
     const oneTime = this._eventsByDate.get(date) ?? [];
@@ -174,122 +172,15 @@ class AppState {
   }
 
   /**
-   * converts a date string into a JS date object
-   * @param dateString
-   * @returns date object
-   */
-  dateStringToDate(dateString: string): Date {
-    const [year, month, day] = dateString.split("-").map(Number);
-
-    return new Date(year!, month! - 1, day!);
-  }
-
-  /**
-   * converts a date into one of the day codes
-   * @param dateString
-   * @returns daycode
-   */
-  getDay(dateString: string): RecurrenceDay {
-    const date = this.dateStringToDate(dateString);
-
-    return dayCodes[date.getDay()]!;
-  }
-
-  /**
-   * makes sure that the date is after the origin start date
-   * @param eventDate
-   * @param targetDate
-   * @returns Boolean
-   */
-  isTargetDateAfterStartDate(eventDate: string, targetDate: string): boolean {
-    return this.dateStringToDate(targetDate) > this.dateStringToDate(eventDate);
-  }
-
-  /**
-   * checks if a weekly event should appear on the target date.
-   * @param event
-   * @param targetDate
-   * @returns boolean for dates
-   */
-  occursWeekly(event: CalendarEvent, targetDate: string): boolean {
-    if (event.recurrenceDays.length > 0) {
-      return event.recurrenceDays.includes(this.getDay(targetDate));
-    }
-
-    return this.getDay(event.date) === this.getDay(targetDate);
-  }
-
-  /**
-   * checks if a monthly event should appear on the target date
-   * @param event
-   * @param targetDate
-   * @returns boolean
-   */
-  occursMonthly(event: CalendarEvent, targetDate: string): boolean {
-    const eventDate = this.dateStringToDate(event.date);
-    const target = this.dateStringToDate(targetDate);
-
-    return eventDate.getDate() === target.getDate();
-  }
-
-  /**
-   * checks if a yearly event should appear on the target date
-   * @param event
-   * @param targetDate
-   * @returns boolean
-   */
-  occursYearly(event: CalendarEvent, targetDate: string): boolean {
-    const eventDate = this.dateStringToDate(event.date);
-    const target = this.dateStringToDate(targetDate);
-
-    return (
-      eventDate.getMonth() === target.getMonth() &&
-      eventDate.getDate() === target.getDate()
-    );
-  }
-
-  /**
-   * checks if a recuring event is present on target date
-   * returns flase if the event is not recurring or if the date is before the origin date
-   * @param event
-   * @param targetDate
-   * @returns true if the recurring event should appear on the target date
-   */
-  doesEventRepeatOnDate(event: CalendarEvent, targetDate: string): boolean {
-    if (event.recurrence === "none") {
-      return false;
-    }
-
-    if (!this.isTargetDateAfterStartDate(event.date, targetDate)) {
-      return false;
-    }
-
-    switch (event.recurrence) {
-      case "weekly":
-        return this.occursWeekly(event, targetDate);
-
-      case "monthly":
-        return this.occursMonthly(event, targetDate);
-
-      case "yearly":
-        return this.occursYearly(event, targetDate);
-
-      default:
-        return false;
-    }
-  }
-
-  /**
    * checks through the map of recurrings and only pulls those that should appear on the requested date.
    * @param targetDate
    * @returns Array of recurring events that occur on the target date
    */
   getRecurringEventsForDate(targetDate: string): CalendarEvent[] {
     return Array.from(this._recurringEvents.values()).filter((event) =>
-      this.doesEventRepeatOnDate(event, targetDate),
+      event.occursOnDate(targetDate),
     );
   }
-
   /**
    * Adds a new event to the app state if one doesn't already exist,
    * replaces event with same UID if it exists, and saves to localStorage.
@@ -304,7 +195,7 @@ class AppState {
     //update the recurring event map and store recurring events by UID then check when the dates render
     this._recurringEvents = new Map(this._recurringEvents);
 
-    if (event.recurrence !== "none") {
+    if (event.isRecurring) {
       this._recurringEvents.set(event.UID, event);
     } else {
       this._recurringEvents.delete(event.UID);
@@ -330,8 +221,8 @@ class AppState {
   }
 
   /**
-   * Removes an event with the specified UID from the app state
-   * and deletes the event from localStorage.
+   * Removes an event with the specified UID from the app state,
+   * updates both eventsByUID and eventsByDate maps, and deletes the event from localStorage.
    *
    * If no event with the specified UID exists, throws an error.
    * @param uid Unique identifier of the event to remove
