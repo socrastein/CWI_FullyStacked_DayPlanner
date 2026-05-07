@@ -101,6 +101,17 @@ function submitEvent(
   const data: FormData = new FormData(eventForm);
   const eventProps: any = Object.fromEntries(data);
 
+  eventProps.recurrenceDays = data
+    .getAll("recurrenceDays")
+    .map((day) => String(day));
+
+  if (!data.has("isRecurring")) {
+    eventProps.recurrence = null;
+    eventProps.recurrenceDays = [];
+  } else if (eventProps.recurrence !== "weekly") {
+    eventProps.recurrenceDays = [];
+  }
+
   const isExistingAllDayEvent = Boolean(UID?.startsWith("allDay-"));
   const isNewAllDaySelection = data.get("allDay") === "on";
   const isAllDay = isExistingAllDayEvent || isNewAllDaySelection;

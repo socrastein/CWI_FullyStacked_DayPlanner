@@ -10,18 +10,21 @@ import { getHolidayEvents } from "./holidayEvent";
 // Helper functions to map events by UID and by Date for efficient access
 
 /**
- * Creates a map with {key: value} pairs of {UID: CalendarEvent} for all events passed in.
+ * Creates a map with {key: value} pairs of {date: CalendarEvent[]} for all events passed in.
+ * Each key is a date string in "YYYY-MM-DD" format, and the value is an array
+ * of CalendarEvent objects that occur on that date.
  * @param events Array of CalendarEvent objects loaded from storage
  * @returns
  */
 function mapEventsByUID(events: CalendarEvent[]): Map<string, CalendarEvent> {
-  const mappedEvents = new Map();
+  const mappedEvents = new Map<string, CalendarEvent>();
+
   events.forEach((event) => {
     mappedEvents.set(event.UID, event);
   });
+
   return mappedEvents;
 }
-
 /**
  * Creates a map with {key: value} pairs of {date: CalendarEvent[]} for all events passed in.
  * Each key is a date string in "YYYY-MM-DD" format, and the value is an array
@@ -32,24 +35,39 @@ function mapEventsByUID(events: CalendarEvent[]): Map<string, CalendarEvent> {
 function mapEventsByDate(
   events: CalendarEvent[],
 ): Map<string, CalendarEvent[]> {
-  const mappedDates = new Map();
+  const mappedDates = new Map<string, CalendarEvent[]>();
+
   events.forEach((event) => {
     const dateKey = event.date;
+
     if (!mappedDates.has(dateKey)) {
       mappedDates.set(dateKey, []);
     }
-    mappedDates.get(dateKey).push(event);
+
+    mappedDates.get(dateKey)?.push(event);
   });
+
   return mappedDates;
 }
 
 /**
- * Pulls all the events with a recurrence setting into a separate array
- * @param events Array of CalendarEvent objects loaded from storage
- * @returns
+ * Creates a map of recurring events keyed by UID.
+ * Events with recurrence as null are not included.
+ * @param events Array of CalendarEvents loaded from storage
+ * @returns Map of recurring objects
  */
-function mapRecurringEvents(events: CalendarEvent[]): CalendarEvent[] {
-  return events.filter((event) => event.recurrence !== undefined);
+function mapRecurringEventsByUID(
+  events: CalendarEvent[],
+): Map<string, CalendarEvent> {
+  const recurringEvents = new Map<string, CalendarEvent>();
+
+  events.forEach((event) => {
+    if (event.isRecurring) {
+      recurringEvents.set(event.UID, event);
+    }
+  });
+
+  return recurringEvents;
 }
 
 class AppState {
@@ -57,21 +75,21 @@ class AppState {
 
   private _eventsByUID = mapEventsByUID(this._loadedEvents);
   private _eventsByDate = mapEventsByDate(this._loadedEvents);
-  private _recurringEvents = mapRecurringEvents(this._loadedEvents);
+  private _recurringEvents = mapRecurringEventsByUID(this._loadedEvents);
 
   // Set date view to current date in "YYYY-MM-DD" format
   private _dateView = new Date().toLocaleDateString("en-CA");
+
   // Load calendar view from storage; defaults to "day" if not saved
   private _calendarView = StorageManager.loadCalendarView();
 
-  //holidayEvent set year tester
-
+  // Holiday event set year tester
   private _loadedHolidayYears = new Set<number>();
 
-  // Set of listener functions to call whenever the app state changes (e.g. when events are added, edited, or deleted)
+  // Set of listener functions to call whenever the app state changes
   private listeners = new Set<() => void>();
 
-  //this constructor loads the year on startup to set holiday to current year on startup.
+  // This constructor loads the current year's holidays on startup.
   constructor() {
     this.loadHolidayEventsForYear(this.dateViewObject.getFullYear());
   }
@@ -115,7 +133,7 @@ class AppState {
 
   /**
    * Returns a Map of all events keyed by their UID,
-   * where each value is a CalendarEvent object
+   * where each value is a CalendarEvent object.
    */
   get allEventsByUID(): Map<string, CalendarEvent> {
     return this._eventsByUID;
@@ -123,7 +141,7 @@ class AppState {
 
   /**
    * Returns a Map of all events keyed by their date (YYYY-MM-DD),
-   * where each value is an array of CalendarEvent objects for that date
+   * where each value is an array of CalendarEvent objects for that date.
    */
   get allEventsByDate(): Map<string, CalendarEvent[]> {
     return this._eventsByDate;
@@ -148,10 +166,21 @@ class AppState {
    */
   getEventsByDate(date: string): CalendarEvent[] {
     const oneTime = this._eventsByDate.get(date) ?? [];
-    const recurring = this._recurringEvents.filter((e) => e.occursOn(date));
+    const recurring = this.getRecurringEventsForDate(date);
+
     return [...oneTime, ...recurring];
   }
 
+  /**
+   * checks through the map of recurrings and only pulls those that should appear on the requested date.
+   * @param targetDate
+   * @returns Array of recurring events that occur on the target date
+   */
+  getRecurringEventsForDate(targetDate: string): CalendarEvent[] {
+    return Array.from(this._recurringEvents.values()).filter((event) =>
+      event.occursOnDate(targetDate),
+    );
+  }
   /**
    * Adds a new event to the app state if one doesn't already exist,
    * replaces event with same UID if it exists, and saves to localStorage.
@@ -162,27 +191,18 @@ class AppState {
     // Replace map instead of mutating
     this._eventsByUID = new Map(this._eventsByUID).set(event.UID, event);
 
-    // If it's already in recurringEvents, replace the existing event
-    // If it is new, add it to recurringEvents
-    const alreadyInRecurring = this._recurringEvents.some(
-      (e) => e.UID === event.UID,
-    );
+    //adjusted since i was using array methods instead of correct map methods.
+    //update the recurring event map and store recurring events by UID then check when the dates render
+    this._recurringEvents = new Map(this._recurringEvents);
 
-    if (event.recurrence) {
-      this._recurringEvents = alreadyInRecurring
-        ? this._recurringEvents.map((e) => (e.UID === event.UID ? event : e))
-        : [...this._recurringEvents, event];
-
-      // If a recurring event has been modified to now be single occurence,
-      // remove it from recurringEvents
-    } else if (alreadyInRecurring) {
-      this._recurringEvents = this._recurringEvents.filter(
-        (e) => e.UID !== event.UID,
-      );
+    if (event.isRecurring) {
+      this._recurringEvents.set(event.UID, event);
+    } else {
+      this._recurringEvents.delete(event.UID);
     }
 
-    // If it's already in eventsByDate, replace the existing event
-    // If it is new, add it to eventsByDate
+    // If it's already in eventsByDate, replace the existing event.
+    // If it is new, add it to eventsByDate.
     const existingEvents = this._eventsByDate.get(event.date) ?? [];
     const alreadyExists = existingEvents.some((e) => e.UID === event.UID);
 
@@ -201,26 +221,26 @@ class AppState {
   }
 
   /**
-   * Removes an event with the specified UID from the app state
-   * and deletes the event from localStorage.
+   * Removes an event with the specified UID from the app state,
+   * updates both eventsByUID and eventsByDate maps, and deletes the event from localStorage.
    *
    * If no event with the specified UID exists, throws an error.
-   * @param uid Unique identifier of the event to retrieve
+   * @param uid Unique identifier of the event to remove
    */
   removeEvent(uid: string): void {
     const event = this._eventsByUID.get(uid);
-    if (!event) throw new Error(`No event found with UID: ${uid}`);
+
+    if (!event) {
+      throw new Error(`No event found with UID: ${uid}`);
+    }
 
     // Replace map instead of mutating
     this._eventsByUID = new Map(this._eventsByUID);
     this._eventsByUID.delete(uid);
 
-    // Remove from recurringEvents
-    if (event.recurrence) {
-      this._recurringEvents = this._recurringEvents.filter(
-        (e) => e.UID !== uid,
-      );
-    }
+    // Remove from recurring event definitions if present.
+    this._recurringEvents = new Map(this._recurringEvents);
+    this._recurringEvents.delete(uid);
 
     // Remove the event from the array of events for that date
     const remainingEvents = (this._eventsByDate.get(event.date) ?? []).filter(
@@ -260,6 +280,7 @@ class AppState {
         `Invalid calendar view. Valid views are: ${Object.values(CalendarViews).join(", ")}`,
       );
     }
+
     this._calendarView = view;
     StorageManager.saveCalendarView(view);
     this.notifyListeners();
@@ -279,8 +300,10 @@ class AppState {
    */
   get dateViewObject(): Date {
     const [year, month, day] = this._dateView.split("-").map(Number);
-    //@ts-ignore - TypeScript thinks this._dateView.split("-") could be undefined, but we always set it in the constructor and validate it in the setter
-    return new Date(year, month - 1, day);
+
+    // TypeScript thinks this._dateView.split("-") could be undefined,
+    // but dateView is always validated through the setter.
+    return new Date(year!, month! - 1, day!);
   }
 
   /**
@@ -289,32 +312,36 @@ class AppState {
    * @param date "YYYY-MM-DD" formatted date string to set as the current date view
    */
   set dateView(date: string) {
-    // Check that date is in "YYYY-MM-DD" format for the year 2000-2099
     const dateRegex = /^(20\d{2})-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/;
+
     if (!dateRegex.test(date)) {
       throw new Error(
         `Invalid date format. Date must be in "YYYY-MM-DD" format for the year 2000-2099.`,
       );
     }
+
     this._dateView = date;
 
     const year = this.dateViewObject.getFullYear();
+
     if (!this.areHolidaysLoadedForYear(year)) {
       this.loadHolidayEventsForYear(year);
+    } else {
+      this.notifyListeners();
     }
-
-    this.notifyListeners();
   }
 
   switchToDay(date: string) {
     this._calendarView = CalendarViews.Day;
     StorageManager.saveCalendarView(CalendarViews.Day);
     this._dateView = date;
+
     const year = this.dateViewObject.getFullYear();
+
     if (!this.areHolidaysLoadedForYear(year)) {
-      this.loadHolidayEventsForYear(year); // this calls notifyListeners internally
+      this.loadHolidayEventsForYear(year);
     } else {
-      this.notifyListeners(); // single notification with both changes
+      this.notifyListeners();
     }
   }
 
@@ -327,12 +354,12 @@ class AppState {
    */
   subscribe(listener: () => void) {
     this.listeners.add(listener);
+
     return () => this.listeners.delete(listener);
   }
 
   /**
-   * Calls all subscribed listener functions to notify them that the app state has changed.
-   * Passes a snapshot of the current app state to each listener so React can update the UI accordingly.
+   * Calls all subscribed listener functions to notify them that app state has changed.
    * This replaces extra calls to rerender elsewhere in the code.
    */
   private notifyListeners() {
@@ -341,9 +368,8 @@ class AppState {
   }
 
   /**
-   * Snapshot of the current app state that is passed to subscribed listener functions whenever the app state changes.
-   * This is how React decides if a component needs to rerender - if the snapshot has changed
-   * since the last time it was called, then the component will rerender with the new snapshot data.
+   * Snapshot of the current app state that is passed to subscribed listener functions whenever app state changes.
+   * This is how React decides if a component needs to rerender.
    * @returns
    */
   getSnapshot() {
@@ -363,21 +389,10 @@ class AppState {
 
 /**
  * Single source of truth for all event data and calendar state in the app.
- *
- * Components can subscribe to changes in the app state and receive a snapshot of the current state
- * whenever it changes, allowing them to update their UI accordingly.
- *
- * Provides methods to access and manipulate events, calendar view, and date view.
- * Initially loads events and calendar view from localStorage into eventsByUID and eventsByDate maps,
- * and sets date view to current date. When events are added, edited, or deleted,
- * creates new, updated internal maps and saves changes to localStorage.
- *
- * When calendar view is changed, saves the new view to localStorage.
- *
  */
 const appState = new AppState();
 
-// Tapping F2 3x within a couple seconds will load mock events for testing purposes. This is a "cheat code" that allows us to easily load mock events without having to run tests or manually create events one by one.
+// Tapping F2 3x within a couple seconds will load mock events for testing purposes.
 registerCheatCode(() => {
   console.log("Loading mock events...");
   const mockEvents = createMockEvents();
@@ -391,9 +406,8 @@ registerCheatCode(() => {
 /**
  * Function that React components can import and call to subscribe to changes in the app state.
  * Whenever the app state changes, the subscribed component will receive a new snapshot
- * of the app state and can update its UI if needed. *
+ * of the app state and can update its UI if needed.
  */
-
 export function useAppState() {
   return useSyncExternalStore(
     (listener) => appState.subscribe(listener),
