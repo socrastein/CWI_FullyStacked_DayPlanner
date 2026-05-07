@@ -236,7 +236,7 @@ export default class CalendarEvent {
    * @param dateString
    * @returns date object
    */
-  dateStringToDate(dateString: string): Date {
+  private dateStringToDate(dateString: string): Date {
     const [year, month, day] = dateString.split("-").map(Number);
 
     return new Date(year!, month! - 1, day!);
@@ -247,7 +247,7 @@ export default class CalendarEvent {
    * @param dateString
    * @returns daycode
    */
-  getDay(dateString: string): RecurrenceDay {
+  private getDay(dateString: string): RecurrenceDay {
     const date = this.dateStringToDate(dateString);
 
     return recurrenceDayCodes[date.getDay()]!;
@@ -258,7 +258,7 @@ export default class CalendarEvent {
    * @param targetDate
    * @returns Boolean
    */
-  isTargetDateAfterStartDate(targetDate: string): boolean {
+  private isTargetDateAfterStartDate(targetDate: string): boolean {
     return (
       this.dateStringToDate(targetDate) > this.dateStringToDate(this.#date)
     );
@@ -268,7 +268,7 @@ export default class CalendarEvent {
    * @param targetDate
    * @returns boolean for dates
    */
-  occursWeekly(targetDate: string): boolean {
+  private occursWeekly(targetDate: string): boolean {
     if (this.#recurrenceDays.length > 0) {
       return this.#recurrenceDays.includes(this.getDay(targetDate));
     }
@@ -281,7 +281,7 @@ export default class CalendarEvent {
    * @param targetDate
    * @returns boolean
    */
-  occursMonthly(targetDate: string): boolean {
+  private occursMonthly(targetDate: string): boolean {
     const eventDate = this.dateStringToDate(this.#date);
     const target = this.dateStringToDate(targetDate);
 
@@ -293,7 +293,7 @@ export default class CalendarEvent {
    * @param targetDate
    * @returns boolean
    */
-  occursYearly(targetDate: string): boolean {
+  private occursYearly(targetDate: string): boolean {
     const eventDate = this.dateStringToDate(this.#date);
     const target = this.dateStringToDate(targetDate);
 

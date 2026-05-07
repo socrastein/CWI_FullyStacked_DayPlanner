@@ -145,7 +145,7 @@ export default function EventForm({
                   checked={isRecurring}
                   onChange={(event) => setIsRecurring(event.target.checked)}
                 />
-                Recurring event
+                Repeats
               </label>
 
               <label htmlFor="allDay">
