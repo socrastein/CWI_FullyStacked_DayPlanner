@@ -56,6 +56,10 @@
   flex-grow: 1;
 }
 
+.inputPair label {
+  width: 3rem;
+}
+
 #eventForm :is(input, textarea, button) {
   border: 1px solid black;
   border-radius: 0.25rem;

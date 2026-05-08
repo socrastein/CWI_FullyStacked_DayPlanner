@@ -1,40 +1,39 @@
 import CalendarEventButton from "./calendarEventButton";
-import CalendarEvent from "../../classCalendarEvent";
-
 import {
-	assignLanesForEvents,
-	calculateTotalConcurrentEvents,
+  assignLanesForEvents,
+  calculateTotalConcurrentEvents,
 } from "../dailyCalendar";
+import dateUtils from "../../dateUtils";
+import { useAppState } from "../../appState";
 
-import * as Calendar from "../calendar";
+export default function DayCalendarEventsLayer() {
+  const { dateView, getEventsByDate } = useAppState();
+  const events = getEventsByDate(dateView);
+  const filteredEvents = events.filter((e) => !e.isAllDay && !e.isHoliday);
+  const assignedLanes = assignLanesForEvents(filteredEvents);
 
-type Props = {
-	events: CalendarEvent[];
-};
+  return (
+    <div
+      id="calendarEventsLayer"
+      className="calendarEventsLayer"
+      style={{ height: `${dateUtils.minutesPerDay}px` }}
+    >
+      {filteredEvents.map((event) => {
+        const laneIndex = assignedLanes.get(event.UID) ?? 0;
+        const totalLanes = calculateTotalConcurrentEvents(
+          event,
+          filteredEvents,
+        );
 
-export default function DayCalendarEventsLayer({ events }: Props) {
-	const assignedLanes = assignLanesForEvents(events);
-
-	return (
-		<div 
-			id="calendarEventsLayer"
-			className="calendarEventsLayer"
-			style={{ height: `${Calendar.DAY_TOTAL_HEIGHT}px` }}
-		>
-			{events.map((event, index) => {
-				const laneIndex = assignedLanes.get(event.UID) ?? 0;
-				const totalLanes = calculateTotalConcurrentEvents(event, events);
-
-				return (
-					<CalendarEventButton
-						key={event.UID}
-						event={event}
-						index={index}
-						laneIndex={laneIndex}
-						totalLanes={totalLanes}
-					/>
-				);
-			})}
-		</div>
-	);
+        return (
+          <CalendarEventButton
+            key={event.UID}
+            event={event}
+            laneIndex={laneIndex}
+            totalLanes={totalLanes}
+          />
+        );
+      })}
+    </div>
+  );
 }

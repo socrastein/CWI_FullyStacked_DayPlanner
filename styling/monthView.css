@@ -4,22 +4,18 @@
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   grid-template-rows: auto repeat(6, 1fr);
-
-  border: solid 0.125rem;
 }
 
 .dayNameCell {
   text-align: center;
   font-weight: bold;
-  background-color: rgba(var(--bs-primary-rgb), 0.5);
+  color: white;
+  background-color: rgba(var(--bs-primary-rgb), 1);
   outline: solid 1px var(--bs-secondary);
-  border-radius: 0.25rem;
 }
 
 .dayCell {
-  outline: solid 1px var(--bs-secondary);
-  border-radius: 0.25rem;
-
+  outline: 1px solid rgba(var(--bs-secondary-rgb), 0.5);
   padding: 0.1rem;
 
   overflow: hidden;
@@ -28,38 +24,53 @@
   background-color: var(--bs-body-bg);
 }
 
+.dayCell:hover {
+  cursor: pointer;
+  background-color: rgba(var(--bs-primary-rgb), 0.4);
+}
+
 .dayCellNumber {
   display: block;
-  width: 100%;
   text-align: center;
-  font-size: 0.75rem;
+  font-size: 1rem;
   border-radius: 0.25rem;
+  margin: 0 auto;
+  margin-bottom: 0.25rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  color: var(--bs-tertiary-color);
 }
 
 .currentMonthDayCell .dayCellNumber {
   font-weight: bold;
+  color: var(--bs-body-color);
 }
 
 .todayCell {
 }
 
 .todayCell .dayCellNumber {
-  background-color: rgba(var(--bs-primary-rgb), 0.5);
+  background-color: rgba(var(--bs-primary-rgb), 1);
+  color: white;
+  border-radius: 50%;
 }
 
 .dayCellEvent {
-  font-size: 0.5rem;
+  font-size: 0.85rem;
   font-weight: 500;
   line-height: 1.2;
+  width: 100%;
 
-  border: solid 1px;
-  border-radius: 0.25rem;
+  border-left-style: solid;
+  border-left-width: 0.25rem;
+  border-radius: 0.25rem 0 0 0.25rem;
   padding-left: 2px;
 
   cursor: pointer;
   overflow: hidden;
   white-space: nowrap;
   flex-shrink: 0;
+  background-color: var(--bs-secondary-bg);
 }
 
 .dayCellEvent p {
@@ -68,19 +79,37 @@
 
 .dayCellEventHoliday {
   text-align: center;
+  overflow: visible;
+  white-space: wrap;
   border: none;
   padding-bottom: 0.1rem;
-  font-size: 0.6rem;
+  margin-bottom: 0.25rem;
+  font-size: 0.8rem;
   font-weight: bold;
+  background-color: transparent;
+}
+
+.dayCellEventAllDay {
+  border: none;
+  margin-bottom: 0.25rem;
+  text-align: center;
+  background-color: rgba(var(--bs-primary-rgb), 0.25);
 }
 
 /* Desktop */
-@media (min-width: 768px) {
+@media (max-width: 768px) {
   .dayCellNumber {
-    font-size: 1rem;
+    font-size: 0.75rem;
+    width: 1.25rem;
+    height: 1.25rem;
   }
 
   .dayCellEvent {
-    font-size: 0.85rem;
+    font-size: 0.6rem;
+    border-left-width: 2px;
+  }
+
+  .dayCellEventHoliday {
+    font-size: 0.6rem;
   }
 }

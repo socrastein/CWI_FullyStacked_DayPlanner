@@ -1,49 +1,109 @@
-.weekEventsContainer {
-  position: relative;
-  height: 1440px;
-}
-
 .weekViewGridContainer {
   display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
-  column-gap: 0.00625rem;
+  grid-template-columns: 2.5rem 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+}
+
+.weekViewTimeSlotContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.weekViewTimeSlotFiller {
+  position: sticky;
+  top: 0;
+  height: 3.75rem;
+  background-color: var(--bs-body-bg);
+}
+
+.weekViewGridContainer .calendarTimeLabelsColumn {
+  display: flex;
+  justify-content: flex-end;
+  flex-direction: column;
+  border-left: none;
+  border-right: none;
+}
+
+.weekViewGridContainer .calendarTimeLabelsColumn .calendarTimeLabel {
+  font-size: 0.625rem;
+  bottom: 0;
 }
 
 .weekHourGridLine {
   height: 60px;
-  border-bottom: 1px solid
-    color-mix(in srgb, var(--bs-secondary) 10%, transparent);
+  border-bottom: 1px solid rgba(var(--bs-secondary-rgb), 0.1);
+}
+
+.weekAllDayContainer {
+  display: flex;
+  justify-content: center;
+  height: 1.25rem;
+  overflow-wrap: normal;
+  margin-bottom: 0.25rem;
+}
+
+.weekAllDayEvent {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  font-size: 0.9rem;
+  width: 98%;
+  overflow: hidden;
+  background-color: rgba(var(--bs-primary-rgb), 0.25);
+  border-radius: 0.25rem;
 }
 
 .weekDayHeader {
   display: flex;
   flex-direction: column;
-  text-align: center;
+  align-items: center;
   position: sticky;
   top: 0;
-  z-index: 1;
+  z-index: 5;
+  height: 3.75rem;
+  border: 1px solid rgba(var(--bs-secondary-rgb), 0.4);
+  border-top: none;
   background-color: var(--bs-body-bg);
-  border-bottom: 1px solid
-    color-mix(in srgb, var(--bs-secondary) 50%, transparent);
+  border-radius: 0.25rem 0.25rem 0 0;
 }
 
 .weekDayHeader:hover {
-  background-color: color-mix(
-    in srgb,
-    var(--bs-primary) 10%,
-    var(--bs-body-bg)
-  );
+  background-color: var(--bs-primary);
+  color: white;
+}
+
+.weekDayName {
+  width: 100%;
+  text-align: center;
+  background-color: rgba(var(--bs-primary-rgb), 1);
+  border-radius: 0.25rem 0.25rem 0 0;
+  color: white;
+  font-weight: bold;
+  margin: 0;
+}
+
+.weekDayDate {
+  padding: 0.25rem 0;
+  font-weight: bold;
+}
+
+.weekDayCurrentDay .weekDayDate {
+  aspect-ratio: 1;
+  text-align: center;
+  color: white;
+  background-color: rgba(var(--bs-primary-rgb), 1);
+  border-radius: 50%;
+}
+
+.weekEventsContainer {
+  position: relative;
+  border: 1px solid rgba(var(--bs-secondary-rgb), 0.5);
 }
 
 .eventTitle {
   font-size: 0.8rem;
   font-weight: 600; /* medium */
-}
-
-@media (max-width: 768px) {
-  .eventTitle {
-    font-size: 0.625rem;
-  }
 }
 
 .weekEventButton {
@@ -54,4 +114,38 @@
   justify-content: start;
   padding-block: 0rem;
   text-align: start;
+  background-color: var(--bs-secondary-bg);
+  border-left-width: 0.25rem;
+}
+
+@media (max-width: 768px) {
+  .eventTitle {
+    font-size: 0.625rem;
+  }
+
+  .weekAllDayContainer {
+    height: 2rem;
+  }
+
+  .weekAllDayEvent {
+    font-size: 0.625rem;
+  }
+
+  .weekEventButton {
+    border-left-width: 2px;
+  }
+
+  .weekViewGridContainer {
+    display: grid;
+    grid-template-columns: 1.25rem 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+  }
+
+  .weekViewGridContainer .calendarTimeLabelsColumn .calendarTimeLabel {
+    font-size: 0.5rem;
+    white-space: wrap;
+  }
+
+  .weekViewGridContainer .calendarTimeLabelsColumn .calendarTimeSlotRow {
+    padding-right: 2px;
+  }
 }

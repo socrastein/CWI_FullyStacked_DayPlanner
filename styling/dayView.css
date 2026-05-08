@@ -23,17 +23,18 @@
   align-items: flex-start;
   justify-content: flex-end;
   padding-right: 0.5rem;
-}
-
-.calendarTimeSlotRow[data-active="true"] .calendarTimeLabel {
-  color: var(--bs-primary);
-  font-weight: 600;
+  height: 60px;
 }
 
 .calendarTimeLabel {
   font-size: 0.625rem;
   color: var(--bs-secondary);
   white-space: nowrap;
+}
+
+.calendarCurrentTimeHighlight {
+  color: var(--bs-primary);
+  font-weight: 600;
 }
 
 /* Right column: day grid (grid lines + now line + events) */
@@ -55,6 +56,7 @@
 
 .calendarHourGridLine {
   flex-shrink: 0;
+  height: 60px;
   border-bottom: var(--bs-border-width) solid
     color-mix(in srgb, var(--bs-border-color) 50%, transparent);
 

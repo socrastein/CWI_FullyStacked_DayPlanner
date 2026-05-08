@@ -1,19 +1,17 @@
 import generateUID from "./UIDGenerator";
-import StorageManager from "./dataStorage";
 import CalendarEvent from "./classCalendarEvent";
 import { createRoot, type Root } from "react-dom/client";
 import React from "react";
 import EventForm from "./eventForm";
 import appState from "./appState";
 import { clearTimeSlot } from "./calendar/calendarContainer/tapToAddEvent";
-
-// TODO: Add non null verification/exception handling
+import dateUtils from "./dateUtils";
 
 // Root element container for event form component
 const eventFormRootElement: HTMLElement | null =
   document.getElementById("eventFormRoot");
 
-//edit state variable
+// Edit state variable
 let editingEventUID: string | null = null;
 
 /**
@@ -30,7 +28,7 @@ function initializeEventManager(): void {
     showEventManager();
   });
 
-  //additional listener for 'edit event' option.  Reads clicks on event targets and stores eventUID then runs openEventEditor() based on eventUID.
+  // Additional listener for 'edit event' option.  Reads clicks on event targets and stores eventUID then runs openEventEditor() based on eventUID.
 
   calendarEventsLayer?.addEventListener("click", (event) => {
     const clickedEventButton: HTMLElement = (
@@ -47,7 +45,8 @@ function initializeEventManager(): void {
 }
 
 /**
- * Show (and close) event creation and editing form. Will create a new React root each time it is called, then will unmount itself when the form is closed.
+ * Show (and close) event creation and editing form. Will create a new React root
+ * each time it is called, then will unmount itself when the form is closed.
  * Resets form fields automatically.
  * @param {string} UID - OPTIONAL: If provided, the form will load the event corresponding to the UID for editing or deletion.
  */
@@ -68,8 +67,7 @@ function showEventManager(UID: string | null = null): void {
   }
 
   function submit(component: React.SubmitEvent<HTMLFormElement>) {
-    submitEvent(component, UID);
-    close();
+    if (submitEvent(component, UID)) close();
   }
 
   function deleteEvent() {
@@ -93,7 +91,7 @@ function showEventManager(UID: string | null = null): void {
 function submitEvent(
   event: React.SubmitEvent<HTMLFormElement>,
   UID: string | null,
-): void {
+): boolean {
   event.preventDefault();
   // Pull form from the event
   const eventForm: HTMLFormElement = event.currentTarget;
@@ -112,7 +110,7 @@ function submitEvent(
     eventProps.recurrenceDays = [];
   }
 
-  const isExistingAllDayEvent = Boolean(UID?.startsWith("allDay-"));
+  const isExistingAllDayEvent = Boolean(UID?.startsWith("allDay"));
   const isNewAllDaySelection = data.get("allDay") === "on";
   const isAllDay = isExistingAllDayEvent || isNewAllDaySelection;
 
@@ -125,19 +123,38 @@ function submitEvent(
   // Validate form input data
   if (!validateEventSubmission(eventProps)) {
     eventForm.reportValidity();
-    return;
+    return false;
   }
-  // if a UID exists, pull that UID, if isAllDay is true generate new UID with allDay- prefix, othwerwise generate a new UID, save and hide the eventform.
-  if (UID) {
-    eventProps.UID = UID;
-  } else if (isAllDay) {
-    eventProps.UID = `allDay-${generateUID()}`;
-  } else {
-    eventProps.UID = generateUID();
-  }
-  const newEvent = new CalendarEvent(eventProps);
 
+  // If a UID exists, pull that UID, if isAllDay is true generate new UID with allDay- prefix, othwerwise generate a new UID, save and hide the eventform.
+  if (!UID) {
+    eventProps.UID = generateUID();
+  } else {
+    // If a regular event is changed to allDay event,
+    // or if all day event is changed back to regular event,
+    // remove old event and replace with new event with appropriate UID
+    if (hasAllDayStatusChanged(UID, isAllDay)) {
+      appState.removeEvent(UID);
+      if (isAllDay) {
+        eventProps.UID = `allDay-${generateUID()}`;
+      } else {
+        eventProps.UID = generateUID();
+      }
+    } else {
+      eventProps.UID = UID;
+    }
+  }
+
+  const newEvent = new CalendarEvent(eventProps);
   appState.addEvent(newEvent);
+  return true;
+}
+
+function hasAllDayStatusChanged(UID: string, isAllDay: boolean) {
+  return (
+    (!isAllDay && UID.startsWith("allDay")) ||
+    (isAllDay && !UID.startsWith("allDay"))
+  );
 }
 
 /**
@@ -158,6 +175,9 @@ function validateEventSubmission(event: CalendarEvent): boolean {
   const eventDateInput: HTMLInputElement | null = document.getElementById(
     "eventDate",
   ) as HTMLInputElement;
+  const recurrenceInput: HTMLInputElement | null = document.querySelector(
+    'input[name="recurrenceDays"]',
+  ) as HTMLInputElement;
 
   // Title validation
   if (event.title.trim() === "" || event.title.length > 100) {
@@ -176,13 +196,13 @@ function validateEventSubmission(event: CalendarEvent): boolean {
   // Date validation
   const pastDateLimit = new Date("2000-01-02");
   const futureDateLimit = new Date("2100-01-01");
-  const eventDate = new Date(event.date);
+  const eventDate = dateUtils.stringToDate(event.date);
   if (eventDate < pastDateLimit || eventDate > futureDateLimit) {
     eventDateInput.setCustomValidity(
       "Event date is out of the allowed range.\n(" +
-        pastDateLimit.toLocaleDateString("en-US") +
+        dateUtils.dateToString(pastDateLimit) +
         " - " +
-        futureDateLimit.toLocaleDateString("en-US") +
+        dateUtils.dateToString(futureDateLimit) +
         ")",
     );
     eventDateInput.addEventListener(
@@ -203,6 +223,20 @@ function validateEventSubmission(event: CalendarEvent): boolean {
       "input",
       () => {
         endTimeInput.setCustomValidity("");
+      },
+      { once: true },
+    );
+    return false;
+  }
+  // Recurrence validation
+  const recurrenceFieldset = document.getElementById("eventRecurrenceDays");
+  if (event.isRecurring && event.recurrenceDays.length === 0) {
+    console.log(recurrenceInput);
+    recurrenceInput.setCustomValidity("Check at least one day to repeat on.");
+    recurrenceFieldset?.addEventListener(
+      "click",
+      () => {
+        recurrenceInput.setCustomValidity("");
       },
       { once: true },
     );

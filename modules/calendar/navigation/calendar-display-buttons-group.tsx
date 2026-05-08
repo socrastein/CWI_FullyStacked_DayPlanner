@@ -1,6 +1,7 @@
 import CalendarDisplayButton from "../navigation/calendar-display-button";
 import { CalendarViews } from "../../enumCalendarViews";
 import appState, { useAppState } from "../../appState";
+import dateUtils from "../../dateUtils";
 /**
  * A component that represents a group of buttons to change the calendar view.
  * @param activeView - The current view of the calendar.
@@ -36,7 +37,7 @@ function CalendarDisplayButtonsGroup() {
         className="btn btn-sm btn-secondary"
         onClick={() => {
           appState.calendarView = CalendarViews.Day;
-          appState.dateView = new Date().toLocaleDateString("en-CA");
+          appState.dateView = dateUtils.dateToString();
         }}
       >
         Today

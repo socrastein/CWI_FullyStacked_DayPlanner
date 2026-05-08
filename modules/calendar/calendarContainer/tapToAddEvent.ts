@@ -23,7 +23,7 @@ function isValidInput(event: React.PointerEvent<HTMLDivElement>): boolean {
   const { pointerType, button } = event;
 
   switch (pointerType) {
-    case "touch": 
+    case "touch":
       return true; // Mobile tap
 
     case "mouse":
@@ -38,10 +38,7 @@ function isValidInput(event: React.PointerEvent<HTMLDivElement>): boolean {
   }
 }
 
-function calcTime(
-  dayGridColumn: HTMLDivElement,
-  yPosition: number,
-) {
+function calcTime(dayGridColumn: HTMLDivElement, yPosition: number) {
   const elementRectangle = dayGridColumn.getBoundingClientRect();
   const y = yPosition - elementRectangle.top;
 
@@ -62,7 +59,7 @@ function calcTime(
 
   // Caps time at 11:45pm
   if (initialEndMinutes >= 1440) {
-    endMinutes = 1425;    
+    endMinutes = 1425;
   } else {
     endMinutes = initialEndMinutes;
   }
@@ -91,7 +88,7 @@ export function handleLongPress(
   }, LONG_PRESS_DURATION);
 }
 
-// Cancels long press if long press is too short or interrupted 
+// Cancels long press if long press is too short or interrupted
 export function endLongPress(): void {
   if (pressTimer) {
     clearTimeout(pressTimer);

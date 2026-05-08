@@ -20,13 +20,10 @@ function CalendarAllDayDisplay() {
   let allDayEvents = [];
 
   if (!displayHolidays) {
-    allDayEvents = eventsForViewDate.filter((event) =>
-      event.UID.startsWith("allDay-"),
-    );
+    allDayEvents = eventsForViewDate.filter((event) => event.isAllDay);
   } else {
     allDayEvents = eventsForViewDate.filter(
-      (event) =>
-        event.UID.startsWith("allDay-") || event.UID.startsWith("holiday-"),
+      (event) => event.isAllDay || event.isHoliday,
     );
   }
 

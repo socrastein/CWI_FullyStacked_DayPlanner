@@ -4,7 +4,6 @@ import CalendarNavButton from "../navigation/calendar-nav-button";
 
 type CalendarNavButtonsGroupProps = {
   onAfterNavigate: () => void;
-  
 };
 
 /**

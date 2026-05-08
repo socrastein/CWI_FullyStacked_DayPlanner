@@ -53,7 +53,7 @@ const StorageManager = {
   },
 
   /**
-   * Prompts the user for confirmation before deleting the event with the specified UID.
+   * Deletes the event with the specified UID from localStorage.
    * @param UID indentifier string from the CalendarEvent object to be deleted
    */
   deleteEvent(UID: string): void {
@@ -61,33 +61,20 @@ const StorageManager = {
   },
 
   /**
-   * Prompts the user TWICE for confirmation before deleting all events from localStorage.
+   * Deletes ALL events saved in localStorage
    */
   deleteAllEvents(): void {
-    if (
-      confirm(
-        "Are you sure you want to delete all events? This action cannot be undone.",
-      )
-    ) {
-      if (
-        confirm(
-          "Please confirm again. This will permanently delete ALL events from your calendar.",
-        )
-      ) {
-        // Proceed with deletion only if both confirmations are accepted
-        const length = localStorage.length;
-        const keysToDelete = [];
-        // Identify all keys that start with savedEventPrefix to avoid modifying localStorage while iterating
-        for (let i = 0; i < length; i++) {
-          const key = localStorage.key(i);
-          if (key && key.startsWith(savedEventPrefix)) {
-            keysToDelete.push(key);
-          }
-        }
-        // Remove all identified CalendarEvent keys from localStorage
-        keysToDelete.forEach((key) => localStorage.removeItem(key));
+    const length = localStorage.length;
+    const keysToDelete = [];
+    // Identify all keys that start with savedEventPrefix to avoid modifying localStorage while iterating
+    for (let i = 0; i < length; i++) {
+      const key = localStorage.key(i);
+      if (key && key.startsWith(savedEventPrefix)) {
+        keysToDelete.push(key);
       }
     }
+    // Remove all identified CalendarEvent keys from localStorage
+    keysToDelete.forEach((key) => localStorage.removeItem(key));
   },
 
   /**

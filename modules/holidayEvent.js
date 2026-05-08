@@ -1,4 +1,5 @@
 import CalendarEvent from "./classCalendarEvent";
+import dateUtils from "./dateUtils";
 
 /**
  * Creates a generated holiday event using the CalendarEvent format.
@@ -21,7 +22,7 @@ function createHolidayEvent({ title, date }) {
 }
 
 /**
- * this function is a helper that formats the date into a string that CalendarEvent can use
+ * This function is a helper that formats the date into a string that CalendarEvent can use
  * used for holidays with a set date
  * @param {number} year
  * @param {number} month
@@ -29,9 +30,8 @@ function createHolidayEvent({ title, date }) {
  * @returns {string}
  */
 function formatDate(year, month, day) {
-  const monthString = String(month).padStart(2, "0");
-  const dayString = String(day).padStart(2, "0");
-  return `${year}-${monthString}-${dayString}`;
+  const date = new Date(year, month - 1, day);
+  return dateUtils.dateToString(date);
 }
 
 /**

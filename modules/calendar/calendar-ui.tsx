@@ -1,7 +1,7 @@
 import { createRoot, type Root } from "react-dom/client";
 import CalendarDisplayButtonsGroup from "./navigation/calendar-display-buttons-group";
 import CalendarNavButtonsGroup from "./navigation/calendar-nav-buttons-group";
-import CalendarWrapper from "./calendarContainer/calendarWrapper";
+import CalendarView from "./calendarContainer/calendarView";
 import { CalendarHeaderDisplay } from "./calendar-header-display";
 import { CalendarAllDayDisplay } from "./calendar-all-day-display";
 
@@ -32,7 +32,7 @@ function mountCalendarWrapper(): void {
   const calendarViewAreaElement = document.getElementById("calendarViewArea");
 
   const root = createRoot(calendarViewAreaElement!);
-  root.render(<CalendarWrapper />);
+  root.render(<CalendarView />);
 }
 
 // Render the calendary view button group that includes the 'Day', 'Week', 'Month' buttons

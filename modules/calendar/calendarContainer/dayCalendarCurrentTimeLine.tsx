@@ -1,14 +1,10 @@
-import * as Calendar from "../calendar";
-
-type Props = {
-  currentMinutesFromMidnight: number | null;
-};
+import { useAppState } from "../../appState";
+import dateUtils from "../../dateUtils";
 
 // Renders the horizontal "now" line that shows the current time position on the day grid.
-export default function DayCalendarCurrentTimeLine({
-  currentMinutesFromMidnight,
-}: Props) {
-  const isVisible = currentMinutesFromMidnight !== null;
+export default function DayCalendarCurrentTimeLine() {
+  const { dateView } = useAppState();
+  const isVisible = dateUtils.isToday(dateView);
 
   return (
     <div
@@ -18,7 +14,7 @@ export default function DayCalendarCurrentTimeLine({
       style={{
         visibility: isVisible ? "visible" : "hidden",
         top: isVisible
-          ? `${currentMinutesFromMidnight * Calendar.PIXELS_PER_MINUTE}px`
+          ? `${dateUtils.currentMinutesFromMidnight()}px`
           : undefined,
       }}
     />

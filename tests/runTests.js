@@ -2,7 +2,7 @@ import eventTests from "./classCalendarEvent_test";
 import storageTests from "./dataStorage_test";
 import appStateTests from "./appState_test";
 import appSettingsTests from "./appSettings_test";
-import calendarNavigationFunctionsTest from "./use-calendar-nav-button_test";
+import dateUtilsTests from "./dateUtils_test";
 import calendarHeaderDisplayTests from "./calendar-header-display_test";
 import holidayTests from "./holidayTesting";
 
@@ -27,7 +27,7 @@ function runTests() {
   runWithTiming("StorageManager Tests", storageTests);
   runWithTiming("AppState Tests", appStateTests);
   runWithTiming("AppSettings Tests", appSettingsTests);
-  runWithTiming("Calendar Navigation Tests", calendarNavigationFunctionsTest);
+  runWithTiming("DateUtils Tests", dateUtilsTests);
   runWithTiming("CalendarHeaderDisplay Tests", calendarHeaderDisplayTests);
   runWithTiming("Holiday Tests", holidayTests);
   const endTime = performance.now();

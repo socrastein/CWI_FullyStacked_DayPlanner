@@ -347,7 +347,7 @@ export default function appStateTests() {
       assert(
         appState
           .getSnapshot()
-          .allEventsByDate.get("2026-02-14")
+          .getEventsByDate("2026-02-14")
           ?.some((e) => e.UID === "test-uid-snap"),
         "snapshot should reflect new event",
       );

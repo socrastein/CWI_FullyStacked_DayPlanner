@@ -1,29 +1,22 @@
-import * as Calendar from '../calendar';
+import dateUtils from "../../dateUtils";
 
-type Props = {
-	slots: number[];
-	slotHeight: number;
-};
+const hourSlots = dateUtils.hourSlotsArray;
 
 // Renders the horizontal background lines that divide the day grid into time slots
-export default function DayCalendarHourGridLines({
-	slots,
-	slotHeight,
-}: Props) {
-	return (
-		<div
-			id="calendarHourGridLinesContainer"
-			className="calendarHourGridLines"
-			style={{ height: `${Calendar.DAY_TOTAL_HEIGHT}px`}}
-		>
-			{slots.map((slotStart) => (
-				<div
-					key={slotStart}
-					className="calendarHourGridLine"
-					style={{ height: `${slotHeight}px`}}
-					aria-hidden="true"
-				/>
-			))}
-		</div>
-	);
+export default function DayCalendarHourGridLines() {
+  return (
+    <div
+      id="calendarHourGridLinesContainer"
+      className="calendarHourGridLines"
+      style={{ height: `${dateUtils.minutesPerDay}px` }}
+    >
+      {hourSlots.map((slotStart) => (
+        <div
+          key={slotStart}
+          className="calendarHourGridLine"
+          aria-hidden="true"
+        />
+      ))}
+    </div>
+  );
 }

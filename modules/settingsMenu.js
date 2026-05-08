@@ -59,7 +59,7 @@ const menuItems = [
     id: "selectCityButton",
     icon: cityIcon,
     setting: function () {
-      return appSettings.city
+      return appSettings.city;
     },
     click: toggleCityMenu,
   },
@@ -254,7 +254,8 @@ function handleCityChange(city) {
   // Update the setting label on the "Select City" row
   const selectCityRow = document.getElementById("selectCityButton");
   if (selectCityRow) {
-    selectCityRow.querySelector(".menuItemSetting").textContent = appSettings.city;
+    selectCityRow.querySelector(".menuItemSetting").textContent =
+      appSettings.city;
   }
 }
 

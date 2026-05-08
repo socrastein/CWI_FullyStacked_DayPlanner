@@ -1,0 +1,22 @@
+.clickedEventPopup {
+  display: none;
+  flex-direction: column;
+  position: fixed;
+  width: 18rem;
+  word-wrap: break-word;
+  margin-top: 5px;
+  top: 50%;
+  left: 50%;
+  border-radius: 0.5rem;
+  transform: translate(-50%, -50%);
+  background-color: var(--bs-body-bg);
+  padding: 1rem;
+  border: 1px solid var(--bs-border-color);
+  z-index: 20;
+
+  border-top-width: 0.5rem;
+}
+
+#clickedEventPopupTime {
+  width: fit-content;
+}

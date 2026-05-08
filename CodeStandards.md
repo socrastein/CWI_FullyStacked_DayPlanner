@@ -80,7 +80,7 @@ You can also use those same colors in your .CSS files with `var(--bs-primary)` a
 
 Our app has a light/dark mode toggle, and this applies a `.dark-mode` class to the HTML `body` element.
 
-Bootstrap automatically toggles basic text color and background color values, but if you want or need to use custom CSS to style your components for dark mode, this is how you would set properties for your class that are only applied when dark mode is on: 
+Bootstrap automatically toggles basic text color and background color values, but if you want or need to use custom CSS to style your components for dark mode, this is how you would set properties for your class that are only applied when dark mode is on:
 
 ```css
 body.dark-mode .menuItemIcon {
@@ -88,7 +88,7 @@ body.dark-mode .menuItemIcon {
 }
 ```
 
-This will only apply to `.menuItemIcon` when `body` has the `.dark-mode` class. So in this example, the `.menuItemIcon`, which is an .SVG icon, will be it's normal black color in light mode, but when dark mode is on it will invert 100% turning it white so it shows properly on a dark background. 
+This will only apply to `.menuItemIcon` when `body` has the `.dark-mode` class. So in this example, the `.menuItemIcon`, which is an .SVG icon, will be it's normal black color in light mode, but when dark mode is on it will invert 100% turning it white so it shows properly on a dark background.
 
 ## Comments
 

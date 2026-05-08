@@ -1,8 +1,8 @@
+import "../../../styling/monthView.css";
 import { useAppSettings } from "../../appSettings";
 import appState, { useAppState } from "../../appState";
-import { CalendarViews } from "../../enumCalendarViews";
-import "../../../styling/monthView.css";
 import CalendarEvent from "../../classCalendarEvent";
+import dateUtils from "../../dateUtils";
 
 const DAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] as const;
 
@@ -38,29 +38,35 @@ function getCalendarGridDays(
     return {
       date,
       isCurrentMonth: date.getMonth() === zeroBasedMonth,
-      isToday: date.toDateString() === new Date().toDateString(),
+      isToday: dateUtils.isToday(date),
     };
   });
 }
 
-// Make sure all day events and holidays are displayed first in day cells
-function getEventOrder(event: CalendarEvent): number {
-  if (event.UID.startsWith("holiday")) return 0;
-  if (event.UID.startsWith("allDay")) return 1;
-  return 2;
-}
-
 // Filter out holidays of appSettings isn't showing them then sort the array
 function getSortedEvents(
-  allEventsByDate: Map<string, CalendarEvent[]>,
+  getEventsByDate: (date: string) => CalendarEvent[],
   dateKey: string,
   displayHolidays: boolean,
 ): CalendarEvent[] {
-  const eventsForDate = appState.getEventsByDate(dateKey);
+  return (getEventsByDate(dateKey) ?? [])
+    .filter((e) => displayHolidays || !e.isHoliday)
+    .sort((a, b) => {
+      const getRank = (event: CalendarEvent) => {
+        if (event.isHoliday) return 1;
+        if (event.isAllDay) return 2;
+        return 3; // Normal events
+      };
 
-  return eventsForDate
-    .filter((e) => displayHolidays || !e.UID.startsWith("holiday"))
-    .sort((a, b) => getEventOrder(a) - getEventOrder(b));
+      const rankA = getRank(a);
+      const rankB = getRank(b);
+
+      if (rankA !== rankB) {
+        return rankA - rankB;
+      }
+
+      return a.timeStart.localeCompare(b.timeStart);
+    });
 }
 
 // For when day cell is clicked, switch to day view and date of day selected
@@ -85,13 +91,12 @@ function DayNameHeader({ names }: { names: readonly string[] }) {
 
 // Small, color-coded event elements that just show the title
 function EventChip({ event }: { event: CalendarEvent }) {
-  const isHoliday = event.UID.startsWith("holiday");
   return (
     <div
       key={event.UID}
-      className={`dayCellEvent ${isHoliday ? "dayCellEventHoliday" : ""}`}
-      style={{ backgroundColor: event.color }}
-      title={event.title}
+      className={`dayCellEvent ${event.isHoliday ? "dayCellEventHoliday" : ""} ${event.isAllDay ? "dayCellEventAllDay" : ""}`}
+      style={{ borderLeftColor: event.color }}
+      title={event.titleAndTime}
     >
       {event.title}
     </div>
@@ -108,7 +113,7 @@ function DayCell({
   day: { date, isCurrentMonth, isToday },
   events,
 }: DayCellProps) {
-  const dateKey = date.toLocaleDateString("en-CA");
+  const dateKey = dateUtils.dateToString(date);
   const classNames = [
     "dayCell",
     isCurrentMonth && "currentMonthDayCell",
@@ -128,7 +133,7 @@ function DayCell({
 }
 
 export default function MonthView() {
-  const { allEventsByDate, dateView } = useAppState();
+  const { getEventsByDate, dateView } = useAppState();
   const { firstDayOfWeek, displayHolidays } = useAppSettings();
 
   const weekStartsOn: 0 | 1 = firstDayOfWeek === "Sunday" ? 0 : 1;
@@ -148,11 +153,11 @@ export default function MonthView() {
       {/* Fill all 6 week rows with appropriate days */}
       {days.map((day) => (
         <DayCell
-          key={day.date.toISOString()}
+          key={dateUtils.dateToString(day.date)}
           day={day}
           events={getSortedEvents(
-            allEventsByDate,
-            day.date.toLocaleDateString("en-CA"),
+            getEventsByDate,
+            dateUtils.dateToString(day.date),
             displayHolidays,
           )}
         />

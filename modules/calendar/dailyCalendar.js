@@ -1,202 +1,15 @@
 "use strict";
-
-import * as Calendar from "./calendar";
+import dateUtils from "../dateUtils";
 import { showEventManager } from "../eventManager";
-
-// Render the single day view of the calendar
-export function renderSingleDay(events, viewDate) {
-  const slotDuration = getSlotDuration();
-  const currentMinutesFromMidnight = Calendar.isToday(viewDate)
-    ? Calendar.calculateTheCurrentMinutesFromMidnight()
-    : null;
-  const slotHeight = slotDuration * Calendar.PIXELS_PER_MINUTE;
-  const slots = createAllSlotsForDay(slotDuration);
-  const dayContentWrapper = document.getElementById(
-    "calendarDayContentWrapper",
-  );
-  if (!dayContentWrapper) return;
-  createTimeSlotColumn(
-    slots,
-    currentMinutesFromMidnight,
-    slotDuration,
-    slotHeight,
-  );
-  createDayGridColumn(events, slots, currentMinutesFromMidnight, slotHeight);
-
-  // Scroll to the active row only when viewing today
-  const calendarViewArea = document.getElementById("calendarViewArea");
-  if (!calendarViewArea) return;
-  const activeRow = calendarViewArea.querySelector(
-    '.calendarTimeSlotRow[data-active="true"]',
-  );
-  if (activeRow && Calendar.isToday(viewDate)) {
-    activeRow.scrollIntoView({ behavior: "smooth", block: "center" });
-  }
-}
-
-// Creates the time slot column for the calendar (the left column with the time labels)
-function createTimeSlotColumn(
-  slots,
-  currentMinutesFromMidnight,
-  slotDuration,
-  slotHeight,
-) {
-  const slotLabelsColumn = document.getElementById("calendarTimeLabelsColumn");
-  if (!slotLabelsColumn) return;
-
-  // Clear any existing rows before re-rendering
-  slotLabelsColumn.innerHTML = "";
-
-  // Loop through the slots (24 hours) and create a time slot row for each slot
-  slots.forEach((slotStart) => {
-    const slotEnd = slotStart + slotDuration;
-    const isActiveSlot =
-      currentMinutesFromMidnight != null &&
-      currentMinutesFromMidnight >= slotStart &&
-      currentMinutesFromMidnight < slotEnd;
-
-    const timeSlotRow = document.createElement("div");
-    timeSlotRow.id = "calendarTimeSlotRow";
-    timeSlotRow.className = "calendarTimeSlotRow";
-    timeSlotRow.style.height = `${slotHeight}px`; // Set the height of the time slot row to the height of the slot
-    timeSlotRow.dataset.active = isActiveSlot ? "true" : "false";
-
-    const timeLabel = document.createElement("span");
-    timeLabel.id = "calendarTimeLabel";
-    timeLabel.className = "calendarTimeLabel";
-    timeLabel.textContent = `${Calendar.formatSlotTime(slotStart)}`;
-    timeSlotRow.appendChild(timeLabel);
-
-    slotLabelsColumn.appendChild(timeSlotRow);
-  });
-
-  return slotLabelsColumn;
-}
-
-// Creates the day grid column for the calendar (the right column with the hour grid lines and the events)
-function createDayGridColumn(
-  events,
-  slots,
-  currentMinutesFromMidnight,
-  slotHeight,
-) {
-  createHourGridLines(slots, slotHeight);
-  createCurrentTimeLine(currentMinutesFromMidnight);
-  createEventsLayer(events);
-}
-
-// Creates the hour grid lines for the calendar (the vertical lines)
-function createHourGridLines(slots, slotHeight) {
-  const hourGridLines = document.getElementById(
-    "calendarHourGridLinesContainer",
-  );
-  if (!hourGridLines) return;
-  // Reset and size the container for the full day height
-  hourGridLines.innerHTML = "";
-  hourGridLines.style.height = `${Calendar.DAY_TOTAL_HEIGHT}px`;
-  slots.forEach(() => {
-    const line = document.createElement("div");
-    line.className = "calendarHourGridLine";
-    line.style.height = `${slotHeight}px`;
-    line.setAttribute("aria-hidden", "true");
-    hourGridLines.appendChild(line);
-  });
-}
-
-// Creates the current time line for the calendar (the horizontal line). Hidden when viewing another day.
-function createCurrentTimeLine(currentMinutesFromMidnight) {
-  const currentTimeLine = document.getElementById(
-    "calendarCurrentTimeLineContainer",
-  );
-  if (!currentTimeLine) return;
-  if (currentMinutesFromMidnight == null) {
-    currentTimeLine.style.visibility = "hidden";
-  } else {
-    currentTimeLine.style.visibility = "visible";
-    currentTimeLine.style.top = `${currentMinutesFromMidnight * Calendar.PIXELS_PER_MINUTE}px`;
-  }
-}
-
-// Creates the events layer for the calendar
-function createEventsLayer(events) {
-  const eventsLayer = document.getElementById("calendarEventsLayer");
-  if (!eventsLayer) return;
-
-  // Clear previous events before re-rendering
-  eventsLayer.innerHTML = "";
-  eventsLayer.style.height = `${Calendar.DAY_TOTAL_HEIGHT}px`;
-
-  // We want to assign the lanes before looping through the events so that we can use the assigned lanes in the button creation.
-  const assignedLanes = assignLanesForEvents(events);
-
-  // Loop through the events and create an event button for each event
-  events.forEach((event, index) => {
-    createEventButton(eventsLayer, events, event, index, assignedLanes);
-  });
-}
-
-// Creates an event button for the calendar that displays the basic event information.
-function createEventButton(eventsLayer, events, event, index, assignedLanes) {
-  // Button calculations
-  const startTimeMinutes = Calendar.timeStringToMinutes(event.timeStart);
-  const endTimeMinutes = Calendar.timeStringToMinutes(event.timeEnd);
-  const duration = endTimeMinutes - startTimeMinutes;
-  const topPosition = startTimeMinutes * Calendar.PIXELS_PER_MINUTE;
-  const durationHeight = duration * Calendar.PIXELS_PER_MINUTE;
-  const maxHeight = Math.max(18, durationHeight);
-  const isShort = durationHeight <= 44;
-
-  // Lane calculations
-  const laneIndex = assignedLanes.get(event.UID) ?? 0;
-  const totalLanes = calculateTotalConcurrentEvents(event, events);
-  const width = 100 / totalLanes;
-  const leftPosition = width * laneIndex;
-
-  const formattedTimeString = `${Calendar.formatTime(event.timeStart)} - ${Calendar.formatTime(event.timeEnd)}`;
-
-  const eventButton = document.createElement("button");
-  eventButton.className = isShort
-    ? "calendarEventContainer calendarEventContainer--compact"
-    : "calendarEventContainer";
-  eventButton.type = "button";
-  eventButton.dataset.eventId = event.UID;
-  eventButton.style.setProperty("--event-color", event.color ?? "#1a73e8");
-  eventButton.style.top = `${topPosition}px`;
-  eventButton.style.height = `${maxHeight}px`;
-  eventButton.style.left =
-    totalLanes <= 1 ? "0" : `calc(${leftPosition}% + ${laneIndex * 2}px)`;
-  eventButton.style.width = totalLanes <= 1 ? "100%" : `calc(${width}% - 2px)`;
-
-  if (isShort) {
-    eventButton.innerHTML = `
-        <span class="calendarEventHeader">
-            <span class="calendarEventTime">${formattedTimeString}</span>
-            <span class="calendarEventTitle">${event.title}</span>
-        </span>
-        `;
-  } else {
-    eventButton.innerHTML = `
-        <span class="calendarEventTime">${formattedTimeString}</span>
-        <span class="calendarEventTitle">${event.title}</span>
-        <span class="calendarEventDescription">${event.description}</span>
-        `;
-  }
-  // Attaches event listener to event
-  eventButton.addEventListener("click", (clickEvent) => {
-    clickEvent.stopPropagation(); // Stops popup from instantly closing
-    showClickedEventPopup(event, clickEvent);
-  });
-  eventsLayer.appendChild(eventButton);
-}
 
 // Assigns a lane to each event based on the duration of the event and the other events that are happening at the same time.
 export function assignLanesForEvents(events) {
   const assignedLanes = new Map();
   // Inline functions to calculate the duration and tranlsate time strings to minutes
   const durationMinutes = (event) =>
-    Calendar.timeStringToMinutes(event.timeEnd) -
-    Calendar.timeStringToMinutes(event.timeStart);
-  const startMinutes = (event) => Calendar.timeStringToMinutes(event.timeStart);
+    dateUtils.militaryToMinutes(event.timeEnd) -
+    dateUtils.militaryToMinutes(event.timeStart);
+  const startMinutes = (event) => dateUtils.militaryToMinutes(event.timeStart);
   // Sort the events by duration and start time
   const sortedEvents = [...events].sort(
     (event1, event2) =>
@@ -206,15 +19,15 @@ export function assignLanesForEvents(events) {
 
   // Loop through the sortedevents and assign a lane to each event
   sortedEvents.forEach((event) => {
-    const eventStart = Calendar.timeStringToMinutes(event.timeStart);
-    const eventEnd = Calendar.timeStringToMinutes(event.timeEnd);
+    const eventStart = dateUtils.militaryToMinutes(event.timeStart);
+    const eventEnd = dateUtils.militaryToMinutes(event.timeEnd);
     const usedLanes = new Set();
     // Loop through the other events and add the lane of the other event to the used lanes set if it overlaps with the current event
     events.forEach((otherEvent) => {
       if (otherEvent.UID === event.UID || !assignedLanes.has(otherEvent.UID))
         return;
-      const otherStart = Calendar.timeStringToMinutes(otherEvent.timeStart);
-      const otherEnd = Calendar.timeStringToMinutes(otherEvent.timeEnd);
+      const otherStart = dateUtils.militaryToMinutes(otherEvent.timeStart);
+      const otherEnd = dateUtils.militaryToMinutes(otherEvent.timeEnd);
       const overlaps = eventStart < otherEnd && eventEnd > otherStart;
       if (overlaps) usedLanes.add(assignedLanes.get(otherEvent.UID));
     });
@@ -234,12 +47,12 @@ export function assignLanesForEvents(events) {
 
 // Calculates the total number of concurrent events overlapping the given event's time range.
 export function calculateTotalConcurrentEvents(event, events) {
-  const eventStart = Calendar.timeStringToMinutes(event.timeStart);
-  const eventEnd = Calendar.timeStringToMinutes(event.timeEnd);
+  const eventStart = dateUtils.militaryToMinutes(event.timeStart);
+  const eventEnd = dateUtils.militaryToMinutes(event.timeEnd);
   // Filter the events to only include events that overlap with the given event's time range
   const concurrentEvents = events.filter((other) => {
-    const otherStart = Calendar.timeStringToMinutes(other.timeStart);
-    const otherEnd = Calendar.timeStringToMinutes(other.timeEnd);
+    const otherStart = dateUtils.militaryToMinutes(other.timeStart);
+    const otherEnd = dateUtils.militaryToMinutes(other.timeEnd);
     return eventStart < otherEnd && eventEnd > otherStart;
   });
   // If there are no concurrent events, return 1
@@ -250,11 +63,11 @@ export function calculateTotalConcurrentEvents(event, events) {
   // Loop through the concurrent events and add the start and end points to the points array
   concurrentEvents.forEach((concurrentEvent) => {
     points.push({
-      time: Calendar.timeStringToMinutes(concurrentEvent.timeStart),
+      time: dateUtils.militaryToMinutes(concurrentEvent.timeStart),
       delta: 1,
     });
     points.push({
-      time: Calendar.timeStringToMinutes(concurrentEvent.timeEnd),
+      time: dateUtils.militaryToMinutes(concurrentEvent.timeEnd),
       delta: -1,
     });
   });
@@ -274,63 +87,4 @@ export function calculateTotalConcurrentEvents(event, events) {
     maxCount = Math.max(maxCount, count);
   });
   return Math.max(1, maxCount);
-}
-
-// Creates the full 24 hour slots
-export default function createAllSlotsForDay(slotDuration) {
-  const slots = [];
-  for (let i = 0; i < Calendar.MINUTES_PER_DAY; i += slotDuration) {
-    slots.push(i);
-  }
-  return slots;
-}
-
-/**
- * Gets the duration of the time slots in the calendar (in minutes). 60 minutes is default.
- * @returns {number} The duration of the time slots in the calendar (in minutes).
- */
-function getSlotDuration() {
-  const value = document.getElementById("slotDurationSelect")?.value;
-  const parsedValue = parseInt(value, 10);
-  return Number.isNaN(parsedValue) ? 60 : parsedValue;
-}
-
-// Creates a popup for the event clicked that shows more info about it.
-// Displays popup at position clicked
-export function showClickedEventPopup(event) {
-  const clickedEventPopup = document.getElementById("clickedEventPopup");
-
-  document.getElementById("clickedEventPopupTitle").textContent = event.title;
-  document.getElementById("clickedEventPopupTime").textContent =
-    `${Calendar.formatTime(event.timeStart)} - ${Calendar.formatTime(event.timeEnd)}`;
-  document.getElementById("clickedEventPopupDescriptionText").textContent =
-    event.description;
-  document.getElementById("clickedEventPopupAddressText").textContent =
-    event.address;
-  document.getElementById("editEventButton").onclick = () => {
-    editClickedEventPopup(event);
-  };
-  document.addEventListener("click", isClickOutsideEvent);
-  clickedEventPopup.style.display = "block";
-  clickedEventPopup.style.borderTop = `5px solid ${event.color}`;
-}
-
-// Closes the event popup by clicking anywhere outside the popup
-function isClickOutsideEvent(clickEvent) {
-  const clickedEventPopup = document.getElementById("clickedEventPopup");
-  if (!clickedEventPopup.contains(clickEvent.target)) {
-    closeClickedEventPopup();
-  }
-}
-
-function closeClickedEventPopup() {
-  const clickedEventPopup = document.getElementById("clickedEventPopup");
-  clickedEventPopup.style.display = "none";
-  document.removeEventListener("click", isClickOutsideEvent);
-}
-
-// Will open the editor for the selected event
-function editClickedEventPopup(event) {
-  showEventManager(event.UID);
-  closeClickedEventPopup();
 }

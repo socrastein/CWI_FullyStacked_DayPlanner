@@ -2,8 +2,9 @@ import React from "react";
 import appState from "./appState";
 import CalendarEvent from "./classCalendarEvent";
 import { getTimeSlot } from "./calendar/calendarContainer/tapToAddEvent";
-
-type SelectedRecurrence = "weekly" | "monthly" | "yearly";
+import dateUtils from "./dateUtils";
+import { useAppSettings } from "./appSettings";
+import type { RecurrenceType, RecurrenceDays } from "./classCalendarEvent";
 
 type eventFormProps = {
   UID: string | null;
@@ -31,7 +32,7 @@ export default function EventForm({
   );
 
   const [selectedRecurrence, setSelectedRecurrence] =
-    React.useState<SelectedRecurrence>(
+    React.useState<RecurrenceType>(
       targetEvent?.recurrence ? targetEvent.recurrence : "weekly",
     );
 
@@ -41,6 +42,32 @@ export default function EventForm({
   );
 
   const [isAllDay, setIsAllDay] = React.useState(isExistingAllDayEvent);
+  const { firstDayOfWeek } = useAppSettings();
+  const weekDayArray =
+    firstDayOfWeek === "Sunday"
+      ? dateUtils.daysOfWeekSun
+      : dateUtils.daysOfWeekMon;
+
+  // Determine if recurring week day box should be checked automatically
+  const isRecurringDayChecked = (weekDay: string): boolean => {
+    if (!targetEvent && dateUtils.getDayString(appState.dateView) === weekDay)
+      return true;
+
+    if (
+      targetEvent &&
+      targetEvent.recurrenceDays?.includes(weekDay as RecurrenceDays)
+    )
+      return true;
+
+    if (
+      targetEvent &&
+      !targetEvent.isRecurring &&
+      dateUtils.getDayString(appState.dateView) === weekDay
+    )
+      return true;
+
+    return false;
+  };
 
   return (
     <div
@@ -170,9 +197,7 @@ export default function EventForm({
                   name="recurrence"
                   value={selectedRecurrence}
                   onChange={(event) =>
-                    setSelectedRecurrence(
-                      event.target.value as SelectedRecurrence,
-                    )
+                    setSelectedRecurrence(event.target.value as RecurrenceType)
                   }
                 >
                   <option value="weekly">Weekly</option>
@@ -183,90 +208,17 @@ export default function EventForm({
                 {selectedRecurrence === "weekly" && (
                   <fieldset id="eventRecurrenceDays">
                     <label>Repeat Days</label>
-
-                    <label>
-                      <input
-                        type="checkbox"
-                        name="recurrenceDays"
-                        value="SU"
-                        defaultChecked={targetEvent?.recurrenceDays?.includes(
-                          "SU",
-                        )}
-                      />{" "}
-                      Sun
-                    </label>
-
-                    <label>
-                      <input
-                        type="checkbox"
-                        name="recurrenceDays"
-                        value="MO"
-                        defaultChecked={targetEvent?.recurrenceDays?.includes(
-                          "MO",
-                        )}
-                      />{" "}
-                      Mon
-                    </label>
-
-                    <label>
-                      <input
-                        type="checkbox"
-                        name="recurrenceDays"
-                        value="TU"
-                        defaultChecked={targetEvent?.recurrenceDays?.includes(
-                          "TU",
-                        )}
-                      />{" "}
-                      Tue
-                    </label>
-
-                    <label>
-                      <input
-                        type="checkbox"
-                        name="recurrenceDays"
-                        value="WE"
-                        defaultChecked={targetEvent?.recurrenceDays?.includes(
-                          "WE",
-                        )}
-                      />{" "}
-                      Wed
-                    </label>
-
-                    <label>
-                      <input
-                        type="checkbox"
-                        name="recurrenceDays"
-                        value="TH"
-                        defaultChecked={targetEvent?.recurrenceDays?.includes(
-                          "TH",
-                        )}
-                      />{" "}
-                      Thu
-                    </label>
-
-                    <label>
-                      <input
-                        type="checkbox"
-                        name="recurrenceDays"
-                        value="FR"
-                        defaultChecked={targetEvent?.recurrenceDays?.includes(
-                          "FR",
-                        )}
-                      />{" "}
-                      Fri
-                    </label>
-
-                    <label>
-                      <input
-                        type="checkbox"
-                        name="recurrenceDays"
-                        value="SA"
-                        defaultChecked={targetEvent?.recurrenceDays?.includes(
-                          "SA",
-                        )}
-                      />{" "}
-                      Sat
-                    </label>
+                    {weekDayArray.map((weekDay) => (
+                      <label key={weekDay}>
+                        <input
+                          type="checkbox"
+                          name="recurrenceDays"
+                          value={weekDay}
+                          defaultChecked={isRecurringDayChecked(weekDay)}
+                        />
+                        {weekDay}
+                      </label>
+                    ))}
                   </fieldset>
                 )}
               </div>

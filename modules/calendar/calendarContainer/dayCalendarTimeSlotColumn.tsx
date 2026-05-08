@@ -1,11 +1,19 @@
-import * as Calendar from "../calendar";
+import dateUtils from "../../dateUtils";
+// Takes time in total minutes into the day, rounds it
+// to the nearest hour, and labels it AM or PM
+function formatSlotTime(minutes: number): string {
+  const hours = Math.floor(minutes / 60);
+  const ampm = hours >= 12 ? "PM" : "AM";
+  const formattedHours = hours % 12 || 12;
+  return `${formattedHours} ${ampm}`;
+}
 
-type Props = {
-	slots: number[],
-	currentMinutesFromMidnight: number | null,
-	slotDuration: number,
-	slotHeight: number,
-};
+function isCurrentHour(slotMinutes: number): boolean {
+  const currentMinutes = new Date().getHours() * 60;
+  return slotMinutes === currentMinutes;
+}
+
+const hourSlots = dateUtils.hourSlotsArray;
 
 /**
  * Renders the left column of the day view.
@@ -13,37 +21,20 @@ type Props = {
  * The slot that contains the current time gets data-active="true"
  * so DayView can scroll it into view.
  */
-
-export default function DayCalendarTimeSlotColumn({
-	slots,
-	currentMinutesFromMidnight,
-	slotDuration,
-	slotHeight
-}: Props) {
-	return (
-		<div id="calendarTimeLabelsColumn" className="calendarTimeLabelsColumn">
-			{slots.map((slotStart) => {
-				const slotEnd = slotStart + slotDuration;
-
-				// Mark the slot active if the current time falls inside it
-				const isActiveSlot = 
-					currentMinutesFromMidnight != null &&
-					currentMinutesFromMidnight >= slotStart &&
-					currentMinutesFromMidnight < slotEnd;
-
-					return (
-						<div 
-							key={slotStart}
-							className="calendarTimeSlotRow"
-							style={{ height: `${slotHeight}px`}}
-							data-active={isActiveSlot ? "true" : "false"}
-						>
-							<span className="calendarTimeLabel">
-								{Calendar.formatSlotTime(slotStart)}
-							</span>
-						</div>
-					);
-			})}
-		</div>
-	);
+export default function DayCalendarTimeSlotColumn() {
+  return (
+    <div id="calendarTimeLabelsColumn" className="calendarTimeLabelsColumn">
+      {hourSlots.map((slotStart) => {
+        return (
+          <div key={slotStart} className="calendarTimeSlotRow">
+            <span
+              className={`calendarTimeLabel ${isCurrentHour(slotStart) ? "calendarCurrentTimeHighlight" : ""}`}
+            >
+              {formatSlotTime(slotStart)}
+            </span>
+          </div>
+        );
+      })}
+    </div>
+  );
 }

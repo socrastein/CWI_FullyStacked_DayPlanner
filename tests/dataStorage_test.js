@@ -9,11 +9,6 @@ function storageTests() {
 
   localStorageMock.initialize();
 
-  // ─── SETUP: Mock confirm() ────────────────────────────────────────────────────
-  const originalConfirm = globalThis.confirm;
-  let confirmResponse = true;
-  globalThis.confirm = () => confirmResponse;
-
   // ─── HELPERS ──────────────────────────────────────────────────────────────────
 
   function expect(label, fn) {
@@ -51,7 +46,10 @@ function storageTests() {
     const event = new CalendarEvent(sampleEventData);
     StorageManager.saveEvent(event);
     const key = `CalendarEvent_${event.UID}`;
-    assert(localStorage.getItem(key) !== null, "Expected key not found in localStorage.");
+    assert(
+      localStorage.getItem(key) !== null,
+      "Expected key not found in localStorage.",
+    );
   });
 
   expect("Saved value is valid JSON", () => {
@@ -75,7 +73,10 @@ function storageTests() {
     StorageManager.saveEvent(event);
     const key = `CalendarEvent_${event.UID}`;
     const parsed = JSON.parse(localStorage.getItem(key));
-    assert(parsed.UID === undefined, "UID should be excluded from stored JSON value.");
+    assert(
+      parsed.UID === undefined,
+      "UID should be excluded from stored JSON value.",
+    );
   });
 
   expect("Saved JSON contains all other event properties", () => {
@@ -85,10 +86,16 @@ function storageTests() {
     const key = `CalendarEvent_${event.UID}`;
     const parsed = JSON.parse(localStorage.getItem(key));
     assert(parsed.date === sampleEventData.date, "date mismatch.");
-    assert(parsed.timeStart === sampleEventData.timeStart, "timeStart mismatch.");
+    assert(
+      parsed.timeStart === sampleEventData.timeStart,
+      "timeStart mismatch.",
+    );
     assert(parsed.timeEnd === sampleEventData.timeEnd, "timeEnd mismatch.");
     assert(parsed.title === sampleEventData.title, "title mismatch.");
-    assert(parsed.description === sampleEventData.description, "description mismatch.");
+    assert(
+      parsed.description === sampleEventData.description,
+      "description mismatch.",
+    );
     assert(parsed.address === sampleEventData.address, "address mismatch.");
     assert(parsed.color === sampleEventData.color, "color mismatch.");
   });
@@ -99,7 +106,10 @@ function storageTests() {
     const event2 = new CalendarEvent({ ...sampleEventData, title: "Event 2" });
     StorageManager.saveEvent(event1);
     StorageManager.saveEvent(event2);
-    assert(localStorage.length === 2, `Expected 2 items in storage, found ${localStorage.length}.`);
+    assert(
+      localStorage.length === 2,
+      `Expected 2 items in storage, found ${localStorage.length}.`,
+    );
   });
 
   // ─── LOAD ALL EVENTS ──────────────────────────────────────────────────────────
@@ -113,9 +123,15 @@ function storageTests() {
 
   expect("Returns correct number of saved events", () => {
     clearStorage();
-    StorageManager.saveEvent(new CalendarEvent({ ...sampleEventData, title: "Event 1" }));
-    StorageManager.saveEvent(new CalendarEvent({ ...sampleEventData, title: "Event 2" }));
-    StorageManager.saveEvent(new CalendarEvent({ ...sampleEventData, title: "Event 3" }));
+    StorageManager.saveEvent(
+      new CalendarEvent({ ...sampleEventData, title: "Event 1" }),
+    );
+    StorageManager.saveEvent(
+      new CalendarEvent({ ...sampleEventData, title: "Event 2" }),
+    );
+    StorageManager.saveEvent(
+      new CalendarEvent({ ...sampleEventData, title: "Event 3" }),
+    );
     const events = StorageManager.loadAllEvents();
     assert(events.length === 3, `Expected 3 events, got ${events.length}.`);
   });
@@ -124,7 +140,10 @@ function storageTests() {
     clearStorage();
     StorageManager.saveEvent(new CalendarEvent(sampleEventData));
     const events = StorageManager.loadAllEvents();
-    assert(events[0] instanceof CalendarEvent, "Expected a CalendarEvent instance.");
+    assert(
+      events[0] instanceof CalendarEvent,
+      "Expected a CalendarEvent instance.",
+    );
   });
 
   expect("Loaded event has correct properties", () => {
@@ -137,14 +156,20 @@ function storageTests() {
     assert(loaded.timeStart === original.timeStart, "timeStart mismatch.");
     assert(loaded.timeEnd === original.timeEnd, "timeEnd mismatch.");
     assert(loaded.title === original.title, "title mismatch.");
-    assert(loaded.description === original.description, "description mismatch.");
+    assert(
+      loaded.description === original.description,
+      "description mismatch.",
+    );
     assert(loaded.address === original.address, "address mismatch.");
     assert(loaded.color === original.color, "color mismatch.");
   });
 
   expect("Ignores non-CalendarEvent items in localStorage", () => {
     clearStorage();
-    localStorage.setItem("SomeOtherModule_data", JSON.stringify({ foo: "bar" }));
+    localStorage.setItem(
+      "SomeOtherModule_data",
+      JSON.stringify({ foo: "bar" }),
+    );
     StorageManager.saveEvent(new CalendarEvent(sampleEventData));
     const events = StorageManager.loadAllEvents();
     assert(events.length === 1, `Expected 1 event, but got ${events.length}.`);
@@ -152,89 +177,66 @@ function storageTests() {
 
   // ─── DELETE EVENT ─────────────────────────────────────────────────────────────
 
-  expect("Deletes correct event when user confirms", () => {
+  expect("Deletes correct event", () => {
     clearStorage();
-    confirmResponse = true;
     const event = new CalendarEvent(sampleEventData);
     StorageManager.saveEvent(event);
     StorageManager.deleteEvent(event.UID);
-    assert(localStorage.getItem(`CalendarEvent_${event.UID}`) === null, "Event should have been deleted.");
-  });
-
-  expect("Does not delete event when user cancels", () => {
-    clearStorage();
-    confirmResponse = false;
-    const event = new CalendarEvent(sampleEventData);
-    StorageManager.saveEvent(event);
-    StorageManager.deleteEvent(event.UID);
-    assert(localStorage.getItem(`CalendarEvent_${event.UID}`) !== null, "Event should NOT have been deleted.");
-    confirmResponse = true;
+    assert(
+      localStorage.getItem(`CalendarEvent_${event.UID}`) === null,
+      "Event should have been deleted.",
+    );
   });
 
   expect("Only deletes the targeted event, not others", () => {
     clearStorage();
-    confirmResponse = true;
     const event1 = new CalendarEvent({ ...sampleEventData, title: "Event 1" });
     const event2 = new CalendarEvent({ ...sampleEventData, title: "Event 2" });
     StorageManager.saveEvent(event1);
     StorageManager.saveEvent(event2);
     StorageManager.deleteEvent(event1.UID);
-    assert(localStorage.getItem(`CalendarEvent_${event1.UID}`) === null, "Event 1 should be deleted.");
-    assert(localStorage.getItem(`CalendarEvent_${event2.UID}`) !== null, "Event 2 should still exist.");
+    assert(
+      localStorage.getItem(`CalendarEvent_${event1.UID}`) === null,
+      "Event 1 should be deleted.",
+    );
+    assert(
+      localStorage.getItem(`CalendarEvent_${event2.UID}`) !== null,
+      "Event 2 should still exist.",
+    );
   });
 
   // ─── DELETE ALL EVENTS ────────────────────────────────────────────────────────
 
-  expect("Deletes all events when user confirms twice", () => {
-    clearStorage();
-    confirmResponse = true;
-    StorageManager.saveEvent(new CalendarEvent({ ...sampleEventData, title: "Event 1" }));
-    StorageManager.saveEvent(new CalendarEvent({ ...sampleEventData, title: "Event 2" }));
-    StorageManager.deleteAllEvents();
-    assert(localStorage.length === 0, `Expected 0 items in storage, found ${localStorage.length}.`);
-  });
-
-  expect("Does not delete anything if first confirm is cancelled", () => {
-    clearStorage();
-    let confirmCount = 0;
-    globalThis.confirm = () => (confirmCount++ === 0 ? false : true);
-    StorageManager.saveEvent(new CalendarEvent({ ...sampleEventData, title: "Event 1" }));
-    StorageManager.saveEvent(new CalendarEvent({ ...sampleEventData, title: "Event 2" }));
-    StorageManager.deleteAllEvents();
-    assert(localStorage.length === 2, `Expected 2 items, found ${localStorage.length}.`);
-    globalThis.confirm = () => confirmResponse;
-  });
-
-  expect("Does not delete anything if second confirm is cancelled", () => {
-    clearStorage();
-    let confirmCount = 0;
-    globalThis.confirm = () => (confirmCount++ === 0 ? true : false);
-    StorageManager.saveEvent(new CalendarEvent({ ...sampleEventData, title: "Event 1" }));
-    StorageManager.saveEvent(new CalendarEvent({ ...sampleEventData, title: "Event 2" }));
-    StorageManager.deleteAllEvents();
-    assert(localStorage.length === 2, `Expected 2 items, found ${localStorage.length}.`);
-    globalThis.confirm = () => confirmResponse;
-  });
-
-  expect("Only deletes CalendarEvent keys, leaves other localStorage items intact", () => {
-    clearStorage();
-    confirmResponse = true;
-    localStorage.setItem("SomeOtherModule_data", JSON.stringify({ foo: "bar" }));
-    StorageManager.saveEvent(new CalendarEvent({ ...sampleEventData, title: "Event 1" }));
-    StorageManager.deleteAllEvents();
-    assert(localStorage.getItem("SomeOtherModule_data") !== null, "Non-event item should not be deleted.");
-  });
+  expect(
+    "Only deletes CalendarEvent keys, leaves other localStorage items intact",
+    () => {
+      clearStorage();
+      localStorage.setItem(
+        "SomeOtherModule_data",
+        JSON.stringify({ foo: "bar" }),
+      );
+      StorageManager.saveEvent(
+        new CalendarEvent({ ...sampleEventData, title: "Event 1" }),
+      );
+      StorageManager.deleteAllEvents();
+      assert(
+        localStorage.getItem("SomeOtherModule_data") !== null,
+        "Non-event item should not be deleted.",
+      );
+    },
+  );
 
   // ─── SUMMARY ──────────────────────────────────────────────────────────────────
 
   localStorageMock.restore();
-  globalThis.confirm = originalConfirm;
 
   const total = passed + failed;
   if (failed === 0) {
     console.log(`✅ StorageManager — ${passed}/${total} Tests Passed!`);
   } else {
-    console.warn(`⚠️  StorageManager — ${passed}/${total} passed, ${failed} failed. See above for details.`);
+    console.warn(
+      `⚠️  StorageManager — ${passed}/${total} passed, ${failed} failed. See above for details.`,
+    );
   }
 }
 

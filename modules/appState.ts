@@ -2,8 +2,13 @@ import { useSyncExternalStore } from "react";
 import CalendarEvent from "./classCalendarEvent";
 import StorageManager from "./dataStorage";
 import { CalendarViews } from "./enumCalendarViews";
+import dateUtils from "./dateUtils";
 
-import { createMockEvents, registerCheatCode } from "./mockEvents";
+import {
+  createMockEvents,
+  deleteMockEvents,
+  registerCheatCode,
+} from "./mockEvents";
 
 import { getHolidayEvents } from "./holidayEvent";
 
@@ -78,7 +83,7 @@ class AppState {
   private _recurringEvents = mapRecurringEventsByUID(this._loadedEvents);
 
   // Set date view to current date in "YYYY-MM-DD" format
-  private _dateView = new Date().toLocaleDateString("en-CA");
+  private _dateView = dateUtils.dateToString(new Date());
 
   // Load calendar view from storage; defaults to "day" if not saved
   private _calendarView = StorageManager.loadCalendarView();
@@ -172,8 +177,8 @@ class AppState {
   }
 
   /**
-   * checks through the map of recurrings and only pulls those that should appear on the requested date.
-   * @param targetDate
+   * Checks through the map of recurrings and only pulls those that should appear on the requested date.
+   * @param targetDate Date being checked for if recurring events repeat on it
    * @returns Array of recurring events that occur on the target date
    */
   getRecurringEventsForDate(targetDate: string): CalendarEvent[] {
@@ -191,8 +196,7 @@ class AppState {
     // Replace map instead of mutating
     this._eventsByUID = new Map(this._eventsByUID).set(event.UID, event);
 
-    //adjusted since i was using array methods instead of correct map methods.
-    //update the recurring event map and store recurring events by UID then check when the dates render
+    // Update the recurring event map and store recurring events by UID then check when the dates render
     this._recurringEvents = new Map(this._recurringEvents);
 
     if (event.isRecurring) {
@@ -299,11 +303,7 @@ class AppState {
    * @returns Date object representing the current date view
    */
   get dateViewObject(): Date {
-    const [year, month, day] = this._dateView.split("-").map(Number);
-
-    // TypeScript thinks this._dateView.split("-") could be undefined,
-    // but dateView is always validated through the setter.
-    return new Date(year!, month! - 1, day!);
+    return dateUtils.stringToDate(this._dateView);
   }
 
   /**
@@ -380,7 +380,7 @@ class AppState {
 
   private buildSnapshot() {
     return {
-      allEventsByDate: this._eventsByDate,
+      getEventsByDate: (date: string) => this.getEventsByDate(date),
       calendarView: this._calendarView,
       dateView: this._dateView,
     };
@@ -394,10 +394,16 @@ const appState = new AppState();
 
 // Tapping F2 3x within a couple seconds will load mock events for testing purposes.
 registerCheatCode(() => {
-  console.log("Loading mock events...");
-  const mockEvents = createMockEvents();
+  const areMockEventsLoaded =
+    localStorage.getItem("mockEventsLoaded") === "true";
 
-  mockEvents.forEach((event) => appState.addEvent(event));
+  console.log(areMockEventsLoaded);
+  if (!areMockEventsLoaded) {
+    const mockEvents = createMockEvents();
+    mockEvents.forEach((event) => appState.addEvent(event));
+  } else {
+    deleteMockEvents();
+  }
 
   // Reload the page to update the UI with the new events
   location.reload();
