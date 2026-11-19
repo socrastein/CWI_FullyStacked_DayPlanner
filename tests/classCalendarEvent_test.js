@@ -7,9 +7,7 @@ function eventTests() {
   function expectFailure(label, options) {
     try {
       new CalendarEvent(options);
-      console.error(
-        `❌ FAIL — "${label}": Expected an error but Event was created successfully.`,
-      );
+      console.error(`❌ FAIL — "${label}": Expected an error but Event was created successfully.`);
       failed++;
     } catch (e) {
       passed++;

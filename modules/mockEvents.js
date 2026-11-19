@@ -108,8 +108,7 @@ const mockEvents = [
     timeStart: "19:00",
     timeEnd: "21:00",
     title: "Study session — Algorithms",
-    description:
-      "Work through practice problems for the upcoming midterm. Focus on greedy vs DP.",
+    description: "Work through practice problems for the upcoming midterm. Focus on greedy vs DP.",
     color: "#7B68EE",
   },
   {
@@ -118,8 +117,7 @@ const mockEvents = [
     timeStart: "18:00",
     timeEnd: "20:00",
     title: "Study group — Organic Chem",
-    description:
-      "Group review with Priya and Marcus. Cover reaction mechanisms.",
+    description: "Group review with Priya and Marcus. Cover reaction mechanisms.",
     color: "#7B68EE",
   },
   {
@@ -164,8 +162,7 @@ const mockEvents = [
     timeStart: "15:00",
     timeEnd: "16:30",
     title: "CS 301 Lab",
-    description:
-      "Lab: implement Dijkstra's algorithm on the campus graph dataset.",
+    description: "Lab: implement Dijkstra's algorithm on the campus graph dataset.",
     color: "#4A90D9",
   },
   {
@@ -174,8 +171,7 @@ const mockEvents = [
     timeStart: "19:00",
     timeEnd: "21:00",
     title: "Study session — Algorithms",
-    description:
-      "Work through practice problems for the upcoming midterm. Focus on greedy vs DP.",
+    description: "Work through practice problems for the upcoming midterm. Focus on greedy vs DP.",
     color: "#7B68EE",
   },
   {
@@ -184,8 +180,7 @@ const mockEvents = [
     timeStart: "16:00",
     timeEnd: "18:00",
     title: "Problem set — MATH 241",
-    description:
-      "HW 7, problems 1–12. Double-check integration by parts section.",
+    description: "HW 7, problems 1–12. Double-check integration by parts section.",
     color: "#7B68EE",
   },
   {
@@ -212,8 +207,7 @@ const mockEvents = [
     timeStart: "21:00",
     timeEnd: "22:00",
     title: "Review lecture notes",
-    description:
-      "Consolidate notes from the week's lectures before the weekend.",
+    description: "Consolidate notes from the week's lectures before the weekend.",
     color: "#7B68EE",
   },
   {
@@ -222,8 +216,7 @@ const mockEvents = [
     timeStart: "23:30",
     timeEnd: "23:45",
     title: "CS 301 Project due",
-    description:
-      "Submit the graph traversal project on Gradescope before midnight.",
+    description: "Submit the graph traversal project on Gradescope before midnight.",
     color: "#E24B4A",
   },
   {
@@ -241,8 +234,7 @@ const mockEvents = [
     timeStart: "20:00",
     timeEnd: "21:00",
     title: "Flash cards — PSYC terms",
-    description:
-      "Anki deck: 50 new cards. Get through the whole Chapter 6 set.",
+    description: "Anki deck: 50 new cards. Get through the whole Chapter 6 set.",
     color: "#7B68EE",
   },
   {
@@ -251,8 +243,7 @@ const mockEvents = [
     timeStart: "18:00",
     timeEnd: "20:00",
     title: "Study group — Organic Chem",
-    description:
-      "Group review with Priya and Marcus. Cover reaction mechanisms.",
+    description: "Group review with Priya and Marcus. Cover reaction mechanisms.",
     color: "#7B68EE",
   },
   {
@@ -297,8 +288,7 @@ const mockEvents = [
     timeStart: "12:30",
     timeEnd: "13:30",
     title: "Lunch with Priya",
-    description:
-      "Catch up at the dining hall. She's got advice on the summer internship apps.",
+    description: "Catch up at the dining hall. She's got advice on the summer internship apps.",
     color: "#50C878",
   },
   {
@@ -352,8 +342,7 @@ const mockEvents = [
     timeStart: "18:00",
     timeEnd: "20:00",
     title: "Study group — Organic Chem",
-    description:
-      "Group review with Priya and Marcus. Cover reaction mechanisms.",
+    description: "Group review with Priya and Marcus. Cover reaction mechanisms.",
     color: "#7B68EE",
   },
   {
@@ -443,8 +432,7 @@ const mockEvents = [
     timeStart: "20:00",
     timeEnd: "21:00",
     title: "Flash cards — PSYC terms",
-    description:
-      "Anki deck: 50 new cards. Get through the whole Chapter 6 set.",
+    description: "Anki deck: 50 new cards. Get through the whole Chapter 6 set.",
     color: "#7B68EE",
   },
   {
@@ -453,8 +441,7 @@ const mockEvents = [
     timeStart: "19:00",
     timeEnd: "21:00",
     title: "Study session — Algorithms",
-    description:
-      "Work through practice problems for the upcoming midterm. Focus on greedy vs DP.",
+    description: "Work through practice problems for the upcoming midterm. Focus on greedy vs DP.",
     color: "#7B68EE",
   },
   {
@@ -472,8 +459,7 @@ const mockEvents = [
     timeStart: "08:00",
     timeEnd: "09:30",
     title: "CHEM 112 Midterm",
-    description:
-      "Nomenclature through stereochemistry. Review the practice exams.",
+    description: "Nomenclature through stereochemistry. Review the practice exams.",
     color: "#E24B4A",
   },
   {
@@ -482,8 +468,7 @@ const mockEvents = [
     timeStart: "08:00",
     timeEnd: "09:15",
     title: "CHEM 112 — Organic Chemistry",
-    description:
-      "Nucleophilic substitution reactions. Pre-lab quiz due tonight.",
+    description: "Nucleophilic substitution reactions. Pre-lab quiz due tonight.",
     color: "#4A90D9",
   },
   {
@@ -492,8 +477,7 @@ const mockEvents = [
     timeStart: "19:00",
     timeEnd: "21:00",
     title: "Study session — Algorithms",
-    description:
-      "Work through practice problems for the upcoming midterm. Focus on greedy vs DP.",
+    description: "Work through practice problems for the upcoming midterm. Focus on greedy vs DP.",
     color: "#7B68EE",
   },
   {
@@ -502,8 +486,7 @@ const mockEvents = [
     timeStart: "18:00",
     timeEnd: "20:00",
     title: "Study group — Organic Chem",
-    description:
-      "Group review with Priya and Marcus. Cover reaction mechanisms.",
+    description: "Group review with Priya and Marcus. Cover reaction mechanisms.",
     color: "#7B68EE",
   },
   {
@@ -530,8 +513,7 @@ const mockEvents = [
     timeStart: "18:00",
     timeEnd: "20:00",
     title: "Study group — Organic Chem",
-    description:
-      "Group review with Priya and Marcus. Cover reaction mechanisms.",
+    description: "Group review with Priya and Marcus. Cover reaction mechanisms.",
     color: "#7B68EE",
   },
   {
@@ -540,8 +522,7 @@ const mockEvents = [
     timeStart: "12:00",
     timeEnd: "12:30",
     title: "Return library books",
-    description:
-      "Three books due. Pick up the reserve copy of the algorithms textbook.",
+    description: "Three books due. Pick up the reserve copy of the algorithms textbook.",
     color: "#E8A838",
   },
   {
@@ -577,8 +558,7 @@ const mockEvents = [
     timeStart: "08:00",
     timeEnd: "09:15",
     title: "CHEM 112 — Organic Chemistry",
-    description:
-      "Nucleophilic substitution reactions. Pre-lab quiz due tonight.",
+    description: "Nucleophilic substitution reactions. Pre-lab quiz due tonight.",
     color: "#4A90D9",
   },
   {
@@ -596,8 +576,7 @@ const mockEvents = [
     timeStart: "15:00",
     timeEnd: "16:30",
     title: "CS 301 Lab",
-    description:
-      "Lab: implement Dijkstra's algorithm on the campus graph dataset.",
+    description: "Lab: implement Dijkstra's algorithm on the campus graph dataset.",
     color: "#4A90D9",
   },
   {
@@ -606,8 +585,7 @@ const mockEvents = [
     timeStart: "20:00",
     timeEnd: "21:00",
     title: "Flash cards — PSYC terms",
-    description:
-      "Anki deck: 50 new cards. Get through the whole Chapter 6 set.",
+    description: "Anki deck: 50 new cards. Get through the whole Chapter 6 set.",
     color: "#7B68EE",
   },
   {
@@ -616,8 +594,7 @@ const mockEvents = [
     timeStart: "19:00",
     timeEnd: "21:00",
     title: "Study session — Algorithms",
-    description:
-      "Work through practice problems for the upcoming midterm. Focus on greedy vs DP.",
+    description: "Work through practice problems for the upcoming midterm. Focus on greedy vs DP.",
     color: "#7B68EE",
   },
   {
@@ -761,8 +738,7 @@ const mockEvents = [
     timeStart: "20:00",
     timeEnd: "22:30",
     title: "Movie night",
-    description:
-      "Watching 'Everything Everywhere All at Once' at Dom's. Bring snacks.",
+    description: "Watching 'Everything Everywhere All at Once' at Dom's. Bring snacks.",
     color: "#50C878",
   },
   {
@@ -798,8 +774,7 @@ const mockEvents = [
     timeStart: "19:00",
     timeEnd: "22:00",
     title: "Board game night",
-    description:
-      "Catan and Ticket to Ride at the common room. Bring the snack budget.",
+    description: "Catan and Ticket to Ride at the common room. Bring the snack budget.",
     color: "#50C878",
   },
   {
@@ -817,8 +792,7 @@ const mockEvents = [
     timeStart: "14:00",
     timeEnd: "14:30",
     title: "Advising appointment",
-    description:
-      "Check graduation requirements and plan the remaining semesters.",
+    description: "Check graduation requirements and plan the remaining semesters.",
     color: "#E8A838",
   },
   {
@@ -854,8 +828,7 @@ const mockEvents = [
     timeStart: "08:00",
     timeEnd: "09:15",
     title: "CHEM 112 — Organic Chemistry",
-    description:
-      "Nucleophilic substitution reactions. Pre-lab quiz due tonight.",
+    description: "Nucleophilic substitution reactions. Pre-lab quiz due tonight.",
     color: "#4A90D9",
   },
   {
@@ -927,8 +900,7 @@ const mockEvents = [
     timeStart: "20:00",
     timeEnd: "21:00",
     title: "Flash cards — PSYC terms",
-    description:
-      "Anki deck: 50 new cards. Get through the whole Chapter 6 set.",
+    description: "Anki deck: 50 new cards. Get through the whole Chapter 6 set.",
     color: "#7B68EE",
   },
   {
@@ -937,8 +909,7 @@ const mockEvents = [
     timeStart: "18:00",
     timeEnd: "20:00",
     title: "Study group — Organic Chem",
-    description:
-      "Group review with Priya and Marcus. Cover reaction mechanisms.",
+    description: "Group review with Priya and Marcus. Cover reaction mechanisms.",
     color: "#7B68EE",
   },
   {
@@ -947,8 +918,7 @@ const mockEvents = [
     timeStart: "23:30",
     timeEnd: "23:45",
     title: "CS 301 Project due",
-    description:
-      "Submit the graph traversal project on Gradescope before midnight.",
+    description: "Submit the graph traversal project on Gradescope before midnight.",
     color: "#E24B4A",
   },
   {
@@ -957,8 +927,7 @@ const mockEvents = [
     timeStart: "15:00",
     timeEnd: "16:30",
     title: "CS 301 Lab",
-    description:
-      "Lab: implement Dijkstra's algorithm on the campus graph dataset.",
+    description: "Lab: implement Dijkstra's algorithm on the campus graph dataset.",
     color: "#4A90D9",
   },
   {
@@ -976,8 +945,7 @@ const mockEvents = [
     timeStart: "10:00",
     timeEnd: "11:00",
     title: "FAFSA renewal",
-    description:
-      "Complete the financial aid renewal form. Have tax docs ready.",
+    description: "Complete the financial aid renewal form. Have tax docs ready.",
     color: "#E8A838",
   },
   {
@@ -995,8 +963,7 @@ const mockEvents = [
     timeStart: "19:00",
     timeEnd: "21:00",
     title: "Study session — Algorithms",
-    description:
-      "Work through practice problems for the upcoming midterm. Focus on greedy vs DP.",
+    description: "Work through practice problems for the upcoming midterm. Focus on greedy vs DP.",
     color: "#7B68EE",
   },
   {
@@ -1014,8 +981,7 @@ const mockEvents = [
     timeStart: "12:30",
     timeEnd: "13:30",
     title: "Lunch with Priya",
-    description:
-      "Catch up at the dining hall. She's got advice on the summer internship apps.",
+    description: "Catch up at the dining hall. She's got advice on the summer internship apps.",
     color: "#50C878",
   },
   {
@@ -1069,8 +1035,7 @@ const mockEvents = [
     timeStart: "14:00",
     timeEnd: "14:30",
     title: "Advising appointment",
-    description:
-      "Check graduation requirements and plan the remaining semesters.",
+    description: "Check graduation requirements and plan the remaining semesters.",
     color: "#E8A838",
   },
   {
@@ -1079,8 +1044,7 @@ const mockEvents = [
     timeStart: "18:00",
     timeEnd: "20:00",
     title: "Study group — Organic Chem",
-    description:
-      "Group review with Priya and Marcus. Cover reaction mechanisms.",
+    description: "Group review with Priya and Marcus. Cover reaction mechanisms.",
     color: "#7B68EE",
   },
   {
@@ -1089,8 +1053,7 @@ const mockEvents = [
     timeStart: "20:00",
     timeEnd: "22:30",
     title: "Movie night",
-    description:
-      "Watching 'Everything Everywhere All at Once' at Dom's. Bring snacks.",
+    description: "Watching 'Everything Everywhere All at Once' at Dom's. Bring snacks.",
     color: "#50C878",
   },
   {
@@ -1117,8 +1080,7 @@ const mockEvents = [
     timeStart: "20:00",
     timeEnd: "22:30",
     title: "Movie night",
-    description:
-      "Watching 'Everything Everywhere All at Once' at Dom's. Bring snacks.",
+    description: "Watching 'Everything Everywhere All at Once' at Dom's. Bring snacks.",
     color: "#50C878",
   },
   {
@@ -1136,8 +1098,7 @@ const mockEvents = [
     timeStart: "19:00",
     timeEnd: "21:00",
     title: "Study session — Algorithms",
-    description:
-      "Work through practice problems for the upcoming midterm. Focus on greedy vs DP.",
+    description: "Work through practice problems for the upcoming midterm. Focus on greedy vs DP.",
     color: "#7B68EE",
   },
   {
@@ -1146,8 +1107,7 @@ const mockEvents = [
     timeStart: "20:00",
     timeEnd: "21:00",
     title: "Flash cards — PSYC terms",
-    description:
-      "Anki deck: 50 new cards. Get through the whole Chapter 6 set.",
+    description: "Anki deck: 50 new cards. Get through the whole Chapter 6 set.",
     color: "#7B68EE",
   },
   {
@@ -1156,8 +1116,7 @@ const mockEvents = [
     timeStart: "08:00",
     timeEnd: "09:15",
     title: "CHEM 112 — Organic Chemistry",
-    description:
-      "Nucleophilic substitution reactions. Pre-lab quiz due tonight.",
+    description: "Nucleophilic substitution reactions. Pre-lab quiz due tonight.",
     color: "#4A90D9",
   },
   {
@@ -1175,8 +1134,7 @@ const mockEvents = [
     timeStart: "20:00",
     timeEnd: "21:00",
     title: "Flash cards — PSYC terms",
-    description:
-      "Anki deck: 50 new cards. Get through the whole Chapter 6 set.",
+    description: "Anki deck: 50 new cards. Get through the whole Chapter 6 set.",
     color: "#7B68EE",
   },
   {
@@ -1194,8 +1152,7 @@ const mockEvents = [
     timeStart: "08:00",
     timeEnd: "09:15",
     title: "CHEM 112 — Organic Chemistry",
-    description:
-      "Nucleophilic substitution reactions. Pre-lab quiz due tonight.",
+    description: "Nucleophilic substitution reactions. Pre-lab quiz due tonight.",
     color: "#4A90D9",
   },
   {
@@ -1312,8 +1269,7 @@ const mockEvents = [
     timeStart: "15:00",
     timeEnd: "16:30",
     title: "CS 301 Lab",
-    description:
-      "Lab: implement Dijkstra's algorithm on the campus graph dataset.",
+    description: "Lab: implement Dijkstra's algorithm on the campus graph dataset.",
     color: "#4A90D9",
   },
   {
@@ -1331,8 +1287,7 @@ const mockEvents = [
     timeStart: "14:00",
     timeEnd: "14:30",
     title: "Advising appointment",
-    description:
-      "Check graduation requirements and plan the remaining semesters.",
+    description: "Check graduation requirements and plan the remaining semesters.",
     color: "#E8A838",
   },
   {
@@ -1368,8 +1323,7 @@ const mockEvents = [
     timeStart: "08:00",
     timeEnd: "09:15",
     title: "CHEM 112 — Organic Chemistry",
-    description:
-      "Nucleophilic substitution reactions. Pre-lab quiz due tonight.",
+    description: "Nucleophilic substitution reactions. Pre-lab quiz due tonight.",
     color: "#4A90D9",
   },
   {
@@ -1405,8 +1359,7 @@ const mockEvents = [
     timeStart: "19:00",
     timeEnd: "21:00",
     title: "Study session — Algorithms",
-    description:
-      "Work through practice problems for the upcoming midterm. Focus on greedy vs DP.",
+    description: "Work through practice problems for the upcoming midterm. Focus on greedy vs DP.",
     color: "#7B68EE",
   },
 ];

@@ -8,17 +8,13 @@ export default function dateUtilsTests() {
     try {
       const actual = fn();
       if (actual !== expected) {
-        console.error(
-          `❌ FAIL — "${label}": expected "${expected}", got "${actual}"`,
-        );
+        console.error(`❌ FAIL — "${label}": expected "${expected}", got "${actual}"`);
         failed++;
       } else {
         passed++;
       }
     } catch (e) {
-      console.error(
-        `❌ FAIL — "${label}": ${e instanceof Error ? e.message : String(e)}`,
-      );
+      console.error(`❌ FAIL — "${label}": ${e instanceof Error ? e.message : String(e)}`);
       failed++;
     }
 
@@ -84,8 +80,7 @@ export default function dateUtilsTests() {
     },
     {
       label: "returns a Date instance",
-      fn: () =>
-        dateUtils.stringToDate("2026-01-01") instanceof Date ? "yes" : "no",
+      fn: () => (dateUtils.stringToDate("2026-01-01") instanceof Date ? "yes" : "no"),
       expected: "yes",
     },
   ]);
@@ -143,26 +138,22 @@ export default function dateUtilsTests() {
   runSuite("addDays", [
     {
       label: "adds 1 day across month boundary",
-      fn: () =>
-        dateUtils.dateToString(dateUtils.addDays(new Date(2026, 2, 31), 1)),
+      fn: () => dateUtils.dateToString(dateUtils.addDays(new Date(2026, 2, 31), 1)),
       expected: "2026-04-01",
     },
     {
       label: "subtracts 1 day across year boundary",
-      fn: () =>
-        dateUtils.dateToString(dateUtils.addDays(new Date(2026, 0, 1), -1)),
+      fn: () => dateUtils.dateToString(dateUtils.addDays(new Date(2026, 0, 1), -1)),
       expected: "2025-12-31",
     },
     {
       label: "delta 0 leaves date unchanged",
-      fn: () =>
-        dateUtils.dateToString(dateUtils.addDays(new Date(2026, 2, 31), 0)),
+      fn: () => dateUtils.dateToString(dateUtils.addDays(new Date(2026, 2, 31), 0)),
       expected: "2026-03-31",
     },
     {
       label: "adds 7 days (one week)",
-      fn: () =>
-        dateUtils.dateToString(dateUtils.addDays(new Date(2026, 2, 31), 7)),
+      fn: () => dateUtils.dateToString(dateUtils.addDays(new Date(2026, 2, 31), 7)),
       expected: "2026-04-07",
     },
     {
@@ -178,26 +169,22 @@ export default function dateUtilsTests() {
   runSuite("addMonths", [
     {
       label: "Mar 31 + 1 month clamps to Apr 30",
-      fn: () =>
-        dateUtils.dateToString(dateUtils.addMonths(new Date(2026, 2, 31), 1)),
+      fn: () => dateUtils.dateToString(dateUtils.addMonths(new Date(2026, 2, 31), 1)),
       expected: "2026-04-30",
     },
     {
       label: "Mar 31 - 1 month clamps to Feb 28 (non-leap 2026)",
-      fn: () =>
-        dateUtils.dateToString(dateUtils.addMonths(new Date(2026, 2, 31), -1)),
+      fn: () => dateUtils.dateToString(dateUtils.addMonths(new Date(2026, 2, 31), -1)),
       expected: "2026-02-28",
     },
     {
       label: "Jan 15 - 1 month crosses year boundary to Dec 15",
-      fn: () =>
-        dateUtils.dateToString(dateUtils.addMonths(new Date(2026, 0, 15), -1)),
+      fn: () => dateUtils.dateToString(dateUtils.addMonths(new Date(2026, 0, 15), -1)),
       expected: "2025-12-15",
     },
     {
       label: "delta 0 keeps same calendar day",
-      fn: () =>
-        dateUtils.dateToString(dateUtils.addMonths(new Date(2026, 2, 31), 0)),
+      fn: () => dateUtils.dateToString(dateUtils.addMonths(new Date(2026, 2, 31), 0)),
       expected: "2026-03-31",
     },
     {
@@ -235,49 +222,36 @@ export default function dateUtilsTests() {
     {
       label: "Wednesday with Sunday start → previous Sunday",
       fn: () =>
-        dateUtils.dateToString(
-          dateUtils.weekRangeStartDate(new Date(2026, 3, 8), "Sunday"),
-        ),
+        dateUtils.dateToString(dateUtils.weekRangeStartDate(new Date(2026, 3, 8), "Sunday")),
       expected: "2026-04-05",
     },
     {
       label: "Wednesday with Monday start → previous Monday",
       fn: () =>
-        dateUtils.dateToString(
-          dateUtils.weekRangeStartDate(new Date(2026, 3, 8), "Monday"),
-        ),
+        dateUtils.dateToString(dateUtils.weekRangeStartDate(new Date(2026, 3, 8), "Monday")),
       expected: "2026-04-06",
     },
     {
       label: "Sunday with Sunday start → same day",
       fn: () =>
-        dateUtils.dateToString(
-          dateUtils.weekRangeStartDate(new Date(2026, 3, 5), "Sunday"),
-        ),
+        dateUtils.dateToString(dateUtils.weekRangeStartDate(new Date(2026, 3, 5), "Sunday")),
       expected: "2026-04-05",
     },
     {
       label: "Monday with Monday start → same day",
       fn: () =>
-        dateUtils.dateToString(
-          dateUtils.weekRangeStartDate(new Date(2026, 3, 6), "Monday"),
-        ),
+        dateUtils.dateToString(dateUtils.weekRangeStartDate(new Date(2026, 3, 6), "Monday")),
       expected: "2026-04-06",
     },
     {
       label: "Sunday with Monday start → previous Monday (6 days back)",
       fn: () =>
-        dateUtils.dateToString(
-          dateUtils.weekRangeStartDate(new Date(2026, 3, 5), "Monday"),
-        ),
+        dateUtils.dateToString(dateUtils.weekRangeStartDate(new Date(2026, 3, 5), "Monday")),
       expected: "2026-03-30",
     },
     {
       label: "accepts a date string",
-      fn: () =>
-        dateUtils.dateToString(
-          dateUtils.weekRangeStartDate("2026-04-08", "Sunday"),
-        ),
+      fn: () => dateUtils.dateToString(dateUtils.weekRangeStartDate("2026-04-08", "Sunday")),
       expected: "2026-04-05",
     },
   ]);
@@ -288,26 +262,22 @@ export default function dateUtilsTests() {
   runSuite("getReadableWeekRangeString", [
     {
       label: "week range with Sunday start (same month)",
-      fn: () =>
-        dateUtils.getReadableWeekRangeString(new Date(2026, 3, 8), "Sunday"),
+      fn: () => dateUtils.getReadableWeekRangeString(new Date(2026, 3, 8), "Sunday"),
       expected: "Apr 5 - Apr 11, 2026",
     },
     {
       label: "week range with Monday start (same month)",
-      fn: () =>
-        dateUtils.getReadableWeekRangeString(new Date(2026, 3, 8), "Monday"),
+      fn: () => dateUtils.getReadableWeekRangeString(new Date(2026, 3, 8), "Monday"),
       expected: "Apr 6 - Apr 12, 2026",
     },
     {
       label: "week range spanning two months",
-      fn: () =>
-        dateUtils.getReadableWeekRangeString(new Date(2026, 2, 31), "Monday"),
+      fn: () => dateUtils.getReadableWeekRangeString(new Date(2026, 2, 31), "Monday"),
       expected: "Mar 30 - Apr 5, 2026",
     },
     {
       label: "cross-year week range (Dec into Jan)",
-      fn: () =>
-        dateUtils.getReadableWeekRangeString(new Date(2025, 11, 29), "Monday"),
+      fn: () => dateUtils.getReadableWeekRangeString(new Date(2025, 11, 29), "Monday"),
       expected: "Dec 29 - Jan 4, 2026",
     },
     {
@@ -398,9 +368,7 @@ export default function dateUtilsTests() {
       label: "returns a number between 0 and 1439",
       fn: () => {
         const minutes = dateUtils.currentMinutesFromMidnight();
-        return typeof minutes === "number" && minutes >= 0 && minutes < 1440
-          ? "yes"
-          : "no";
+        return typeof minutes === "number" && minutes >= 0 && minutes < 1440 ? "yes" : "no";
       },
       expected: "yes",
     },

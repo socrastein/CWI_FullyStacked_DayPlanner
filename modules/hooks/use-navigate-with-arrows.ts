@@ -7,12 +7,10 @@ import { applyCalendarNavigation } from "./use-calendar-nav-button";
  */
 export const useNavigateWithArrows = (onAfterRender: () => void) => {
   // Handle applying the navigation and calling the function that will is supposed to be ran after the navigation.
-  const handleArrowStep = useEffectEvent(
-    (delta: number, onAfterRender: () => void) => {
-      applyCalendarNavigation(delta); // Apply the navigation.
-      onAfterRender(); // Call the function that will refresh the calendar.
-    },
-  );
+  const handleArrowStep = useEffectEvent((delta: number, onAfterRender: () => void) => {
+    applyCalendarNavigation(delta); // Apply the navigation.
+    onAfterRender(); // Call the function that will refresh the calendar.
+  });
 
   // Handle the keyboard event to navigate the calendar with the arrows.
   useEffect(() => {

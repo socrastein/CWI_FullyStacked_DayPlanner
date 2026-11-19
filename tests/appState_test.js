@@ -73,62 +73,54 @@ export default function appStateTests() {
     assert(event !== undefined, "event should be present in date map");
   });
 
-  test(
-    "addEvent with same UID overwrites existing event (no duplicate)",
-    ["test-uid-3"],
-    () => {
-      appState.addEvent(
-        new CalendarEvent({
-          UID: "test-uid-3",
-          date: "2025-06-15",
-          timeStart: "09:00",
-          timeEnd: "10:00",
-          title: "Original",
-        }),
-      );
-      appState.addEvent(
-        new CalendarEvent({
-          UID: "test-uid-3",
-          date: "2025-06-15",
-          timeStart: "09:00",
-          timeEnd: "10:00",
-          title: "Updated",
-        }),
-      );
-      assertEqual(appState.getEventByUID("test-uid-3").title, "Updated");
-      const byDate = appState.getEventsByDate("2025-06-15");
-      const matches = byDate.filter((e) => e.UID === "test-uid-3");
-      assertEqual(matches.length, 1, "no duplicate in date map");
-    },
-  );
+  test("addEvent with same UID overwrites existing event (no duplicate)", ["test-uid-3"], () => {
+    appState.addEvent(
+      new CalendarEvent({
+        UID: "test-uid-3",
+        date: "2025-06-15",
+        timeStart: "09:00",
+        timeEnd: "10:00",
+        title: "Original",
+      }),
+    );
+    appState.addEvent(
+      new CalendarEvent({
+        UID: "test-uid-3",
+        date: "2025-06-15",
+        timeStart: "09:00",
+        timeEnd: "10:00",
+        title: "Updated",
+      }),
+    );
+    assertEqual(appState.getEventByUID("test-uid-3").title, "Updated");
+    const byDate = appState.getEventsByDate("2025-06-15");
+    const matches = byDate.filter((e) => e.UID === "test-uid-3");
+    assertEqual(matches.length, 1, "no duplicate in date map");
+  });
 
-  test(
-    "addEvent multiple events on same date are all stored",
-    ["test-uid-a", "test-uid-b"],
-    () => {
-      appState.addEvent(
-        new CalendarEvent({
-          UID: "test-uid-a",
-          date: "2025-07-04",
-          timeStart: "09:00",
-          timeEnd: "10:00",
-          title: "Parade",
-        }),
-      );
-      appState.addEvent(
-        new CalendarEvent({
-          UID: "test-uid-b",
-          date: "2025-07-04",
-          timeStart: "09:00",
-          timeEnd: "10:00",
-          title: "Fireworks",
-        }),
-      );
-      const byDate = appState.getEventsByDate("2025-07-04");
-      const testEvents = byDate.filter((e) => e.UID.startsWith("test-uid-"));
-      assertEqual(testEvents.length, 2);
-    },
-  );
+  test("addEvent multiple events on same date are all stored", ["test-uid-a", "test-uid-b"], () => {
+    appState.addEvent(
+      new CalendarEvent({
+        UID: "test-uid-a",
+        date: "2025-07-04",
+        timeStart: "09:00",
+        timeEnd: "10:00",
+        title: "Parade",
+      }),
+    );
+    appState.addEvent(
+      new CalendarEvent({
+        UID: "test-uid-b",
+        date: "2025-07-04",
+        timeStart: "09:00",
+        timeEnd: "10:00",
+        title: "Fireworks",
+      }),
+    );
+    const byDate = appState.getEventsByDate("2025-07-04");
+    const testEvents = byDate.filter((e) => e.UID.startsWith("test-uid-"));
+    assertEqual(testEvents.length, 2);
+  });
 
   test("addEvent notifies listeners", ["test-uid-n"], () => {
     let notified = false;
@@ -161,10 +153,7 @@ export default function appStateTests() {
       }),
     );
     appState.removeEvent("test-uid-4");
-    assert(
-      appState.getEventByUID("test-uid-4") === undefined,
-      "event should be gone",
-    );
+    assert(appState.getEventByUID("test-uid-4") === undefined, "event should be gone");
   });
 
   test("removeEvent deletes event from date map", [], () => {
@@ -179,10 +168,7 @@ export default function appStateTests() {
     );
     appState.removeEvent("test-uid-5");
     const byDate = appState.getEventsByDate("2025-09-01");
-    assert(
-      !byDate.some((e) => e.UID === "test-uid-5"),
-      "event should not be in date map",
-    );
+    assert(!byDate.some((e) => e.UID === "test-uid-5"), "event should not be in date map");
   });
 
   test("removeEvent leaves other events on same date intact", [], () => {
@@ -205,14 +191,8 @@ export default function appStateTests() {
       }),
     );
     appState.removeEvent("test-uid-8");
-    assert(
-      appState.getEventByUID("test-uid-7") !== undefined,
-      "sibling event should still exist",
-    );
-    assert(
-      appState.getEventByUID("test-uid-8") === undefined,
-      "removed event should be gone",
-    );
+    assert(appState.getEventByUID("test-uid-7") !== undefined, "sibling event should still exist");
+    assert(appState.getEventByUID("test-uid-8") === undefined, "removed event should be gone");
     appState.removeEvent("test-uid-7");
   });
 
@@ -284,13 +264,7 @@ export default function appStateTests() {
   });
 
   test("dateView rejects invalid formats", [], () => {
-    for (const d of [
-      "2024-1-1",
-      "24-01-01",
-      "2024/01/01",
-      "1999-01-01",
-      "not-a-date",
-    ]) {
+    for (const d of ["2024-1-1", "24-01-01", "2024/01/01", "1999-01-01", "not-a-date"]) {
       let threw = false;
       try {
         appState.dateView = d;
@@ -331,61 +305,53 @@ export default function appStateTests() {
     assertEqual(appState.getSnapshot().dateView, "2026-01-01");
   });
 
-  test(
-    "getSnapshot allEventsByDate updates after addEvent",
-    ["test-uid-snap"],
-    () => {
-      appState.addEvent(
-        new CalendarEvent({
-          UID: "test-uid-snap",
-          date: "2026-02-14",
-          timeStart: "09:00",
-          timeEnd: "10:00",
-          title: "Valentine's",
-        }),
-      );
-      assert(
-        appState
-          .getSnapshot()
-          .getEventsByDate("2026-02-14")
-          ?.some((e) => e.UID === "test-uid-snap"),
-        "snapshot should reflect new event",
-      );
-    },
-  );
+  test("getSnapshot allEventsByDate updates after addEvent", ["test-uid-snap"], () => {
+    appState.addEvent(
+      new CalendarEvent({
+        UID: "test-uid-snap",
+        date: "2026-02-14",
+        timeStart: "09:00",
+        timeEnd: "10:00",
+        title: "Valentine's",
+      }),
+    );
+    assert(
+      appState
+        .getSnapshot()
+        .getEventsByDate("2026-02-14")
+        ?.some((e) => e.UID === "test-uid-snap"),
+      "snapshot should reflect new event",
+    );
+  });
 
   // ── subscribe / unsubscribe ─────────────────────────────────────────────────
 
-  test(
-    "unsubscribe stops further notifications",
-    ["test-uid-u1", "test-uid-u2"],
-    () => {
-      let count = 0;
-      const unsub = appState.subscribe(() => {
-        count++;
-      });
-      appState.addEvent(
-        new CalendarEvent({
-          UID: "test-uid-u1",
-          date: "2026-03-01",
-          timeStart: "09:00",
-          timeEnd: "10:00",
-          title: "First",
-        }),
-      );
-      unsub();
-      appState.addEvent(
-        new CalendarEvent({
-          UID: "test-uid-u2",
-          date: "2026-03-02",
-          timeStart: "09:00",
-          timeEnd: "10:00",
-          title: "Second",
-        }),
-      );
-      assertEqual(count, 1, "should only have been notified once");
-    },
-  );
+  test("unsubscribe stops further notifications", ["test-uid-u1", "test-uid-u2"], () => {
+    let count = 0;
+    const unsub = appState.subscribe(() => {
+      count++;
+    });
+    appState.addEvent(
+      new CalendarEvent({
+        UID: "test-uid-u1",
+        date: "2026-03-01",
+        timeStart: "09:00",
+        timeEnd: "10:00",
+        title: "First",
+      }),
+    );
+    unsub();
+    appState.addEvent(
+      new CalendarEvent({
+        UID: "test-uid-u2",
+        date: "2026-03-02",
+        timeStart: "09:00",
+        timeEnd: "10:00",
+        title: "Second",
+      }),
+    );
+    assertEqual(count, 1, "should only have been notified once");
+  });
 
   test("multiple listeners all notified on change", ["test-uid-ml"], () => {
     let a = 0,

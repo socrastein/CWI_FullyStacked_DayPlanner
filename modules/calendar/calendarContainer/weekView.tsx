@@ -2,10 +2,7 @@ import "../../../styling/weekView.css";
 
 import { useAppSettings } from "../../appSettings";
 import { useAppState } from "../../appState";
-import {
-  assignLanesForEvents,
-  calculateTotalConcurrentEvents,
-} from "../dailyCalendar";
+import { assignLanesForEvents, calculateTotalConcurrentEvents } from "../dailyCalendar";
 import { showClickedEventPopup } from "../clickedEventPopup";
 import { CalendarViews } from "../../enumCalendarViews";
 import CalendarEvent from "../../classCalendarEvent";
@@ -26,14 +23,9 @@ type PositionedCalendarEvent = {
 };
 
 // Helper function
-function getPositionedEvents(
-  dayEvents: CalendarEvent[],
-): PositionedCalendarEvent[] {
+function getPositionedEvents(dayEvents: CalendarEvent[]): PositionedCalendarEvent[] {
   const minimumEventHeight = 18;
-  const lanesByEventUID = assignLanesForEvents(dayEvents) as Map<
-    string,
-    number
-  >;
+  const lanesByEventUID = assignLanesForEvents(dayEvents) as Map<string, number>;
 
   return dayEvents.map((event) => {
     const start = dateUtils.militaryToMinutes(event.timeStart);
@@ -106,10 +98,8 @@ function WeekDayEvent({
 }) {
   const widthPercent = 100 / totalLanes;
   const leftPercent = widthPercent * laneIndex;
-  const leftPosition =
-    totalLanes <= 1 ? "2px" : `calc(${leftPercent}% + ${laneIndex * 2}px)`;
-  const width =
-    totalLanes <= 1 ? "calc(100% - 4px)" : `calc(${widthPercent}% - 2px)`;
+  const leftPosition = totalLanes <= 1 ? "2px" : `calc(${leftPercent}% + ${laneIndex * 2}px)`;
+  const width = totalLanes <= 1 ? "calc(100% - 4px)" : `calc(${widthPercent}% - 2px)`;
   const borderColor = event.color ? `${event.color}CC` : "#1a73e8CC";
 
   return (
@@ -138,25 +128,21 @@ function WeekDayEventContainer({ daysDate }: { daysDate: string }) {
   const { displayHolidays } = useAppSettings();
   const { getEventsByDate } = useAppState();
 
-  const events = getEventsByDate(daysDate).filter(
-    (event) => !event.isAllDay && !event.isHoliday,
-  );
+  const events = getEventsByDate(daysDate).filter((event) => !event.isAllDay && !event.isHoliday);
 
   return (
     <>
       {dateUtils.isToday(daysDate) && <DayCalendarCurrentTimeLine />}
-      {getPositionedEvents(events).map(
-        ({ event, top, height, laneIndex, totalLanes }) => (
-          <WeekDayEvent
-            key={event.UID}
-            event={event}
-            top={top}
-            height={height}
-            laneIndex={laneIndex}
-            totalLanes={totalLanes}
-          />
-        ),
-      )}
+      {getPositionedEvents(events).map(({ event, top, height, laneIndex, totalLanes }) => (
+        <WeekDayEvent
+          key={event.UID}
+          event={event}
+          top={top}
+          height={height}
+          laneIndex={laneIndex}
+          totalLanes={totalLanes}
+        />
+      ))}
     </>
   );
 }
@@ -171,15 +157,7 @@ function WeekDayHourGridLines() {
   );
 }
 
-function WeekDayColumn({
-  day,
-  index,
-  weekStart,
-}: {
-  day: string;
-  index: number;
-  weekStart: Date;
-}) {
+function WeekDayColumn({ day, index, weekStart }: { day: string; index: number; weekStart: Date }) {
   const columnDate = dateUtils.addDays(weekStart, index);
   const daysDate = dateUtils.dateToString(columnDate);
 
@@ -202,23 +180,15 @@ const WeekView = () => {
   const { firstDayOfWeek } = useAppSettings();
 
   const dateViewObject = dateUtils.stringToDate(dateView);
-  const weekStart = dateUtils.weekRangeStartDate(
-    dateViewObject,
-    firstDayOfWeek,
-  );
+  const weekStart = dateUtils.weekRangeStartDate(dateViewObject, firstDayOfWeek);
 
-  const dayLabels =
-    firstDayOfWeek === "Monday"
-      ? dateUtils.daysOfWeekMon
-      : dateUtils.daysOfWeekSun;
+  const dayLabels = firstDayOfWeek === "Monday" ? dateUtils.daysOfWeekMon : dateUtils.daysOfWeekSun;
 
   // When viewing today, scroll the active slot row into view
   useEffect(() => {
     if (!dateUtils.isToday(dateView)) return;
 
-    const currentTimeLine = document.getElementById(
-      "calendarCurrentTimeLineContainer",
-    );
+    const currentTimeLine = document.getElementById("calendarCurrentTimeLineContainer");
     if (currentTimeLine)
       currentTimeLine.scrollIntoView({
         behavior: "smooth",
@@ -236,12 +206,7 @@ const WeekView = () => {
         </div>
 
         {dayLabels.map((day, index) => (
-          <WeekDayColumn
-            key={day}
-            day={day}
-            index={index}
-            weekStart={weekStart}
-          />
+          <WeekDayColumn key={day} day={day} index={index} weekStart={weekStart} />
         ))}
       </div>
     </div>

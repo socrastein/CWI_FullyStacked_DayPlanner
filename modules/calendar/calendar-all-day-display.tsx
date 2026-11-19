@@ -22,9 +22,7 @@ function CalendarAllDayDisplay() {
   if (!displayHolidays) {
     allDayEvents = eventsForViewDate.filter((event) => event.isAllDay);
   } else {
-    allDayEvents = eventsForViewDate.filter(
-      (event) => event.isAllDay || event.isHoliday,
-    );
+    allDayEvents = eventsForViewDate.filter((event) => event.isAllDay || event.isHoliday);
   }
 
   // Do not render the display if there aren't any events to display.

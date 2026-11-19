@@ -18,9 +18,7 @@ export default function DayView() {
   useEffect(() => {
     if (!dateUtils.isToday(dateView)) return;
 
-    const currentTimeLine = document.getElementById(
-      "calendarCurrentTimeLineContainer",
-    );
+    const currentTimeLine = document.getElementById("calendarCurrentTimeLineContainer");
     if (currentTimeLine)
       currentTimeLine.scrollIntoView({
         behavior: "smooth",

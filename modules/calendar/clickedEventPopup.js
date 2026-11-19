@@ -11,10 +11,8 @@ export function showClickedEventPopup(event) {
   document.getElementById("clickedEventPopupTitle").textContent = event.title;
   document.getElementById("clickedEventPopupTime").textContent =
     `${dateUtils.militaryToStandard(event.timeStart)} - ${dateUtils.militaryToStandard(event.timeEnd)}`;
-  document.getElementById("clickedEventPopupDescriptionText").textContent =
-    event.description;
-  document.getElementById("clickedEventPopupAddressText").textContent =
-    event.address;
+  document.getElementById("clickedEventPopupDescriptionText").textContent = event.description;
+  document.getElementById("clickedEventPopupAddressText").textContent = event.address;
   document.getElementById("editEventButton").onclick = () => {
     editClickedEventPopup(event);
   };

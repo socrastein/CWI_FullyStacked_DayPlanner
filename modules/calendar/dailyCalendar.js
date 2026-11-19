@@ -7,8 +7,7 @@ export function assignLanesForEvents(events) {
   const assignedLanes = new Map();
   // Inline functions to calculate the duration and tranlsate time strings to minutes
   const durationMinutes = (event) =>
-    dateUtils.militaryToMinutes(event.timeEnd) -
-    dateUtils.militaryToMinutes(event.timeStart);
+    dateUtils.militaryToMinutes(event.timeEnd) - dateUtils.militaryToMinutes(event.timeStart);
   const startMinutes = (event) => dateUtils.militaryToMinutes(event.timeStart);
   // Sort the events by duration and start time
   const sortedEvents = [...events].sort(
@@ -24,8 +23,7 @@ export function assignLanesForEvents(events) {
     const usedLanes = new Set();
     // Loop through the other events and add the lane of the other event to the used lanes set if it overlaps with the current event
     events.forEach((otherEvent) => {
-      if (otherEvent.UID === event.UID || !assignedLanes.has(otherEvent.UID))
-        return;
+      if (otherEvent.UID === event.UID || !assignedLanes.has(otherEvent.UID)) return;
       const otherStart = dateUtils.militaryToMinutes(otherEvent.timeStart);
       const otherEnd = dateUtils.militaryToMinutes(otherEvent.timeEnd);
       const overlaps = eventStart < otherEnd && eventEnd > otherStart;
@@ -73,10 +71,7 @@ export function calculateTotalConcurrentEvents(event, events) {
   });
 
   // Sort the points by time
-  points.sort(
-    (point1, point2) =>
-      point1.time - point2.time || point1.delta - point2.delta,
-  );
+  points.sort((point1, point2) => point1.time - point2.time || point1.delta - point2.delta);
 
   // Count the number of concurrent events
   let count = 0;

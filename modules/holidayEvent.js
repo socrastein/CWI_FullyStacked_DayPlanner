@@ -40,9 +40,7 @@ function formatDate(year, month, day) {
 function getNthWeekdayOfMonth(year, month, weekday, week) {
   if (!Number.isInteger(week) || week < 1 || week > 5) {
     /* left this validation in this functiion as it's the only one to use week param*/
-    throw new Error(
-      "Event week is out of the allowed range. Allowed range is from 1 through 5.",
-    );
+    throw new Error("Event week is out of the allowed range. Allowed range is from 1 through 5.");
   }
   const date = new Date(year, month - 1, 1); // month -1 so that 1 through 12 translates properly to 0-11 in JS value
   let count = 0;

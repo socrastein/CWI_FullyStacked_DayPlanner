@@ -41,11 +41,7 @@ const dateUtils = {
    * @returns
    */
   stringToDate(dateString: string): Date {
-    const [year, month, day] = dateString.split("-").map(Number) as [
-      number,
-      number,
-      number,
-    ];
+    const [year, month, day] = dateString.split("-").map(Number) as [number, number, number];
     return new Date(year, month - 1, day);
   },
 
@@ -77,9 +73,7 @@ const dateUtils = {
    * @returns New Date X days later (or earlier)
    */
   addDays(date: Date | string, add: number): Date {
-    const dateCopy = new Date(
-      typeof date === "string" ? this.stringToDate(date) : date,
-    );
+    const dateCopy = new Date(typeof date === "string" ? this.stringToDate(date) : date);
     dateCopy.setDate(dateCopy.getDate() + add);
     return dateCopy;
   },
@@ -95,17 +89,11 @@ const dateUtils = {
    * @returns New Date X months later (or earlier)
    */
   addMonths(date: Date | string, add: number): Date {
-    const dateCopy = new Date(
-      typeof date === "string" ? this.stringToDate(date) : date,
-    );
+    const dateCopy = new Date(typeof date === "string" ? this.stringToDate(date) : date);
     const dayOfMonth = dateCopy.getDate();
     dateCopy.setDate(1);
     dateCopy.setMonth(dateCopy.getMonth() + add);
-    const lastDayOfMonth = new Date(
-      dateCopy.getFullYear(),
-      dateCopy.getMonth() + 1,
-      0,
-    ).getDate();
+    const lastDayOfMonth = new Date(dateCopy.getFullYear(), dateCopy.getMonth() + 1, 0).getDate();
     dateCopy.setDate(Math.min(dayOfMonth, lastDayOfMonth));
     return dateCopy;
   },
@@ -148,10 +136,7 @@ const dateUtils = {
    * @param firstDayOfWeek String "Monday" or "Sunday"
    * @returns String showing week range, e.g. "Apr 6 - Apr 12, 2026"
    */
-  getReadableWeekRangeString(
-    date: Date | string,
-    firstDayOfWeek: "Monday" | "Sunday",
-  ) {
+  getReadableWeekRangeString(date: Date | string, firstDayOfWeek: "Monday" | "Sunday") {
     date = typeof date === "string" ? this.stringToDate(date) : date;
     const startDate = dateUtils.weekRangeStartDate(date, firstDayOfWeek);
 
@@ -191,10 +176,7 @@ const dateUtils = {
    * @returns Number of minutes since midnight for the time given, e.g. 840
    */
   militaryToMinutes(timeString: string): number {
-    const [hours, minutes] = timeString.split(":").map(Number) as [
-      number,
-      number,
-    ];
+    const [hours, minutes] = timeString.split(":").map(Number) as [number, number];
     return hours * 60 + minutes;
   },
 
@@ -205,10 +187,7 @@ const dateUtils = {
    * @returns String representing standard time, e.g. "2:00 PM"
    */
   militaryToStandard(timeString: string): string {
-    const [hours, minutes] = timeString.split(":").map(Number) as [
-      number,
-      number,
-    ];
+    const [hours, minutes] = timeString.split(":").map(Number) as [number, number];
     const date = new Date();
     date.setHours(hours, minutes, 0, 0);
 

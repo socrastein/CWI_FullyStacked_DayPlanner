@@ -104,8 +104,7 @@ function WeatherReadout({
   temperatureUnit: "Celsius" | "Fahrenheit";
   onClick: () => void;
 }) {
-  const temperature =
-    temperatureUnit === "Celsius" ? data.current.temp_c : data.current.temp_f;
+  const temperature = temperatureUnit === "Celsius" ? data.current.temp_c : data.current.temp_f;
 
   const tempUnit = temperatureUnit === "Celsius" ? "°C" : "°F";
   const iconUrl = "https:" + data.current.condition.icon;
@@ -140,8 +139,7 @@ function WeatherDetailOverlay({
   temperatureUnit: "Celsius" | "Fahrenheit";
   onClose: () => void;
 }) {
-  const temperature =
-    temperatureUnit === "Celsius" ? data.current.temp_c : data.current.temp_f;
+  const temperature = temperatureUnit === "Celsius" ? data.current.temp_c : data.current.temp_f;
 
   const tempUnit = temperatureUnit === "Celsius" ? "°C" : "°F";
   const iconUrl = "https:" + data.current.condition.icon;
@@ -170,9 +168,7 @@ function WeatherDetailOverlay({
           <strong>Feels like:</strong>
           <p>
             {Math.round(
-              temperatureUnit === "Celsius"
-                ? data.current.feelslike_c
-                : data.current.feelslike_f,
+              temperatureUnit === "Celsius" ? data.current.feelslike_c : data.current.feelslike_f,
             )}
             {tempUnit}
           </p>
@@ -214,8 +210,7 @@ async function fetchWeatherData(city: string): Promise<WeatherData> {
   const url = `https://api.weatherapi.com/v1/current.json?key=${API_KEY}&q=${city}`;
   const response = await fetch(url);
 
-  if (!response.ok)
-    throw new Error(`Weather API request failed: ${response.status}`);
+  if (!response.ok) throw new Error(`Weather API request failed: ${response.status}`);
 
   return response.json();
 }

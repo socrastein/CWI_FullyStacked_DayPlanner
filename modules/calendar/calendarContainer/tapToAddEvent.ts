@@ -73,9 +73,7 @@ function calcTime(dayGridColumn: HTMLDivElement, yPosition: number) {
 }
 
 // Long Press
-export function handleLongPress(
-  event: React.PointerEvent<HTMLDivElement>,
-): void {
+export function handleLongPress(event: React.PointerEvent<HTMLDivElement>): void {
   if (!isValidInput(event)) return;
 
   if (pressTimer) clearTimeout(pressTimer);

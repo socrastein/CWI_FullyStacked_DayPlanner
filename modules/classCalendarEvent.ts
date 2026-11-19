@@ -2,14 +2,7 @@ import dateUtils from "./dateUtils";
 import generateUID from "./UIDGenerator";
 
 export type RecurrenceType = "weekly" | "monthly" | "yearly";
-export type RecurrenceDays =
-  | "Sun"
-  | "Mon"
-  | "Tue"
-  | "Wed"
-  | "Thu"
-  | "Fri"
-  | "Sat";
+export type RecurrenceDays = "Sun" | "Mon" | "Tue" | "Wed" | "Thu" | "Fri" | "Sat";
 
 interface CalendarEventOptions {
   UID?: string;
@@ -99,14 +92,8 @@ export default class CalendarEvent {
   // Calculate difference between timeStart and timeEnd in minutes
   get length(): number {
     // Grab hours and minutes from timeStart and timeEnd
-    const [startHour, startMinute] = this.timeStart.split(":").map(Number) as [
-      number,
-      number,
-    ];
-    const [endHour, endMinute] = this.timeEnd.split(":").map(Number) as [
-      number,
-      number,
-    ];
+    const [startHour, startMinute] = this.timeStart.split(":").map(Number) as [number, number];
+    const [endHour, endMinute] = this.timeEnd.split(":").map(Number) as [number, number];
 
     // Convert hours and minutes to total minutes for easier calculation
     const startTotalMinutes = startHour * 60 + startMinute;
@@ -239,9 +226,7 @@ export default class CalendarEvent {
   get titleAndTime(): string | undefined {
     if (this.isHoliday) return undefined;
     const title = this.title + "\n";
-    const time = this.isAllDay
-      ? "All day"
-      : dateUtils.militaryToStandard(this.timeStart);
+    const time = this.isAllDay ? "All day" : dateUtils.militaryToStandard(this.timeStart);
     return title + time;
   }
 
@@ -251,9 +236,7 @@ export default class CalendarEvent {
    * @returns Boolean
    */
   private isTargetDateAfterStartDate(targetDate: string): boolean {
-    return (
-      dateUtils.stringToDate(targetDate) > dateUtils.stringToDate(this.#date)
-    );
+    return dateUtils.stringToDate(targetDate) > dateUtils.stringToDate(this.#date);
   }
   /**
    * checks if a weekly event should appear on the target date.
@@ -262,9 +245,7 @@ export default class CalendarEvent {
    */
   private occursWeekly(targetDate: string): boolean {
     if (this.#recurrenceDays.length > 0) {
-      return this.#recurrenceDays.includes(
-        dateUtils.getDayString(targetDate) as RecurrenceDays,
-      );
+      return this.#recurrenceDays.includes(dateUtils.getDayString(targetDate) as RecurrenceDays);
     }
     return false;
   }
@@ -290,10 +271,7 @@ export default class CalendarEvent {
     const eventDate = dateUtils.stringToDate(this.#date);
     const target = dateUtils.stringToDate(targetDate);
 
-    return (
-      eventDate.getMonth() === target.getMonth() &&
-      eventDate.getDate() === target.getDate()
-    );
+    return eventDate.getMonth() === target.getMonth() && eventDate.getDate() === target.getDate();
   }
 
   /**
@@ -356,9 +334,7 @@ function validateDate(date: string): void {
   const dateRegex = /^(20\d{2})-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/;
 
   if (!dateRegex.test(date)) {
-    throw new Error(
-      `Event assignment error: date string ${date} is not in "YYYY-MM-DD" format.`,
-    );
+    throw new Error(`Event assignment error: date string ${date} is not in "YYYY-MM-DD" format.`);
   }
 }
 
@@ -386,19 +362,10 @@ function validateTime(time: string): void {
 
 // Makes sure that timeEnd is after timeStart
 function validateTimeOrder(timeStart: string, timeEnd: string): boolean {
-  const [startHour, startMinute] = timeStart.split(":").map(Number) as [
-    number,
-    number,
-  ];
-  const [endHour, endMinute] = timeEnd.split(":").map(Number) as [
-    number,
-    number,
-  ];
+  const [startHour, startMinute] = timeStart.split(":").map(Number) as [number, number];
+  const [endHour, endMinute] = timeEnd.split(":").map(Number) as [number, number];
 
-  if (
-    endHour < startHour ||
-    (endHour === startHour && endMinute <= startMinute)
-  ) {
+  if (endHour < startHour || (endHour === startHour && endMinute <= startMinute)) {
     throw new Error(
       `Event assignment error: timeEnd ${timeEnd} must be after timeStart ${timeStart}.`,
     );
@@ -409,10 +376,7 @@ function validateTimeOrder(timeStart: string, timeEnd: string): boolean {
 
 // Check that Event properties that should be strings are actually strings.
 // Will not throw for undefined properties except for title, which is a required property
-function validateStringProperty(
-  prop: string | undefined,
-  propName: string,
-): void {
+function validateStringProperty(prop: string | undefined, propName: string): void {
   if (propName === "title") {
     if (typeof prop !== "string") {
       throw new Error(
@@ -443,9 +407,7 @@ function validateColor(color: string | undefined): void {
   testEl.style.color = color;
 
   if (testEl.style.color === "") {
-    throw new Error(
-      `Event assignment error: "${color}" is not a valid CSS color.`,
-    );
+    throw new Error(`Event assignment error: "${color}" is not a valid CSS color.`);
   }
 }
 
@@ -455,11 +417,7 @@ function validateRecurrence(recurrence: RecurrenceType | null): void {
     return;
   }
 
-  const validRecurrenceOptions: RecurrenceType[] = [
-    "weekly",
-    "monthly",
-    "yearly",
-  ];
+  const validRecurrenceOptions: RecurrenceType[] = ["weekly", "monthly", "yearly"];
 
   if (!validRecurrenceOptions.includes(recurrence)) {
     throw new Error(
@@ -473,11 +431,7 @@ function validateRecurrence(recurrence: RecurrenceType | null): void {
 function fixOldRecurrence(
   recurrence: RecurrenceType | "none" | null | undefined,
 ): RecurrenceType | null {
-  if (
-    recurrence === "none" ||
-    recurrence === null ||
-    recurrence === undefined
-  ) {
+  if (recurrence === "none" || recurrence === null || recurrence === undefined) {
     return null;
   }
 
@@ -492,9 +446,7 @@ function validateRecurrenceDays(recurrenceDays: RecurrenceDays[]): void {
 
   recurrenceDays.forEach((day) => {
     if (!dateUtils.daysOfWeekSun.includes(day)) {
-      throw new Error(
-        `Event assignment error: ${day} is not a valid recurrence day.`,
-      );
+      throw new Error(`Event assignment error: ${day} is not a valid recurrence day.`);
     }
   });
 }

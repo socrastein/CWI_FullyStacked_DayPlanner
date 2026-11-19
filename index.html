@@ -7,9 +7,7 @@
   </head>
   <body class="gap-1">
     <!-- Top of the app with today's date and weather container -->
-    <header
-      class="d-flex d-flex px-1 align-items-center justify-content-between py-1 w-100"
-    >
+    <header class="d-flex d-flex px-1 align-items-center justify-content-between py-1 w-100">
       <div id="headerDateContainer" class="px-2"></div>
       <div id="weatherDisplay"></div>
     </header>
@@ -37,20 +35,12 @@
         <span class="fw-semibold">Description:</span>
         <span id="clickedEventPopupDescriptionText"></span>
       </p>
-      <button
-        type="button"
-        id="editEventButton"
-        class="btn btn-sm w-100 btn-primary"
-      >
-        Edit
-      </button>
+      <button type="button" id="editEventButton" class="btn btn-sm w-100 btn-primary">Edit</button>
     </div>
 
     <!-- Container for navigation and new event buttons -->
     <footer class="fixed-bottom bg-body">
-      <div
-        class="position-relative d-flex justify-content-center align-items-center px-4 py-3"
-      >
+      <div class="position-relative d-flex justify-content-center align-items-center px-4 py-3">
         <div
           id="calendarNavButtonsContainer"
           class="d-flex justify-content-center align-items-center gap-4"
@@ -66,18 +56,11 @@
           aria-expanded="false"
           title="Calendar Settings"
         >
-          <img
-            src="./assets/icons/calendar-cog.svg"
-            alt=""
-            class="calendarSettingsIcon"
-          />
+          <img src="./assets/icons/calendar-cog.svg" alt="" class="calendarSettingsIcon" />
         </button>
         <div class="dropdown-menu pt-0 pb-1" style="min-width: 4rem">
           <h6 class="dropdown-header -mt-2 text-center">Calendar View</h6>
-          <div
-            id="calendarDisplayButtonsRoot"
-            class="d-flex flex-column gap-1 px-1"
-          ></div>
+          <div id="calendarDisplayButtonsRoot" class="d-flex flex-column gap-1 px-1"></div>
         </div>
       </div>
     </footer>

@@ -23,8 +23,9 @@ Inititial plans are to implement the following features:
 - Lucide icons for UX
 
 <br>
-  
+
 ### Extra features
+
 - categories and color-coding for events
 - change view to show the week or the month
 - news ticker with top 1-3 headlines of the day

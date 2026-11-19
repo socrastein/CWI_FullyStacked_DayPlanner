@@ -4,11 +4,7 @@ import StorageManager from "./dataStorage";
 import { CalendarViews } from "./enumCalendarViews";
 import dateUtils from "./dateUtils";
 
-import {
-  createMockEvents,
-  deleteMockEvents,
-  registerCheatCode,
-} from "./mockEvents";
+import { createMockEvents, deleteMockEvents, registerCheatCode } from "./mockEvents";
 
 import { getHolidayEvents } from "./holidayEvent";
 
@@ -37,9 +33,7 @@ function mapEventsByUID(events: CalendarEvent[]): Map<string, CalendarEvent> {
  * @param events Array of CalendarEvent objects loaded from storage
  * @returns
  */
-function mapEventsByDate(
-  events: CalendarEvent[],
-): Map<string, CalendarEvent[]> {
+function mapEventsByDate(events: CalendarEvent[]): Map<string, CalendarEvent[]> {
   const mappedDates = new Map<string, CalendarEvent[]>();
 
   events.forEach((event) => {
@@ -61,9 +55,7 @@ function mapEventsByDate(
  * @param events Array of CalendarEvents loaded from storage
  * @returns Map of recurring objects
  */
-function mapRecurringEventsByUID(
-  events: CalendarEvent[],
-): Map<string, CalendarEvent> {
+function mapRecurringEventsByUID(events: CalendarEvent[]): Map<string, CalendarEvent> {
   const recurringEvents = new Map<string, CalendarEvent>();
 
   events.forEach((event) => {
@@ -215,10 +207,7 @@ class AppState {
       : [...existingEvents, event];
 
     // Replace map instead of mutating
-    this._eventsByDate = new Map(this._eventsByDate).set(
-      event.date,
-      updatedEvents,
-    );
+    this._eventsByDate = new Map(this._eventsByDate).set(event.date, updatedEvents);
 
     StorageManager.saveEvent(event);
     this.notifyListeners();
@@ -247,9 +236,7 @@ class AppState {
     this._recurringEvents.delete(uid);
 
     // Remove the event from the array of events for that date
-    const remainingEvents = (this._eventsByDate.get(event.date) ?? []).filter(
-      (e) => e.UID !== uid,
-    );
+    const remainingEvents = (this._eventsByDate.get(event.date) ?? []).filter((e) => e.UID !== uid);
 
     this._eventsByDate = new Map(this._eventsByDate);
 
@@ -394,8 +381,7 @@ const appState = new AppState();
 
 // Tapping F2 3x within a couple seconds will load mock events for testing purposes.
 registerCheatCode(() => {
-  const areMockEventsLoaded =
-    localStorage.getItem("mockEventsLoaded") === "true";
+  const areMockEventsLoaded = localStorage.getItem("mockEventsLoaded") === "true";
 
   console.log(areMockEventsLoaded);
   if (!areMockEventsLoaded) {

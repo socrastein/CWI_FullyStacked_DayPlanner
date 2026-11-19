@@ -38,9 +38,7 @@ function mountCalendarWrapper(): void {
 // Render the calendary view button group that includes the 'Day', 'Week', 'Month' buttons
 function renderCalendarViewButtons(): void {
   // Get the root element for the calendar view buttons.
-  const displayButtonsRootElement = document.getElementById(
-    "calendarDisplayButtonsRoot",
-  );
+  const displayButtonsRootElement = document.getElementById("calendarDisplayButtonsRoot");
   if (displayButtonsRootElement) {
     // If the root element exists, create a root for the calendar view buttons.
     // Create a root for the calendar view buttons.
@@ -60,15 +58,11 @@ function renderCalendarNavigationButtons(): void {
   if (calendarNavigationButtonsRootElement) {
     // If the root element exists, create a root for the calendar navigation buttons.
     // Create a root for the calendar navigation buttons.
-    const calendarNavigationButtonsRoot = createRoot(
-      calendarNavigationButtonsRootElement,
-    );
+    const calendarNavigationButtonsRoot = createRoot(calendarNavigationButtonsRootElement);
 
     // Function to render the calendar navigation buttons using the react components.
     const renderCalendarNavButtons = () => {
-      calendarNavigationButtonsRoot.render(
-        <CalendarNavButtonsGroup onAfterNavigate={() => {}} />,
-      );
+      calendarNavigationButtonsRoot.render(<CalendarNavButtonsGroup onAfterNavigate={() => {}} />);
     };
 
     renderCalendarNavButtons(); // Automatically call the render function.
@@ -76,9 +70,7 @@ function renderCalendarNavigationButtons(): void {
 }
 
 // Create React root for the calendar header date display
-const headerDateRoot = createRoot(
-  document.getElementById("headerDateContainer")!,
-);
+const headerDateRoot = createRoot(document.getElementById("headerDateContainer")!);
 
 // One render call to initialize and then useAppStateStore will
 // update it automatically when the dateView changes.
@@ -89,9 +81,7 @@ headerDateRoot.render(<CalendarHeaderDisplay />);
  * This renders holiday and future all-day items above the main calendar.
  */
 function mountAllDayDisplay(): void {
-  const allDayDisplayRootElement = document.getElementById(
-    "calendarAllDayDisplayRoot",
-  )!; //this should fail in a pretty obvious way if the getElementById returns anything but the correct return for the div
+  const allDayDisplayRootElement = document.getElementById("calendarAllDayDisplayRoot")!; //this should fail in a pretty obvious way if the getElementById returns anything but the correct return for the div
 
   const root = createRoot(allDayDisplayRootElement);
   root.render(<CalendarAllDayDisplay />);

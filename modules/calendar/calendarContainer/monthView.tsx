@@ -109,16 +109,9 @@ interface DayCellProps {
   events: CalendarEvent[];
 }
 
-function DayCell({
-  day: { date, isCurrentMonth, isToday },
-  events,
-}: DayCellProps) {
+function DayCell({ day: { date, isCurrentMonth, isToday }, events }: DayCellProps) {
   const dateKey = dateUtils.dateToString(date);
-  const classNames = [
-    "dayCell",
-    isCurrentMonth && "currentMonthDayCell",
-    isToday && "todayCell",
-  ]
+  const classNames = ["dayCell", isCurrentMonth && "currentMonthDayCell", isToday && "todayCell"]
     .filter(Boolean)
     .join(" ");
 
@@ -137,11 +130,7 @@ export default function MonthView() {
   const { firstDayOfWeek, displayHolidays } = useAppSettings();
 
   const weekStartsOn: 0 | 1 = firstDayOfWeek === "Sunday" ? 0 : 1;
-  const [year, month] = dateView.split("-").map(Number) as [
-    number,
-    number,
-    number,
-  ];
+  const [year, month] = dateView.split("-").map(Number) as [number, number, number];
 
   const dayNames = getOrderedDayNames(weekStartsOn);
   const days = getCalendarGridDays(year, month, weekStartsOn);

@@ -13,9 +13,7 @@ export default function DayCalendarCurrentTimeLine() {
       aria-hidden="true"
       style={{
         visibility: isVisible ? "visible" : "hidden",
-        top: isVisible
-          ? `${dateUtils.currentMinutesFromMidnight()}px`
-          : undefined,
+        top: isVisible ? `${dateUtils.currentMinutesFromMidnight()}px` : undefined,
       }}
     />
   );

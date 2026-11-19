@@ -8,11 +8,7 @@ type Props = {
   laneIndex: number;
 };
 
-export default function CalendarEventButton({
-  event,
-  totalLanes,
-  laneIndex,
-}: Props) {
+export default function CalendarEventButton({ event, totalLanes, laneIndex }: Props) {
   // Button calculations
   const startTimeMinutes = dateUtils.militaryToMinutes(event.timeStart);
   const endTimeMinutes = dateUtils.militaryToMinutes(event.timeEnd);
@@ -37,8 +33,7 @@ export default function CalendarEventButton({
         ["--event-color" as any]: event.color ?? "#1a73e8",
         top: `${topPosition}px`,
         height: `${maxHeight}px`,
-        left:
-          totalLanes <= 1 ? "0" : `calc(${leftPosition}% + ${laneIndex * 2}px)`,
+        left: totalLanes <= 1 ? "0" : `calc(${leftPosition}% + ${laneIndex * 2}px)`,
         width: totalLanes <= 1 ? "100%" : `calc(${width}% - 2px)`,
       }}
       title={event.titleAndTime}

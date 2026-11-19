@@ -124,11 +124,7 @@
 }
 
 .calendarEventContainer:hover {
-  background-color: color-mix(
-    in srgb,
-    var(--event-color) 20%,
-    var(--bs-secondary-bg)
-  );
+  background-color: color-mix(in srgb, var(--event-color) 20%, var(--bs-secondary-bg));
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 

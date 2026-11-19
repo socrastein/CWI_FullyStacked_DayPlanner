@@ -11,11 +11,7 @@ export default function DayCalendarHourGridLines() {
       style={{ height: `${dateUtils.minutesPerDay}px` }}
     >
       {hourSlots.map((slotStart) => (
-        <div
-          key={slotStart}
-          className="calendarHourGridLine"
-          aria-hidden="true"
-        />
+        <div key={slotStart} className="calendarHourGridLine" aria-hidden="true" />
       ))}
     </div>
   );

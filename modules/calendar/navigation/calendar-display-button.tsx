@@ -19,9 +19,7 @@ function CalendarDisplayButton({
   onClick,
 }: CalendarDisplayButtonProps) {
   // day -> Day; week -> Week; month -> Month;
-  const label =
-    assignedCalendarView.charAt(0).toUpperCase() +
-    assignedCalendarView.slice(1);
+  const label = assignedCalendarView.charAt(0).toUpperCase() + assignedCalendarView.slice(1);
 
   return (
     <button

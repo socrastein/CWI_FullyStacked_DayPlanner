@@ -5,9 +5,7 @@ function holidayTests() {
   let failed = 0;
   function assert(label, actual, expected) {
     if (actual !== expected) {
-      console.error(
-        `❌ FAIL — "${label}": expected "${expected}", got "${actual}"`,
-      );
+      console.error(`❌ FAIL — "${label}": expected "${expected}", got "${actual}"`);
       failed++;
       return;
     }
@@ -38,15 +36,9 @@ function holidayTests() {
     "New Year's Eve": "2026-12-31",
   };
 
-  assert(
-    "holiday count for 2026",
-    holidays2026.length,
-    Object.keys(expectedHolidayDates).length,
-  );
+  assert("holiday count for 2026", holidays2026.length, Object.keys(expectedHolidayDates).length);
   Object.entries(expectedHolidayDates).forEach(([title, expectedDate]) => {
-    const matchingHoliday = holidays2026.find(
-      (holiday) => holiday.title === title,
-    );
+    const matchingHoliday = holidays2026.find((holiday) => holiday.title === title);
 
     if (!matchingHoliday) {
       console.error(`❌ FAIL — "${title}": holiday was not returned at all.`);
@@ -59,9 +51,7 @@ function holidayTests() {
 
   holidays2026.forEach((holiday) => {
     if (!(holiday.title in expectedHolidayDates)) {
-      console.error(
-        `❌ FAIL — unexpected holiday title "${holiday.title}" was returned.`,
-      );
+      console.error(`❌ FAIL — unexpected holiday title "${holiday.title}" was returned.`);
       failed++;
     }
   });

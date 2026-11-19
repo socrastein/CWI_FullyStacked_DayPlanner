@@ -75,15 +75,13 @@ export default function appSettingsTests() {
   // ── toggleFirstDayOfWeek ────────────────────────────────────────────────────
 
   test("toggleFirstDayOfWeek switches Sunday to Monday", () => {
-    if (appSettings.firstDayOfWeek !== "Sunday")
-      appSettings.toggleFirstDayOfWeek();
+    if (appSettings.firstDayOfWeek !== "Sunday") appSettings.toggleFirstDayOfWeek();
     appSettings.toggleFirstDayOfWeek();
     assertEqual(appSettings.firstDayOfWeek, "Monday");
   });
 
   test("toggleFirstDayOfWeek switches Monday to Sunday", () => {
-    if (appSettings.firstDayOfWeek !== "Monday")
-      appSettings.toggleFirstDayOfWeek();
+    if (appSettings.firstDayOfWeek !== "Monday") appSettings.toggleFirstDayOfWeek();
     appSettings.toggleFirstDayOfWeek();
     assertEqual(appSettings.firstDayOfWeek, "Sunday");
   });
@@ -102,15 +100,13 @@ export default function appSettingsTests() {
   // ── toggleDisplayHolidays ───────────────────────────────────────────────────
 
   test("toggleDisplayHolidays switches true to false", () => {
-    if (appSettings.displayHolidays !== true)
-      appSettings.toggleDisplayHolidays();
+    if (appSettings.displayHolidays !== true) appSettings.toggleDisplayHolidays();
     appSettings.toggleDisplayHolidays();
     assertEqual(appSettings.displayHolidays, false);
   });
 
   test("toggleDisplayHolidays switches false to true", () => {
-    if (appSettings.displayHolidays !== false)
-      appSettings.toggleDisplayHolidays();
+    if (appSettings.displayHolidays !== false) appSettings.toggleDisplayHolidays();
     appSettings.toggleDisplayHolidays();
     assertEqual(appSettings.displayHolidays, true);
   });
@@ -129,15 +125,7 @@ export default function appSettingsTests() {
   // ── colorTheme ──────────────────────────────────────────────────────────────
 
   test("colorTheme accepts all valid themes", () => {
-    const validThemes = [
-      "blue",
-      "purple",
-      "pink",
-      "red",
-      "orange",
-      "yellow",
-      "green",
-    ];
+    const validThemes = ["blue", "purple", "pink", "red", "orange", "yellow", "green"];
     for (const theme of validThemes) {
       appSettings.colorTheme = theme;
       assertEqual(appSettings.colorTheme, theme);
@@ -170,10 +158,8 @@ export default function appSettingsTests() {
     // Put everything in a non-default state first
     if (appSettings.lightMode !== "dark") appSettings.toggleLightMode();
     if (appSettings.tempUnit !== "Celsius") appSettings.toggleTempUnit();
-    if (appSettings.firstDayOfWeek !== "Monday")
-      appSettings.toggleFirstDayOfWeek();
-    if (appSettings.displayHolidays !== false)
-      appSettings.toggleDisplayHolidays();
+    if (appSettings.firstDayOfWeek !== "Monday") appSettings.toggleFirstDayOfWeek();
+    if (appSettings.displayHolidays !== false) appSettings.toggleDisplayHolidays();
     appSettings.colorTheme = "green";
 
     appSettings.restoreDefaults();
@@ -238,10 +224,8 @@ export default function appSettingsTests() {
 
   if (appSettings.lightMode !== initialLightMode) appSettings.toggleLightMode();
   if (appSettings.tempUnit !== initialTempUnit) appSettings.toggleTempUnit();
-  if (appSettings.firstDayOfWeek !== initialFirstDayOfWeek)
-    appSettings.toggleFirstDayOfWeek();
-  if (appSettings.displayHolidays !== initialDisplayHolidays)
-    appSettings.toggleDisplayHolidays();
+  if (appSettings.firstDayOfWeek !== initialFirstDayOfWeek) appSettings.toggleFirstDayOfWeek();
+  if (appSettings.displayHolidays !== initialDisplayHolidays) appSettings.toggleDisplayHolidays();
   appSettings.colorTheme = initialColorTheme;
 
   // ─── Results ─────────────────────────────────────────────────────────────────

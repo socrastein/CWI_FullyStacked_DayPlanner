@@ -13,51 +13,32 @@ type eventFormProps = {
   onSubmit: (event: React.SubmitEvent<HTMLFormElement>) => void;
 };
 
-export default function EventForm({
-  UID,
-  onCancel,
-  onDelete,
-  onSubmit,
-}: eventFormProps) {
+export default function EventForm({ UID, onCancel, onDelete, onSubmit }: eventFormProps) {
   // Form variables
   const title: string = UID ? "Edit Event" : "Add Event";
 
   // Pull the target event from appState if an event UID was provided.
-  const targetEvent: CalendarEvent | undefined = UID
-    ? appState.getEventByUID(UID)
-    : undefined;
+  const targetEvent: CalendarEvent | undefined = UID ? appState.getEventByUID(UID) : undefined;
 
-  const [isRecurring, setIsRecurring] = React.useState(
-    Boolean(targetEvent?.recurrence),
+  const [isRecurring, setIsRecurring] = React.useState(Boolean(targetEvent?.recurrence));
+
+  const [selectedRecurrence, setSelectedRecurrence] = React.useState<RecurrenceType>(
+    targetEvent?.recurrence ? targetEvent.recurrence : "weekly",
   );
-
-  const [selectedRecurrence, setSelectedRecurrence] =
-    React.useState<RecurrenceType>(
-      targetEvent?.recurrence ? targetEvent.recurrence : "weekly",
-    );
 
   // Existing all-day events should stay all-day when edited.
-  const isExistingAllDayEvent = Boolean(
-    targetEvent?.UID?.startsWith("allDay-"),
-  );
+  const isExistingAllDayEvent = Boolean(targetEvent?.UID?.startsWith("allDay-"));
 
   const [isAllDay, setIsAllDay] = React.useState(isExistingAllDayEvent);
   const { firstDayOfWeek } = useAppSettings();
   const weekDayArray =
-    firstDayOfWeek === "Sunday"
-      ? dateUtils.daysOfWeekSun
-      : dateUtils.daysOfWeekMon;
+    firstDayOfWeek === "Sunday" ? dateUtils.daysOfWeekSun : dateUtils.daysOfWeekMon;
 
   // Determine if recurring week day box should be checked automatically
   const isRecurringDayChecked = (weekDay: string): boolean => {
-    if (!targetEvent && dateUtils.getDayString(appState.dateView) === weekDay)
-      return true;
+    if (!targetEvent && dateUtils.getDayString(appState.dateView) === weekDay) return true;
 
-    if (
-      targetEvent &&
-      targetEvent.recurrenceDays?.includes(weekDay as RecurrenceDays)
-    )
-      return true;
+    if (targetEvent && targetEvent.recurrenceDays?.includes(weekDay as RecurrenceDays)) return true;
 
     if (
       targetEvent &&
@@ -196,9 +177,7 @@ export default function EventForm({
                   id="eventRecurrence"
                   name="recurrence"
                   value={selectedRecurrence}
-                  onChange={(event) =>
-                    setSelectedRecurrence(event.target.value as RecurrenceType)
-                  }
+                  onChange={(event) => setSelectedRecurrence(event.target.value as RecurrenceType)}
                 >
                   <option value="weekly">Weekly</option>
                   <option value="monthly">Monthly</option>
@@ -251,12 +230,7 @@ export default function EventForm({
             Save
           </button>
 
-          <button
-            type="button"
-            className="btn btn-sm"
-            onClick={onCancel}
-            id="cancelEventButton"
-          >
+          <button type="button" className="btn btn-sm" onClick={onCancel} id="cancelEventButton">
             Cancel
           </button>
 

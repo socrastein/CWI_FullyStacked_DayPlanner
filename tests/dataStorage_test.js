@@ -46,10 +46,7 @@ function storageTests() {
     const event = new CalendarEvent(sampleEventData);
     StorageManager.saveEvent(event);
     const key = `CalendarEvent_${event.UID}`;
-    assert(
-      localStorage.getItem(key) !== null,
-      "Expected key not found in localStorage.",
-    );
+    assert(localStorage.getItem(key) !== null, "Expected key not found in localStorage.");
   });
 
   expect("Saved value is valid JSON", () => {
@@ -73,10 +70,7 @@ function storageTests() {
     StorageManager.saveEvent(event);
     const key = `CalendarEvent_${event.UID}`;
     const parsed = JSON.parse(localStorage.getItem(key));
-    assert(
-      parsed.UID === undefined,
-      "UID should be excluded from stored JSON value.",
-    );
+    assert(parsed.UID === undefined, "UID should be excluded from stored JSON value.");
   });
 
   expect("Saved JSON contains all other event properties", () => {
@@ -86,16 +80,10 @@ function storageTests() {
     const key = `CalendarEvent_${event.UID}`;
     const parsed = JSON.parse(localStorage.getItem(key));
     assert(parsed.date === sampleEventData.date, "date mismatch.");
-    assert(
-      parsed.timeStart === sampleEventData.timeStart,
-      "timeStart mismatch.",
-    );
+    assert(parsed.timeStart === sampleEventData.timeStart, "timeStart mismatch.");
     assert(parsed.timeEnd === sampleEventData.timeEnd, "timeEnd mismatch.");
     assert(parsed.title === sampleEventData.title, "title mismatch.");
-    assert(
-      parsed.description === sampleEventData.description,
-      "description mismatch.",
-    );
+    assert(parsed.description === sampleEventData.description, "description mismatch.");
     assert(parsed.address === sampleEventData.address, "address mismatch.");
     assert(parsed.color === sampleEventData.color, "color mismatch.");
   });
@@ -106,10 +94,7 @@ function storageTests() {
     const event2 = new CalendarEvent({ ...sampleEventData, title: "Event 2" });
     StorageManager.saveEvent(event1);
     StorageManager.saveEvent(event2);
-    assert(
-      localStorage.length === 2,
-      `Expected 2 items in storage, found ${localStorage.length}.`,
-    );
+    assert(localStorage.length === 2, `Expected 2 items in storage, found ${localStorage.length}.`);
   });
 
   // ─── LOAD ALL EVENTS ──────────────────────────────────────────────────────────
@@ -123,15 +108,9 @@ function storageTests() {
 
   expect("Returns correct number of saved events", () => {
     clearStorage();
-    StorageManager.saveEvent(
-      new CalendarEvent({ ...sampleEventData, title: "Event 1" }),
-    );
-    StorageManager.saveEvent(
-      new CalendarEvent({ ...sampleEventData, title: "Event 2" }),
-    );
-    StorageManager.saveEvent(
-      new CalendarEvent({ ...sampleEventData, title: "Event 3" }),
-    );
+    StorageManager.saveEvent(new CalendarEvent({ ...sampleEventData, title: "Event 1" }));
+    StorageManager.saveEvent(new CalendarEvent({ ...sampleEventData, title: "Event 2" }));
+    StorageManager.saveEvent(new CalendarEvent({ ...sampleEventData, title: "Event 3" }));
     const events = StorageManager.loadAllEvents();
     assert(events.length === 3, `Expected 3 events, got ${events.length}.`);
   });
@@ -140,10 +119,7 @@ function storageTests() {
     clearStorage();
     StorageManager.saveEvent(new CalendarEvent(sampleEventData));
     const events = StorageManager.loadAllEvents();
-    assert(
-      events[0] instanceof CalendarEvent,
-      "Expected a CalendarEvent instance.",
-    );
+    assert(events[0] instanceof CalendarEvent, "Expected a CalendarEvent instance.");
   });
 
   expect("Loaded event has correct properties", () => {
@@ -156,20 +132,14 @@ function storageTests() {
     assert(loaded.timeStart === original.timeStart, "timeStart mismatch.");
     assert(loaded.timeEnd === original.timeEnd, "timeEnd mismatch.");
     assert(loaded.title === original.title, "title mismatch.");
-    assert(
-      loaded.description === original.description,
-      "description mismatch.",
-    );
+    assert(loaded.description === original.description, "description mismatch.");
     assert(loaded.address === original.address, "address mismatch.");
     assert(loaded.color === original.color, "color mismatch.");
   });
 
   expect("Ignores non-CalendarEvent items in localStorage", () => {
     clearStorage();
-    localStorage.setItem(
-      "SomeOtherModule_data",
-      JSON.stringify({ foo: "bar" }),
-    );
+    localStorage.setItem("SomeOtherModule_data", JSON.stringify({ foo: "bar" }));
     StorageManager.saveEvent(new CalendarEvent(sampleEventData));
     const events = StorageManager.loadAllEvents();
     assert(events.length === 1, `Expected 1 event, but got ${events.length}.`);
@@ -207,24 +177,16 @@ function storageTests() {
 
   // ─── DELETE ALL EVENTS ────────────────────────────────────────────────────────
 
-  expect(
-    "Only deletes CalendarEvent keys, leaves other localStorage items intact",
-    () => {
-      clearStorage();
-      localStorage.setItem(
-        "SomeOtherModule_data",
-        JSON.stringify({ foo: "bar" }),
-      );
-      StorageManager.saveEvent(
-        new CalendarEvent({ ...sampleEventData, title: "Event 1" }),
-      );
-      StorageManager.deleteAllEvents();
-      assert(
-        localStorage.getItem("SomeOtherModule_data") !== null,
-        "Non-event item should not be deleted.",
-      );
-    },
-  );
+  expect("Only deletes CalendarEvent keys, leaves other localStorage items intact", () => {
+    clearStorage();
+    localStorage.setItem("SomeOtherModule_data", JSON.stringify({ foo: "bar" }));
+    StorageManager.saveEvent(new CalendarEvent({ ...sampleEventData, title: "Event 1" }));
+    StorageManager.deleteAllEvents();
+    assert(
+      localStorage.getItem("SomeOtherModule_data") !== null,
+      "Non-event item should not be deleted.",
+    );
+  });
 
   // ─── SUMMARY ──────────────────────────────────────────────────────────────────
 

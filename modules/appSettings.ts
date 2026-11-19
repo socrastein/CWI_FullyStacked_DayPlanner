@@ -167,9 +167,7 @@ class AppSettings {
       document.head.appendChild(style);
     } else {
       throw new Error(
-        `Invalid color theme: ${value}. Valid options are: ${Object.keys(
-          colorThemes,
-        ).join(", ")}.`,
+        `Invalid color theme: ${value}. Valid options are: ${Object.keys(colorThemes).join(", ")}.`,
       );
     }
     this.saveSettings();

@@ -11,19 +11,14 @@ type CalendarNavButtonsGroupProps = {
  * @param onAfterNavigate - Function to call after a navigation button is clicked.
  * @returns The JSX element
  */
-function CalendarNavButtonsGroup({
-  onAfterNavigate,
-}: CalendarNavButtonsGroupProps) {
+function CalendarNavButtonsGroup({ onAfterNavigate }: CalendarNavButtonsGroupProps) {
   // Use the custom hook to navigate the calendar with the arrows.
   useNavigateWithArrows(() => onAfterNavigate());
 
   return (
     <>
       {/* Go to previous day/week/month */}
-      <CalendarNavButton
-        directionType="previous"
-        onAfterNavigate={onAfterNavigate}
-      >
+      <CalendarNavButton directionType="previous" onAfterNavigate={onAfterNavigate}>
         <img src="./assets/icons/chevron-left.svg" />
       </CalendarNavButton>
       <button

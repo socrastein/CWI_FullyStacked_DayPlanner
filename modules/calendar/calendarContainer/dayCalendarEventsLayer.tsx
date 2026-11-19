@@ -1,8 +1,5 @@
 import CalendarEventButton from "./calendarEventButton";
-import {
-  assignLanesForEvents,
-  calculateTotalConcurrentEvents,
-} from "../dailyCalendar";
+import { assignLanesForEvents, calculateTotalConcurrentEvents } from "../dailyCalendar";
 import dateUtils from "../../dateUtils";
 import { useAppState } from "../../appState";
 
@@ -20,10 +17,7 @@ export default function DayCalendarEventsLayer() {
     >
       {filteredEvents.map((event) => {
         const laneIndex = assignedLanes.get(event.UID) ?? 0;
-        const totalLanes = calculateTotalConcurrentEvents(
-          event,
-          filteredEvents,
-        );
+        const totalLanes = calculateTotalConcurrentEvents(event, filteredEvents);
 
         return (
           <CalendarEventButton

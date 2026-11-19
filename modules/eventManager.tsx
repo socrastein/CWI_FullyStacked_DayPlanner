@@ -8,8 +8,7 @@ import { clearTimeSlot } from "./calendar/calendarContainer/tapToAddEvent";
 import dateUtils from "./dateUtils";
 
 // Root element container for event form component
-const eventFormRootElement: HTMLElement | null =
-  document.getElementById("eventFormRoot");
+const eventFormRootElement: HTMLElement | null = document.getElementById("eventFormRoot");
 
 // Edit state variable
 let editingEventUID: string | null = null;
@@ -18,11 +17,8 @@ let editingEventUID: string | null = null;
  * Initializes the event manager by setting up event listener for the "Add Event" button.
  */
 function initializeEventManager(): void {
-  const addEventButton: HTMLElement | null =
-    document.getElementById("addEventButton");
-  const calendarEventsLayer: HTMLElement | null = document.getElementById(
-    "calendarEventsLayer",
-  );
+  const addEventButton: HTMLElement | null = document.getElementById("addEventButton");
+  const calendarEventsLayer: HTMLElement | null = document.getElementById("calendarEventsLayer");
 
   addEventButton?.addEventListener("click", () => {
     showEventManager();
@@ -31,9 +27,9 @@ function initializeEventManager(): void {
   // Additional listener for 'edit event' option.  Reads clicks on event targets and stores eventUID then runs openEventEditor() based on eventUID.
 
   calendarEventsLayer?.addEventListener("click", (event) => {
-    const clickedEventButton: HTMLElement = (
-      event.currentTarget as HTMLElement
-    ).closest("[data-event-id]")!;
+    const clickedEventButton: HTMLElement = (event.currentTarget as HTMLElement).closest(
+      "[data-event-id]",
+    )!;
 
     if (!clickedEventButton) {
       return;
@@ -53,12 +49,7 @@ function initializeEventManager(): void {
 function showEventManager(UID: string | null = null): void {
   const eventFormRoot: Root | null = createRoot(eventFormRootElement!);
   eventFormRoot.render(
-    <EventForm
-      UID={UID}
-      onCancel={close}
-      onSubmit={submit}
-      onDelete={deleteEvent}
-    />,
+    <EventForm UID={UID} onCancel={close} onSubmit={submit} onDelete={deleteEvent} />,
   );
 
   function close() {
@@ -71,11 +62,7 @@ function showEventManager(UID: string | null = null): void {
   }
 
   function deleteEvent() {
-    if (
-      confirm(
-        "Are you sure you want to delete this event? This action cannot be undone.",
-      )
-    ) {
+    if (confirm("Are you sure you want to delete this event? This action cannot be undone.")) {
       appState.removeEvent(UID!);
       close();
     }
@@ -88,10 +75,7 @@ function showEventManager(UID: string | null = null): void {
  * Uses appState to store the event.
  * @param {HTMLFormElement} event - The form element containing event details
  */
-function submitEvent(
-  event: React.SubmitEvent<HTMLFormElement>,
-  UID: string | null,
-): boolean {
+function submitEvent(event: React.SubmitEvent<HTMLFormElement>, UID: string | null): boolean {
   event.preventDefault();
   // Pull form from the event
   const eventForm: HTMLFormElement = event.currentTarget;
@@ -99,9 +83,7 @@ function submitEvent(
   const data: FormData = new FormData(eventForm);
   const eventProps: any = Object.fromEntries(data);
 
-  eventProps.recurrenceDays = data
-    .getAll("recurrenceDays")
-    .map((day) => String(day));
+  eventProps.recurrenceDays = data.getAll("recurrenceDays").map((day) => String(day));
 
   if (!data.has("isRecurring")) {
     eventProps.recurrence = null;
@@ -151,10 +133,7 @@ function submitEvent(
 }
 
 function hasAllDayStatusChanged(UID: string, isAllDay: boolean) {
-  return (
-    (!isAllDay && UID.startsWith("allDay")) ||
-    (isAllDay && !UID.startsWith("allDay"))
-  );
+  return (!isAllDay && UID.startsWith("allDay")) || (isAllDay && !UID.startsWith("allDay"));
 }
 
 /**
@@ -181,9 +160,7 @@ function validateEventSubmission(event: CalendarEvent): boolean {
 
   // Title validation
   if (event.title.trim() === "" || event.title.length > 100) {
-    eventTitleInput!.setCustomValidity(
-      "Event title cannot be empty or exceed 100 characters.",
-    );
+    eventTitleInput!.setCustomValidity("Event title cannot be empty or exceed 100 characters.");
     eventTitleInput!.addEventListener(
       "input",
       () => {

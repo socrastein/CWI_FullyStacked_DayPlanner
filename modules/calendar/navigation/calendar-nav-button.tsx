@@ -20,10 +20,7 @@ function CalendarNavButton({
   onAfterNavigate,
 }: CalendarNavButtonProps) {
   // Handle click event to navigate the calendar by one day, week, or month
-  const handleClick = useCalendarNavButtonHandler(
-    directionType,
-    onAfterNavigate,
-  );
+  const handleClick = useCalendarNavButtonHandler(directionType, onAfterNavigate);
 
   return (
     <button

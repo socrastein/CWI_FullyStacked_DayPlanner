@@ -41,9 +41,7 @@ module.exports = (env, argv) => {
         patterns: [{ from: "assets", to: "assets" }],
       }),
       new DefinePlugin({
-        "process.env.NODE_ENV": JSON.stringify(
-          isProduction ? "production" : "development",
-        ),
+        "process.env.NODE_ENV": JSON.stringify(isProduction ? "production" : "development"),
       }),
     ],
     module: {

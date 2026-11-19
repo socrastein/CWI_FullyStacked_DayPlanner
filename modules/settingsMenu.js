@@ -149,9 +149,7 @@ function openMenu() {
 }
 
 function closeMenu() {
-  const menuItemsContainer = document.getElementsByClassName(
-    "settingsMenuItemsContainer",
-  )[0];
+  const menuItemsContainer = document.getElementsByClassName("settingsMenuItemsContainer")[0];
   menuItemsContainer.classList.add("closing");
 
   // Wait for the closing animation to finish before hiding the menu and toggling the menu button
@@ -254,8 +252,7 @@ function handleCityChange(city) {
   // Update the setting label on the "Select City" row
   const selectCityRow = document.getElementById("selectCityButton");
   if (selectCityRow) {
-    selectCityRow.querySelector(".menuItemSetting").textContent =
-      appSettings.city;
+    selectCityRow.querySelector(".menuItemSetting").textContent = appSettings.city;
   }
 }
 

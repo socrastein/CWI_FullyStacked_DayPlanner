@@ -1,5 +1,4 @@
-const characters =
-  "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 const UID_LENGTH = 16;
 /**
  *  Generate a unique identifier (UID) for CalendarEvent objects
